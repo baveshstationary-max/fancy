@@ -5,273 +5,984 @@ import urllib.parse
 
 SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAHRE5wgl1xJ7uAr9DF5OFtnpesK5UD4C3pdnClWdKxQ/exec"
 
-st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
+st.set_page_config(
+    page_title="Bavesh Stationary",
+    page_icon="📚",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# ============================================================
+# RESPONSIVE CSS
+# ============================================================
 
 st.markdown("""
-    <style>
-    #MainMenu {visibility: hidden;}
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    
-    .stHeadingWithAction > a, .markdown-text-container a.anchor-link, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
-        display: none !important;
+<style>
+#MainMenu {visibility: hidden;}
+header {visibility: hidden;}
+footer {visibility: hidden;}
+
+.stHeadingWithAction > a,
+.markdown-text-container a.anchor-link,
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    display: none !important;
+}
+
+.block-container {
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.5rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
+}
+
+.element-container {
+    margin-bottom: 0 !important;
+}
+
+div[data-testid="stHorizontalBlock"] {
+    align-items: center;
+    gap: 5px;
+}
+
+.stButton button {
+    min-height: 34px;
+    padding: 3px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    width: 100%;
+    border-radius: 7px;
+}
+
+hr {
+    margin: 4px 0 !important;
+}
+
+/* Product images */
+.product-main img {
+    width: 100% !important;
+    height: 115px !important;
+    object-fit: contain !important;
+    background: #f8fafc;
+    border: 2px solid #ff4b4b;
+    border-radius: 7px;
+    box-shadow: 0 3px 7px rgba(0,0,0,.10);
+}
+
+.product-preview img {
+    width: 100% !important;
+    height: 72px !important;
+    object-fit: contain !important;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    opacity: .75;
+}
+
+.product-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    padding: 7px 6px 4px 6px;
+    margin: 3px 0;
+    background: white;
+}
+
+.product-name {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+.product-desc {
+    color: #666;
+    font-size: 10px;
+    line-height: 1.3;
+    margin-top: 2px;
+}
+
+.product-price {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.mobile-section-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Phones and small tablets */
+@media (max-width: 768px) {
+    .block-container {
+        padding-left: 7px !important;
+        padding-right: 7px !important;
+        padding-top: 4px !important;
     }
-    
-    /* Center Main Image (Highlighted & Larger) */
-    div[data-testid="column"]:nth-of-type(2) img {
-        width: 100% !important;
-        height: 120px !important;
-        object-fit: contain !important;
-        background-color: #f8fafc;
-        border-radius: 6px;
-        border: 2px solid #ff4b4b;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        display: block;
-        margin: auto;
+
+    div[data-testid="stHorizontalBlock"] {
+        gap: 5px !important;
     }
-    
-    /* Left and Right Adjacent Images (Smaller Preview Shape) */
-    div[data-testid="column"]:nth-of-type(1) img, 
-    div[data-testid="column"]:nth-of-type(3) img {
-        width: 100% !important;
-        height: 75px !important;
-        object-fit: contain !important;
-        background-color: #f8fafc;
-        border-radius: 6px;
-        border: 1px solid #cbd5e1;
-        opacity: 0.75;
-        display: block;
-        margin: auto;
+
+    .stButton button {
+        min-height: 38px !important;
+        font-size: 12px !important;
     }
-    
-    .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
-    h2 { margin-bottom: 0px; }
-    .stButton button { padding: 2px 4px; font-size: 12px; font-weight: 600; min-height: 28px; width: 100%; }
-    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 4px; }
-    .element-container { margin-bottom: 0px !important; }
-    hr { margin: 3px 0px !important; }
-    </style>
+
+    .product-card {
+        padding: 8px 6px 5px 6px;
+    }
+
+    .product-main img {
+        height: 150px !important;
+    }
+
+    .product-preview img {
+        height: 72px !important;
+    }
+
+    .product-name {
+        font-size: 15px;
+    }
+
+    .product-desc {
+        font-size: 11px;
+    }
+
+    .product-price {
+        font-size: 17px;
+    }
+
+    input, textarea {
+        font-size: 16px !important;
+    }
+
+    /* Allow Streamlit columns to wrap on narrow screens.
+       This prevents the original 8-column row from becoming
+       extremely tiny on a phone. */
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap !important;
+    }
+
+    /* Header */
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        min-width: 0 !important;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 480px) {
+    .block-container {
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+    }
+
+    .product-main img {
+        height: 135px !important;
+    }
+
+    .product-preview img {
+        height: 62px !important;
+    }
+
+    .stButton button {
+        font-size: 11px !important;
+        padding-left: 3px !important;
+        padding-right: 3px !important;
+    }
+}
+</style>
 """, unsafe_allow_html=True)
+
+
+# ============================================================
+# SESSION STATE
+# ============================================================
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+
 if "username" not in st.session_state:
     st.session_state.username = ""
+
 if "mobile" not in st.session_state:
     st.session_state.mobile = ""
+
 if "page" not in st.session_state:
     st.session_state.page = "home"
+
 if "selected_category" not in st.session_state:
     st.session_state.selected_category = ""
+
 if "cart" not in st.session_state:
     st.session_state.cart = {}
+
 if "image_indices" not in st.session_state:
     st.session_state.image_indices = {}
 
-# LOGIN SCREEN
+
+# ============================================================
+# LOGIN
+# ============================================================
+
 if not st.session_state.logged_in:
+
     st.markdown("## 🔐 Store Login")
-    username = st.text_input("Username")
-    mobile = st.text_input("Mobile Number", type="password")
-    
-    if st.button("Login"):
+
+    username = st.text_input(
+        "Username",
+        placeholder="Enter username"
+    )
+
+    mobile = st.text_input(
+        "Mobile Number",
+        type="password",
+        placeholder="Enter mobile number"
+    )
+
+    if st.button("🔐 Login", use_container_width=True):
+
         if username and mobile:
+
             try:
-                requests.get(f"{SCRIPT_URL}?action=login&user={username}&pass={mobile}")
+                requests.get(
+                    f"{SCRIPT_URL}?action=login"
+                    f"&user={urllib.parse.quote(username)}"
+                    f"&pass={urllib.parse.quote(mobile)}",
+                    timeout=20
+                )
+
                 st.session_state.logged_in = True
                 st.session_state.username = username
                 st.session_state.mobile = mobile
+
                 st.rerun()
+
             except Exception as e:
                 st.error(f"Connection error: {e}")
+
         else:
             st.error("Please fill in both fields")
 
-# MAIN APP SCREEN
+
+# ============================================================
+# MAIN APPLICATION
+# ============================================================
+
 else:
-    head_col1, head_col2, head_col3, head_col4 = st.columns([3, 1, 1, 1])
+
+    # --------------------------------------------------------
+    # HEADER
+    # --------------------------------------------------------
+
+    head_col1, head_col2, head_col3, head_col4 = st.columns(
+        [3, 1, 1, 1],
+        gap="small"
+    )
+
     with head_col1:
         st.markdown("### 📚 BAVESH STATIONARY")
+
     with head_col2:
         if st.button("🏠 Home", use_container_width=True):
             st.session_state.page = "home"
             st.rerun()
+
     with head_col3:
         cart_count = sum(st.session_state.cart.values())
-        if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
+
+        if st.button(
+            f"🛒 Cart ({cart_count})",
+            use_container_width=True
+        ):
             st.session_state.page = "cart"
             st.rerun()
+
     with head_col4:
         if st.button("🚪 Logout", use_container_width=True):
             st.session_state.logged_in = False
             st.session_state.cart = {}
+            st.session_state.image_indices = {}
             st.rerun()
-            
-    st.markdown("<hr style='margin: 2px 0px 6px 0px;'>", unsafe_allow_html=True)
 
-    # HOME PAGE
+    st.markdown("<hr>", unsafe_allow_html=True)
+
+
+    # ========================================================
+    # HOME
+    # ========================================================
+
     if st.session_state.page == "home":
-        try:
-            res = requests.get(f"{SCRIPT_URL}?action=getInventory")
-            rows = res.json()
-            if len(rows) > 1:
-                headers = [str(h).strip().upper() for h in rows[0]]
-                df = pd.DataFrame(rows[1:], columns=headers)
-                
-                categories = df['CATEGORY'].dropna().unique().tolist() if 'CATEGORY' in df.columns else ["General"]
-                if not st.session_state.selected_category and categories:
-                    st.session_state.selected_category = categories[0]
 
-                col_left, col_right = st.columns([1, 4])
+        try:
+
+            res = requests.get(
+                f"{SCRIPT_URL}?action=getInventory",
+                timeout=20
+            )
+
+            rows = res.json()
+
+            if len(rows) <= 1:
+                st.info("No products found in inventory.")
+
+            else:
+
+                headers = [
+                    str(h).strip().upper()
+                    for h in rows[0]
+                ]
+
+                df = pd.DataFrame(
+                    rows[1:],
+                    columns=headers
+                )
+
+                # ------------------------------------------------
+                # CATEGORIES
+                # ------------------------------------------------
+
+                if "CATEGORY" in df.columns:
+                    categories = (
+                        df["CATEGORY"]
+                        .dropna()
+                        .astype(str)
+                        .unique()
+                        .tolist()
+                    )
+                else:
+                    categories = ["General"]
+
+                if (
+                    not st.session_state.selected_category
+                    or
+                    st.session_state.selected_category not in categories
+                ):
+                    if categories:
+                        st.session_state.selected_category = categories[0]
+
+
+                # ------------------------------------------------
+                # CATEGORY + PRODUCT AREA
+                # ------------------------------------------------
+
+                col_left, col_right = st.columns(
+                    [1, 4],
+                    gap="small"
+                )
+
+
+                # ------------------------------------------------
+                # CATEGORY PANEL
+                # ------------------------------------------------
 
                 with col_left:
+
                     st.markdown("##### 📁 Categories")
-                    # Independent scrollable container for categories (height set to 520px to match products view)
+
                     with st.container(height=520):
+
                         for cat in categories:
-                            is_active = (cat == st.session_state.selected_category)
-                            btn_type = "primary" if is_active else "secondary"
-                            if st.button(cat, use_container_width=True, key=f"cat_{cat}", type=btn_type):
+
+                            is_active = (
+                                cat ==
+                                st.session_state.selected_category
+                            )
+
+                            if st.button(
+                                str(cat),
+                                use_container_width=True,
+                                key=f"cat_{cat}",
+                                type=(
+                                    "primary"
+                                    if is_active
+                                    else "secondary"
+                                )
+                            ):
+
                                 st.session_state.selected_category = cat
                                 st.rerun()
 
+
+                # ------------------------------------------------
+                # PRODUCTS
+                # ------------------------------------------------
+
                 with col_right:
-                    active_cat = st.session_state.selected_category
-                    st.markdown(f"##### Products: {active_cat}")
-                    
-                    filtered_df = df[df['CATEGORY'] == active_cat] if 'CATEGORY' in df.columns else df
+
+                    active_cat = (
+                        st.session_state.selected_category
+                    )
+
+                    st.markdown(
+                        f"##### 🛍️ Products: {active_cat}"
+                    )
+
+                    if "CATEGORY" in df.columns:
+                        filtered_df = df[
+                            df["CATEGORY"] == active_cat
+                        ]
+                    else:
+                        filtered_df = df
+
 
                     if filtered_df.empty:
-                        st.info("No products available in this category.")
+
+                        st.info(
+                            "No products available in this category."
+                        )
+
                     else:
+
                         with st.container(height=520):
-                            grouped_df = filtered_df.groupby('ITEM ID', sort=False)
-                            
+
+                            grouped_df = filtered_df.groupby(
+                                "ITEM ID",
+                                sort=False
+                            )
+
+
+                            # ====================================
+                            # EACH PRODUCT
+                            # ====================================
+
                             for item_id, group in grouped_df:
+
                                 first_row = group.iloc[0]
-                                item_name = first_row.get('ITEM NAME', 'Product')
-                                price = first_row.get('PRICE', '0')
-                                desc = first_row.get('DESCRIPTION', '')
-                                
+
+                                item_name = first_row.get(
+                                    "ITEM NAME",
+                                    "Product"
+                                )
+
+                                price = first_row.get(
+                                    "PRICE",
+                                    "0"
+                                )
+
+                                desc = first_row.get(
+                                    "DESCRIPTION",
+                                    ""
+                                )
+
+
+                                # --------------------------------
+                                # READ IMAGES
+                                # --------------------------------
+
                                 raw_list = []
+
                                 for _, r in group.iterrows():
-                                    img_raw = str(r.get('IMAGES', r.get('IMAGE', '')))
-                                    if img_raw and img_raw.strip() != "":
-                                        for part in img_raw.replace('\\', ',').split(','):
+
+                                    img_raw = str(
+                                        r.get(
+                                            "IMAGES",
+                                            r.get(
+                                                "IMAGE",
+                                                ""
+                                            )
+                                        )
+                                    )
+
+                                    if (
+                                        img_raw
+                                        and
+                                        img_raw.strip()
+                                    ):
+
+                                        for part in img_raw.replace(
+                                            "\\",
+                                            ","
+                                        ).split(","):
+
                                             c_name = part.strip()
-                                            if c_name and not c_name.lower().endswith(('.mp4', '.mov', '.avi')):
+
+                                            if (
+                                                c_name
+                                                and
+                                                not c_name.lower().endswith(
+                                                    (
+                                                        ".mp4",
+                                                        ".mov",
+                                                        ".avi"
+                                                    )
+                                                )
+                                            ):
+
                                                 raw_list.append(c_name)
 
+
+                                # --------------------------------
+                                # BUILD IMAGE URLS
+                                # --------------------------------
+
                                 img_list = []
+
                                 for name in raw_list:
+
                                     if name.startswith("http"):
+
                                         img_list.append(name)
+
                                     else:
-                                        encoded_name = urllib.parse.quote(name)
-                                        github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/fancy/main/IMAGES/{encoded_name}"
-                                        img_list.append(github_raw)
-                                        
-                                placeholder_url = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
+
+                                        encoded_name = (
+                                            urllib.parse.quote(
+                                                name
+                                            )
+                                        )
+
+                                        github_raw = (
+                                            "https://raw.githubusercontent.com/"
+                                            "baveshstationary-max/fancy/"
+                                            f"main/IMAGES/{encoded_name}"
+                                        )
+
+                                        img_list.append(
+                                            github_raw
+                                        )
+
+
+                                # --------------------------------
+                                # FALLBACK
+                                # --------------------------------
+
                                 if not img_list:
-                                    img_list = [placeholder_url]
+
+                                    img_list = [
+                                        "https://images.unsplash.com/"
+                                        "photo-1505740420928-5e560c06d30e"
+                                        "?q=80&w=300"
+                                    ]
+
+
+                                # --------------------------------
+                                # IMAGE INDEX
+                                # --------------------------------
 
                                 idx_key = f"idx_{item_id}"
-                                if idx_key not in st.session_state.image_indices:
-                                    st.session_state.image_indices[idx_key] = 0
 
-                                current_idx = st.session_state.image_indices[idx_key]
-                                prev_idx = (current_idx - 1) % len(img_list)
-                                next_idx = (current_idx + 1) % len(img_list)
+                                if (
+                                    idx_key
+                                    not in
+                                    st.session_state.image_indices
+                                ):
+                                    st.session_state.image_indices[
+                                        idx_key
+                                    ] = 0
 
-                                cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
-                                
-                                with cols[0]:
-                                    if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
-                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
+                                current_idx = (
+                                    st.session_state
+                                    .image_indices[idx_key]
+                                    %
+                                    len(img_list)
+                                )
+
+                                prev_idx = (
+                                    current_idx - 1
+                                ) % len(img_list)
+
+                                next_idx = (
+                                    current_idx + 1
+                                ) % len(img_list)
+
+
+                                # =================================
+                                # PRODUCT CARD
+                                # =================================
+
+                                st.markdown(
+                                    "<div class='product-card'>",
+                                    unsafe_allow_html=True
+                                )
+
+
+                                # Six columns instead of the
+                                # original eight. This gives more
+                                # usable space on smaller screens.
+                                prev_col, preview_col, main_col, info_col, price_col, action_col = st.columns(
+                                    [0.38, 0.75, 1.35, 2.1, 0.75, 1.0],
+                                    gap="small"
+                                )
+
+
+                                # --------------------------------
+                                # PREVIOUS
+                                # --------------------------------
+
+                                with prev_col:
+
+                                    if st.button(
+                                        "◀",
+                                        key=f"prev_{item_id}",
+                                        use_container_width=True
+                                    ):
+
+                                        st.session_state.image_indices[
+                                            idx_key
+                                        ] = prev_idx
+
                                         st.rerun()
 
-                                with cols[1]:
-                                    st.image(img_list[prev_idx], use_container_width=True)
 
-                                with cols[2]:
-                                    st.image(img_list[current_idx], use_container_width=True)
+                                # --------------------------------
+                                # PREVIEW
+                                # --------------------------------
 
-                                with cols[3]:
-                                    st.image(img_list[next_idx], use_container_width=True)
+                                with preview_col:
 
-                                with cols[4]:
-                                    if st.button("▶", key=f"next_{item_id}", use_container_width=True):
-                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
-                                        st.rerun()
-                                        
-                                with cols[5]:
-                                    st.markdown(f"**{item_name}**")
+                                    st.markdown(
+                                        "<div class='product-preview'>",
+                                        unsafe_allow_html=True
+                                    )
+
+                                    st.image(
+                                        img_list[prev_idx],
+                                        use_container_width=True
+                                    )
+
+                                    st.markdown(
+                                        "</div>",
+                                        unsafe_allow_html=True
+                                    )
+
+
+                                # --------------------------------
+                                # MAIN IMAGE
+                                # --------------------------------
+
+                                with main_col:
+
+                                    st.markdown(
+                                        "<div class='product-main'>",
+                                        unsafe_allow_html=True
+                                    )
+
+                                    st.image(
+                                        img_list[current_idx],
+                                        use_container_width=True
+                                    )
+
+                                    st.markdown(
+                                        "</div>",
+                                        unsafe_allow_html=True
+                                    )
+
+
+                                # --------------------------------
+                                # INFORMATION
+                                # --------------------------------
+
+                                with info_col:
+
+                                    st.markdown(
+                                        f"""
+                                        <div class="product-name">
+                                            {item_name}
+                                        </div>
+                                        """,
+                                        unsafe_allow_html=True
+                                    )
+
                                     if desc:
-                                        st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
-                                        
-                                with cols[6]:
-                                    st.markdown(f"**₹{price}**")
-                                    
-                                with cols[7]:
-                                    current_qty = st.session_state.cart.get(str(item_id), 1)
-                                    qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
-                                    if st.button("Add", key=f"add_{item_id}", use_container_width=True):
-                                        st.session_state.cart[str(item_id)] = qty
+
+                                        st.markdown(
+                                            f"""
+                                            <div class="product-desc">
+                                                {desc}
+                                            </div>
+                                            """,
+                                            unsafe_allow_html=True
+                                        )
+
+
+                                # --------------------------------
+                                # PRICE
+                                # --------------------------------
+
+                                with price_col:
+
+                                    st.markdown(
+                                        f"""
+                                        <div class="product-price">
+                                            ₹{price}
+                                        </div>
+                                        """,
+                                        unsafe_allow_html=True
+                                    )
+
+
+                                # --------------------------------
+                                # QUANTITY + ADD
+                                # --------------------------------
+
+                                with action_col:
+
+                                    current_qty = (
+                                        st.session_state.cart.get(
+                                            str(item_id),
+                                            1
+                                        )
+                                    )
+
+                                    qty = st.number_input(
+                                        "Qty",
+                                        min_value=1,
+                                        value=current_qty,
+                                        key=f"qty_{item_id}",
+                                        label_visibility="collapsed"
+                                    )
+
+                                    if st.button(
+                                        "🛒 Add",
+                                        key=f"add_{item_id}",
+                                        use_container_width=True
+                                    ):
+
+                                        st.session_state.cart[
+                                            str(item_id)
+                                        ] = qty
+
                                         st.rerun()
-                                        
-                                st.markdown("<hr style='margin: 3px 0px;'>", unsafe_allow_html=True)
-            else:
-                st.info("No products found in inventory.")
+
+
+                                # --------------------------------
+                                # NEXT IMAGE
+                                # --------------------------------
+
+                                # Put navigation under the image
+                                # so it remains accessible on phones.
+                                nav_left, nav_right = st.columns(
+                                    [1, 1],
+                                    gap="small"
+                                )
+
+                                with nav_left:
+
+                                    if st.button(
+                                        "◀ Previous Image",
+                                        key=f"mobile_prev_{item_id}",
+                                        use_container_width=True
+                                    ):
+
+                                        st.session_state.image_indices[
+                                            idx_key
+                                        ] = prev_idx
+
+                                        st.rerun()
+
+                                with nav_right:
+
+                                    if st.button(
+                                        "Next Image ▶",
+                                        key=f"mobile_next_{item_id}",
+                                        use_container_width=True
+                                    ):
+
+                                        st.session_state.image_indices[
+                                            idx_key
+                                        ] = next_idx
+
+                                        st.rerun()
+
+
+                                st.markdown(
+                                    "</div>",
+                                    unsafe_allow_html=True
+                                )
+
+                                st.markdown("<hr>", unsafe_allow_html=True)
+
+
         except Exception as e:
-            st.error(f"Could not load catalog: {e}")
 
-    # CART PAGE
+            st.error(
+                f"Could not load catalog: {e}"
+            )
+
+
+    # ========================================================
+    # CART
+    # ========================================================
+
     elif st.session_state.page == "cart":
-        st.markdown("#### 📌 Secure Checkout Form")
-        if not st.session_state.cart:
-            st.info("Your cart is empty. Go back to Home to select products.")
-        else:
-            for item_id, qty in st.session_state.cart.items():
-                st.markdown(f"- **Item ID:** {item_id} | **Quantity:** {qty}")
-            
-            st.markdown("---")
-            
-            delivery_address = st.text_area("Delivery Address:", placeholder="Enter your full street address, landmark, and pin code...")
-            alt_contact = st.text_input("Alternative Contact Number:", placeholder="Enter secondary mobile number...")
-            custom_desc = st.text_area("Product Specifications / Custom Description:", placeholder="Specify any specific instructions, colors, or custom requirements...")
-            
-            if st.button("Complete Order", use_container_width=False):
-                if not delivery_address.strip():
-                    st.error("Please enter a delivery address before completing your order.")
-                else:
-                    try:
-                        res = requests.get(f"{SCRIPT_URL}?action=getInventory")
-                        rows = res.json()
-                        item_prices = {}
-                        if len(rows) > 1:
-                            headers = [str(h).strip().upper() for h in rows[0]]
-                            inv_df = pd.DataFrame(rows[1:], columns=headers)
-                            if 'ITEM ID' in inv_df.columns and 'PRICE' in inv_df.columns:
-                                for _, row in inv_df.iterrows():
-                                    item_prices[str(row['ITEM ID'])] = float(row['PRICE'])
 
-                        for item_id, qty in st.session_state.cart.items():
-                            unit_price = item_prices.get(str(item_id), 0.0)
-                            total_cost = qty * unit_price
-                            
+        st.markdown("#### 📌 Secure Checkout Form")
+
+
+        if not st.session_state.cart:
+
+            st.info(
+                "Your cart is empty. Go back to Home to select products."
+            )
+
+
+        else:
+
+            st.markdown("### 🛒 Your Cart")
+
+            for item_id, qty in st.session_state.cart.items():
+
+                st.markdown(
+                    f"**Item ID:** {item_id}  \n"
+                    f"**Quantity:** {qty}"
+                )
+
+
+            st.markdown("---")
+
+
+            delivery_address = st.text_area(
+                "Delivery Address:",
+                placeholder=(
+                    "Enter your full street address, "
+                    "landmark, and pin code..."
+                ),
+                height=120
+            )
+
+
+            alt_contact = st.text_input(
+                "Alternative Contact Number:",
+                placeholder="Enter secondary mobile number..."
+            )
+
+
+            custom_desc = st.text_area(
+                "Product Specifications / Custom Description:",
+                placeholder=(
+                    "Specify any specific instructions, "
+                    "colors, or custom requirements..."
+                ),
+                height=120
+            )
+
+
+            if st.button(
+                "✅ Complete Order",
+                use_container_width=True
+            ):
+
+                if not delivery_address.strip():
+
+                    st.error(
+                        "Please enter a delivery address before completing your order."
+                    )
+
+                else:
+
+                    try:
+
+                        res = requests.get(
+                            f"{SCRIPT_URL}?action=getInventory",
+                            timeout=20
+                        )
+
+                        rows = res.json()
+
+                        item_prices = {}
+
+
+                        if len(rows) > 1:
+
+                            headers = [
+                                str(h).strip().upper()
+                                for h in rows[0]
+                            ]
+
+                            inv_df = pd.DataFrame(
+                                rows[1:],
+                                columns=headers
+                            )
+
+
+                            if (
+                                "ITEM ID" in inv_df.columns
+                                and
+                                "PRICE" in inv_df.columns
+                            ):
+
+                                for _, row in inv_df.iterrows():
+
+                                    try:
+
+                                        item_prices[
+                                            str(row["ITEM ID"])
+                                        ] = float(
+                                            row["PRICE"]
+                                        )
+
+                                    except (ValueError, TypeError):
+
+                                        item_prices[
+                                            str(row["ITEM ID"])
+                                        ] = 0.0
+
+
+                        # ----------------------------------------
+                        # SUBMIT EACH CART ITEM
+                        # ----------------------------------------
+
+                        for item_id, qty in (
+                            st.session_state.cart.items()
+                        ):
+
+                            unit_price = item_prices.get(
+                                str(item_id),
+                                0.0
+                            )
+
+                            total_cost = (
+                                qty *
+                                unit_price
+                            )
+
+
                             order_data = {
-                                "mobile": st.session_state.mobile,
-                                "altContact": alt_contact,
-                                "deliveryAddress": delivery_address,
-                                "customDescription": custom_desc,
-                                "itemId": item_id,
-                                "itemName": f"Item {item_id}",
-                                "quantity": qty,
-                                "totalCost": total_cost
+                                "mobile":
+                                    st.session_state.mobile,
+
+                                "altContact":
+                                    alt_contact,
+
+                                "deliveryAddress":
+                                    delivery_address,
+
+                                "customDescription":
+                                    custom_desc,
+
+                                "itemId":
+                                    item_id,
+
+                                "itemName":
+                                    f"Item {item_id}",
+
+                                "quantity":
+                                    qty,
+
+                                "totalCost":
+                                    total_cost
                             }
-                            requests.post(SCRIPT_URL, json=order_data)
-                        
-                        st.success("Order successfully submitted to Google Sheets!")
+
+
+                            requests.post(
+                                SCRIPT_URL,
+                                json=order_data,
+                                timeout=20
+                            )
+
+
+                        st.success(
+                            "✅ Order successfully submitted to Google Sheets!"
+                        )
+
                         st.session_state.cart = {}
+
+                        st.rerun()
+
+
                     except Exception as e:
-                        st.error(f"Error checking out: {e}")
+
+                        st.error(
+                            f"Error checking out: {e}"
+                        )
