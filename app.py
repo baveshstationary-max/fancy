@@ -17,20 +17,16 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Make the first image slot larger (highlighted) and others normal thumbnail size */
-    div[data-testid="column"]:nth-of-type(2) img {
-        height: 140px !important;
-        border: 2px solid #ff4b4b;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    
+    /* Highlighted single large image view */
     img {
         width: 100% !important;
-        height: 80px !important;
+        height: 140px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
         border-radius: 4px;
         padding: 2px;
+        border: 2px solid #ff4b4b;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
@@ -159,11 +155,14 @@ else:
                                         img_list.append(github_raw)
                                         
                                 placeholder_url = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
+                                if not img_list:
+                                    img_list = [placeholder_url]
 
                                 if item_id not in st.session_state.image_indices:
                                     st.session_state.image_indices[item_id] = 0
 
-                                cols = st.columns([0.4, 1.2, 0.9, 0.9, 0.9, 0.9, 0.9, 0.4, 1.8, 0.7, 1.1])
+                                # Layout with single center image slot and side navigation buttons
+                                cols = st.columns([0.6, 1.8, 0.6, 2.5, 0.8, 1.2])
                                 
                                 with cols[0]:
                                     if len(img_list) > 1:
@@ -172,29 +171,24 @@ else:
                                             st.rerun()
 
                                 current_idx = st.session_state.image_indices[item_id]
-                                for i in range(6):
-                                    with cols[1 + i]:
-                                        if img_list:
-                                            actual_img_index = (current_idx + i) % len(img_list)
-                                            st.image(img_list[actual_img_index], use_container_width=True)
-                                        else:
-                                            st.image(placeholder_url, use_container_width=True)
+                                with cols[1]:
+                                    st.image(img_list[current_idx], use_container_width=True)
 
-                                with cols[7]:
+                                with cols[2]:
                                     if len(img_list) > 1:
                                         if st.button("▶", key=f"next_{item_id}", use_container_width=True):
                                             st.session_state.image_indices[item_id] = (st.session_state.image_indices[item_id] + 1) % len(img_list)
                                             st.rerun()
                                         
-                                with cols[8]:
+                                with cols[3]:
                                     st.markdown(f"**{item_name}**")
                                     if desc:
                                         st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
                                         
-                                with cols[9]:
+                                with cols[4]:
                                     st.markdown(f"**₹{price}**")
                                     
-                                with cols[10]:
+                                with cols[5]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
                                     if st.button("Add", key=f"add_{item_id}", use_container_width=True):
