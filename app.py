@@ -6,7 +6,7 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
-# Custom CSS to align items perfectly, compact row heights, and hide default chrome
+# Custom CSS to handle columns cleanly and fix index errors
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
@@ -115,21 +115,19 @@ else:
                                 price = row.get('PRICE', '0')
                                 desc = row.get('DESCRIPTION', '')
                                 
-                                # Gather up to 6 images from columns G onwards or fallback images folder
+                                # Safely extract images regardless of column length
                                 img_list = []
-                                for col_idx in range(6, len(row)):
-                                    val = row[col_idx]
-                                    if val and str(val).strip() != "":
-                                        img_name = str(val).strip()
-                                        if img_name.startswith("http"):
-                                            img_list.append(img_name)
-                                        else:
-                                            img_list.append(f"images/{img_name}")
+                                if 'IMAGES' in row and row['IMAGES'] and str(row['IMAGES']).strip() != "":
+                                    val = str(row['IMAGES']).strip()
+                                    if val.startswith("http"):
+                                        img_list.append(val)
+                                    else:
+                                        img_list.append(f"images/{val}")
                                             
                                 while len(img_list) < 6:
                                     img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=100")
 
-                                # Layout columns: 6 image columns + Description/Name column + Price column + Qty/Add column
+                                # Render 6 image slots + details + price + quantity + add button
                                 cols = st.columns([0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 2.2, 0.8, 1.2])
                                 
                                 for i in range(6):
