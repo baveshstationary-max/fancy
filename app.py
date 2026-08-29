@@ -6,14 +6,13 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
-# Custom CSS to remove unwanted link/anchor symbols next to headings/sentences, and clean up UI
+# Custom CSS to enlarge the 6 images to full size and remove link symbols
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Hide markdown header anchor link symbols (the link icon next to sentences/headings) */
     .stHeadingWithAction > a, .markdown-text-container a.anchor-link, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
         display: none !important;
     }
@@ -130,14 +129,14 @@ else:
                                         img_list.append(f"images/{val}")
                                             
                                 while len(img_list) < 6:
-                                    img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=100")
+                                    img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
 
-                                # Render 6 images + details + price + quantity + add button (keeping image zoom active on hover)
-                                cols = st.columns([0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 2.2, 0.8, 1.2])
+                                # Render 6 full-size images side-by-side using width=None or larger width parameter
+                                cols = st.columns([1, 1, 1, 1, 1, 1, 1.8, 0.7, 1.1])
                                 
                                 for i in range(6):
                                     with cols[i]:
-                                        st.image(img_list[i], width=40)
+                                        st.image(img_list[i], use_container_width=True)
                                         
                                 with cols[6]:
                                     st.markdown(f"**{item_name}**")
