@@ -112,83 +112,54 @@ hr {
     font-weight: 700;
 }
 
-/* Phones and small tablets */
+/* MOBILE: preserve the same desktop/computer layout */
 @media (max-width: 768px) {
     .block-container {
-        padding-left: 7px !important;
-        padding-right: 7px !important;
-        padding-top: 4px !important;
+        min-width: 1100px !important;
+        width: 1100px !important;
+        max-width: none !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        padding-top: 5px !important;
     }
 
     div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        width: 100% !important;
         gap: 5px !important;
     }
 
-    .stButton button {
-        min-height: 38px !important;
-        font-size: 12px !important;
-    }
-
-    .product-card {
-        padding: 8px 6px 5px 6px;
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        min-width: 0 !important;
     }
 
     .product-main img {
-        height: 150px !important;
+        height: 115px !important;
     }
 
     .product-preview img {
         height: 72px !important;
     }
 
-    .product-name {
-        font-size: 15px;
-    }
-
-    .product-desc {
-        font-size: 11px;
-    }
-
-    .product-price {
-        font-size: 17px;
+    .stButton button {
+        min-height: 34px !important;
+        font-size: 12px !important;
     }
 
     input, textarea {
         font-size: 16px !important;
     }
-
-    /* Allow Streamlit columns to wrap on narrow screens.
-       This prevents the original 8-column row from becoming
-       extremely tiny on a phone. */
-    div[data-testid="stHorizontalBlock"] {
-        flex-wrap: wrap !important;
-    }
-
-    /* Header */
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        min-width: 0 !important;
-    }
 }
 
-/* Very small phones */
 @media (max-width: 480px) {
     .block-container {
-        padding-left: 4px !important;
-        padding-right: 4px !important;
+        min-width: 1100px !important;
+        width: 1100px !important;
+        max-width: none !important;
     }
 
-    .product-main img {
-        height: 135px !important;
-    }
-
-    .product-preview img {
-        height: 62px !important;
-    }
-
-    .stButton button {
-        font-size: 11px !important;
-        padding-left: 3px !important;
-        padding-right: 3px !important;
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
     }
 }
 </style>
@@ -600,131 +571,66 @@ else:
                                 # Six columns instead of the
                                 # original eight. This gives more
                                 # usable space on smaller screens.
-                                prev_col, preview_col, main_col, info_col, price_col, action_col = st.columns(
-                                    [0.38, 0.75, 1.35, 2.1, 0.75, 1.0],
-                                    gap="small"
-                                )
+                                cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
 
 
                                 # --------------------------------
                                 # PREVIOUS
-                                # --------------------------------
-
-                                with prev_col:
-
-                                    if st.button(
-                                        "◀",
-                                        key=f"prev_{item_id}",
-                                        use_container_width=True
-                                    ):
-
-                                        st.session_state.image_indices[
-                                            idx_key
-                                        ] = prev_idx
-
+                                with cols[0]:
+                                    if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
+                                        st.session_state.image_indices[idx_key] = (
+                                            st.session_state.image_indices[idx_key] + 1
+                                        ) % len(img_list)
                                         st.rerun()
 
+                                # LEFT PREVIEW
+                                with cols[1]:
+                                    st.markdown("<div class='product-preview'>", unsafe_allow_html=True)
+                                    st.image(img_list[prev_idx], use_container_width=True)
+                                    st.markdown("</div>", unsafe_allow_html=True)
 
-                                # --------------------------------
-                                # PREVIEW
-                                # --------------------------------
-
-                                with preview_col:
-
-                                    st.markdown(
-                                        "<div class='product-preview'>",
-                                        unsafe_allow_html=True
-                                    )
-
-                                    st.image(
-                                        img_list[prev_idx],
-                                        use_container_width=True
-                                    )
-
-                                    st.markdown(
-                                        "</div>",
-                                        unsafe_allow_html=True
-                                    )
-
-
-                                # --------------------------------
                                 # MAIN IMAGE
-                                # --------------------------------
+                                with cols[2]:
+                                    st.markdown("<div class='product-main'>", unsafe_allow_html=True)
+                                    st.image(img_list[current_idx], use_container_width=True)
+                                    st.markdown("</div>", unsafe_allow_html=True)
 
-                                with main_col:
+                                # RIGHT PREVIEW
+                                with cols[3]:
+                                    st.markdown("<div class='product-preview'>", unsafe_allow_html=True)
+                                    st.image(img_list[next_idx], use_container_width=True)
+                                    st.markdown("</div>", unsafe_allow_html=True)
 
+                                # NEXT
+                                with cols[4]:
+                                    if st.button("▶", key=f"next_{item_id}", use_container_width=True):
+                                        st.session_state.image_indices[idx_key] = (
+                                            st.session_state.image_indices[idx_key] - 1
+                                        ) % len(img_list)
+                                        st.rerun()
+
+                                # PRODUCT INFORMATION
+                                with cols[5]:
                                     st.markdown(
-                                        "<div class='product-main'>",
+                                        f"<div class='product-name'>{item_name}</div>",
                                         unsafe_allow_html=True
                                     )
-
-                                    st.image(
-                                        img_list[current_idx],
-                                        use_container_width=True
-                                    )
-
-                                    st.markdown(
-                                        "</div>",
-                                        unsafe_allow_html=True
-                                    )
-
-
-                                # --------------------------------
-                                # INFORMATION
-                                # --------------------------------
-
-                                with info_col:
-
-                                    st.markdown(
-                                        f"""
-                                        <div class="product-name">
-                                            {item_name}
-                                        </div>
-                                        """,
-                                        unsafe_allow_html=True
-                                    )
-
                                     if desc:
-
                                         st.markdown(
-                                            f"""
-                                            <div class="product-desc">
-                                                {desc}
-                                            </div>
-                                            """,
+                                            f"<div class='product-desc'>{desc}</div>",
                                             unsafe_allow_html=True
                                         )
 
-
-                                # --------------------------------
                                 # PRICE
-                                # --------------------------------
-
-                                with price_col:
-
+                                with cols[6]:
                                     st.markdown(
-                                        f"""
-                                        <div class="product-price">
-                                            ₹{price}
-                                        </div>
-                                        """,
+                                        f"<div class='product-price'>₹{price}</div>",
                                         unsafe_allow_html=True
                                     )
 
-
-                                # --------------------------------
                                 # QUANTITY + ADD
-                                # --------------------------------
-
-                                with action_col:
-
-                                    current_qty = (
-                                        st.session_state.cart.get(
-                                            str(item_id),
-                                            1
-                                        )
-                                    )
-
+                                with cols[7]:
+                                    current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input(
                                         "Qty",
                                         min_value=1,
@@ -732,64 +638,13 @@ else:
                                         key=f"qty_{item_id}",
                                         label_visibility="collapsed"
                                     )
-
                                     if st.button(
-                                        "🛒 Add",
+                                        "Add",
                                         key=f"add_{item_id}",
                                         use_container_width=True
                                     ):
-
-                                        st.session_state.cart[
-                                            str(item_id)
-                                        ] = qty
-
+                                        st.session_state.cart[str(item_id)] = qty
                                         st.rerun()
-
-
-                                # --------------------------------
-                                # NEXT IMAGE
-                                # --------------------------------
-
-                                # Put navigation under the image
-                                # so it remains accessible on phones.
-                                nav_left, nav_right = st.columns(
-                                    [1, 1],
-                                    gap="small"
-                                )
-
-                                with nav_left:
-
-                                    if st.button(
-                                        "◀ Previous Image",
-                                        key=f"mobile_prev_{item_id}",
-                                        use_container_width=True
-                                    ):
-
-                                        st.session_state.image_indices[
-                                            idx_key
-                                        ] = prev_idx
-
-                                        st.rerun()
-
-                                with nav_right:
-
-                                    if st.button(
-                                        "Next Image ▶",
-                                        key=f"mobile_next_{item_id}",
-                                        use_container_width=True
-                                    ):
-
-                                        st.session_state.image_indices[
-                                            idx_key
-                                        ] = next_idx
-
-                                        st.rerun()
-
-
-                                st.markdown(
-                                    "</div>",
-                                    unsafe_allow_html=True
-                                )
 
                                 st.markdown("<hr>", unsafe_allow_html=True)
 
