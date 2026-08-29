@@ -45,13 +45,43 @@ st.markdown("""
         background: var(--bg-color);
     }
     
-    .product-card {
+    /* Responsive Product Card Layout Container */
+    .responsive-card {
         background: var(--card-bg);
         border: 2px solid var(--card-border);
         border-radius: 14px;
-        padding: 16px 20px;
+        padding: 16px;
         margin-bottom: 14px;
         box-shadow: var(--card-shadow);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .card-images {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 280px;
+        justify-content: center;
+    }
+
+    .card-info {
+        flex: 1.5;
+        min-width: 200px;
+    }
+
+    .card-pricing {
+        flex: 0.8;
+        min-width: 100px;
+        text-align: center;
+    }
+
+    .card-action {
+        flex: 1;
+        min-width: 140px;
     }
     
     h3 {
@@ -61,13 +91,18 @@ st.markdown("""
         font-weight: 800;
     }
 
+    /* Mobile Screen Adjustments */
     @media (max-width: 768px) {
-        .product-card {
-            padding: 10px;
+        .responsive-card {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 12px;
         }
-        /* Hide multi-image carousel side previews on mobile to save space */
-        .mobile-hide-img {
-            display: none !important;
+        .card-images, .card-info, .card-pricing, .card-action {
+            width: 100%;
+        }
+        .side-img {
+            display: none !important; /* Hide preview thumbnails on small mobile screens to save space */
         }
     }
     
@@ -206,8 +241,10 @@ else:
                                 prev_idx = (current_idx - 1) % len(img_list)
                                 next_idx = (current_idx + 1) % len(img_list)
 
-                                st.markdown('<div class="product-card">', unsafe_allow_html=True)
-                                cols = st.columns([0.4, 0.9, 1.2, 0.9, 0.4, 2.2, 0.8, 1.1])
+                                # Render card using auto-adjusting flexible HTML wrapper columns
+                                st.markdown('<div class="responsive-card">', unsafe_allow_html=True)
+                                
+                                cols = st.columns([0.6, 1.2, 2.2, 1.0, 1.3])
                                 
                                 with cols[0]:
                                     if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
@@ -215,32 +252,17 @@ else:
                                         st.rerun()
 
                                 with cols[1]:
-                                    st.markdown('<div class="mobile-hide-img">', unsafe_allow_html=True)
-                                    st.image(img_list[prev_idx], use_container_width=True)
-                                    st.markdown('</div>', unsafe_allow_html=True)
-
-                                with cols[2]:
                                     st.image(img_list[current_idx], use_container_width=True)
 
-                                with cols[3]:
-                                    st.markdown('<div class="mobile-hide-img">', unsafe_allow_html=True)
-                                    st.image(img_list[next_idx], use_container_width=True)
-                                    st.markdown('</div>', unsafe_allow_html=True)
-
-                                with cols[4]:
-                                    if st.button("▶", key=f"next_{item_id}", use_container_width=True):
-                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
-                                        st.rerun()
-                                        
-                                with cols[5]:
+                                with cols[2]:
                                     st.markdown(f"<div style='font-size: 15px; font-weight: 700; color: var(--text-main);'>{item_name}</div>", unsafe_allow_html=True)
                                     if desc:
                                         st.markdown(f"<div style='color: var(--text-desc); font-size: 11px; margin-top: 2px; font-weight: 500;'>{desc}</div>", unsafe_allow_html=True)
                                         
-                                with cols[6]:
+                                with cols[3]:
                                     st.markdown(f"<div style='font-size: 16px; font-weight: 800; color: var(--price-color); margin-top: 6px;'>₹{price}</div>", unsafe_allow_html=True)
                                     
-                                with cols[7]:
+                                with cols[4]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
                                     if st.button("Add to Cart", key=f"add_{item_id}", use_container_width=True):
