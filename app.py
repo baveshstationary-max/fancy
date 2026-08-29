@@ -17,30 +17,30 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Make center image and side preview thumbnails all equal uniform round shape */
+    /* Make center, left, and right preview images all equal uniform standard size */
     div[data-testid="column"]:nth-of-type(1) img, 
     div[data-testid="column"]:nth-of-type(2) img, 
     div[data-testid="column"]:nth-of-type(3) img {
-        width: 70px !important;
-        height: 70px !important;
-        object-fit: cover !important;
-        border-radius: 50% !important;
+        width: 100% !important;
+        height: 110px !important;
+        object-fit: contain !important;
+        background-color: #f8fafc;
+        border-radius: 6px;
         display: block;
         margin: auto;
     }
     
-    /* Highlight the center image with a clear distinct border */
+    /* Clear highlight border for the center active image */
     div[data-testid="column"]:nth-of-type(2) img {
-        border: 3px solid #ff4b4b !important;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        border: 2px solid #ff4b4b !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
-    /* Subtle border for side previews */
+    /* Subtle border for side preview thumbnails */
     div[data-testid="column"]:nth-of-type(1) img, 
     div[data-testid="column"]:nth-of-type(3) img {
-        border: 2px solid #cbd5e1;
-        cursor: pointer;
-        opacity: 0.8;
+        border: 1px solid #cbd5e1;
+        opacity: 0.75;
     }
     
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
@@ -179,7 +179,7 @@ else:
                                 prev_idx = (current_idx - 1) % len(img_list)
                                 next_idx = (current_idx + 1) % len(img_list)
 
-                                cols = st.columns([0.5, 1.0, 0.5, 2.8, 0.8, 1.2])
+                                cols = st.columns([0.4, 1.0, 0.4, 1.0, 0.4, 2.5, 0.8, 1.2])
                                 
                                 with cols[0]:
                                     if len(img_list) > 1:
@@ -198,15 +198,15 @@ else:
                                             st.rerun()
                                     st.image(img_list[next_idx], use_container_width=True)
                                         
-                                with cols[3]:
+                                with cols[5]:
                                     st.markdown(f"**{item_name}**")
                                     if desc:
                                         st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
                                         
-                                with cols[4]:
+                                with cols[6]:
                                     st.markdown(f"**₹{price}**")
                                     
-                                with cols[5]:
+                                with cols[7]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
                                     if st.button("Add", key=f"add_{item_id}", use_container_width=True):
