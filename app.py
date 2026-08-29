@@ -17,9 +17,16 @@ st.markdown("""
         display: none !important;
     }
     
+    /* Make the first image slot larger (highlighted) and others normal thumbnail size */
+    div[data-testid="column"]:nth-of-type(2) img {
+        height: 140px !important;
+        border: 2px solid #ff4b4b;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
     img {
         width: 100% !important;
-        height: 120px !important;
+        height: 80px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
         border-radius: 4px;
@@ -153,13 +160,11 @@ else:
                                         
                                 placeholder_url = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
 
-                                # Initialize carousel index for this item if not present
                                 if item_id not in st.session_state.image_indices:
                                     st.session_state.image_indices[item_id] = 0
 
-                                cols = st.columns([0.4, 1, 1, 1, 1, 1, 1, 0.4, 1.8, 0.7, 1.1])
+                                cols = st.columns([0.4, 1.2, 0.9, 0.9, 0.9, 0.9, 0.9, 0.4, 1.8, 0.7, 1.1])
                                 
-                                # Left Arrow Button (only rotates if there are multiple uploaded images)
                                 with cols[0]:
                                     if len(img_list) > 1:
                                         if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
@@ -175,7 +180,6 @@ else:
                                         else:
                                             st.image(placeholder_url, use_container_width=True)
 
-                                # Right Arrow Button (only rotates if there are multiple uploaded images)
                                 with cols[7]:
                                     if len(img_list) > 1:
                                         if st.button("▶", key=f"next_{item_id}", use_container_width=True):
