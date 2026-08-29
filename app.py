@@ -6,18 +6,18 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
-# Custom CSS to reduce height, tighten row spacing, and clean up padding
+# Custom CSS to force tight alignment and compact spacing matching your markup
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
-    .block-container { padding-top: 0.5rem; padding-bottom: 0.5rem; max-width: 100%; }
+    .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
-    .stButton button { padding: 2px 8px; font-size: 12px; font-weight: 500; min-height: 32px; }
-    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 5px; }
+    .stButton button { padding: 2px 6px; font-size: 12px; font-weight: 500; min-height: 28px; }
+    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 2px; }
     .element-container { margin-bottom: 0px !important; }
-    hr { margin: 4px 0px !important; }
+    hr { margin: 2px 0px !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -73,7 +73,7 @@ else:
             st.session_state.cart = {}
             st.rerun()
             
-    st.markdown("<hr style='margin: 2px 0px 8px 0px;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin: 2px 0px 6px 0px;'>", unsafe_allow_html=True)
 
     # HOME PAGE
     if st.session_state.page == "home":
@@ -116,10 +116,11 @@ else:
                                 desc = row.get('DESCRIPTION', 'No description.')
                                 img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=200"
                                 
-                                c_img, c_desc, c_price, c_action = st.columns([0.8, 2.2, 1, 1.2])
+                                # Adjusted column proportions to squeeze empty middle gaps completely
+                                c_img, c_desc, c_price, c_action = st.columns([0.6, 2.5, 0.8, 1.2])
                                 
                                 with c_img:
-                                    st.image(img_url, width=55)
+                                    st.image(img_url, width=45)
                                     
                                 with c_desc:
                                     st.markdown(f"**{item_name}**")
@@ -135,7 +136,7 @@ else:
                                         st.session_state.cart[item_id] = qty
                                         st.rerun()
                                             
-                                st.markdown("<hr style='margin: 4px 0px;'>", unsafe_allow_html=True)
+                                st.markdown("<hr style='margin: 2px 0px;'>", unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
         except Exception as e:
