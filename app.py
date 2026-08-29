@@ -86,7 +86,7 @@ else:
             res = requests.get(f"{SCRIPT_URL}?action=getInventory")
             rows = res.json()
             if len(rows) > 1:
-                headers = rows[0] 
+                headers = [str(h).strip().upper() for h in rows[0]]
                 df = pd.DataFrame(rows[1:], columns=headers)
                 
                 categories = df['CATEGORY'].dropna().unique().tolist() if 'CATEGORY' in df.columns else ["General"]
@@ -120,7 +120,7 @@ else:
                                 price = row.get('PRICE', '0')
                                 desc = row.get('DESCRIPTION', '')
                                 
-                                img_raw = str(row.get('IMAGES', ''))
+                                img_raw = str(row.get('IMAGES', row.get('IMAGE', '')))
                                 raw_list = []
                                 if img_raw and img_raw.strip() != "":
                                     for part in img_raw.replace('\\', ',').split(','):
@@ -134,24 +134,33 @@ else:
                                         img_list.append(name)
                                     else:
                                         encoded_name = urllib.parse.quote(name)
-                                        # Corrected repository name mapping path to match "fancy/images/" folder structure from GitHub
+                                        # GitHub Raw URL mapping pointing strictly to your repository and main branch
                                         github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/fancy/main/images/{encoded_name}"
                                         img_list.append(github_raw)
                                             
-                                while len(img_list) < 6:
-                                    if len(img_list) > 0:
-                                        img_list.append(img_list[0])
+                                # If sheet has images, populate slots up to 6 without forcing fallback if valid images exist
+                                valid_images = []
+                                for img_url in img_list:
+                                    try:
+                                        test_res = requests.head(img_url, timeout=2)
+                                        if test_res.status_code == 200:
+                                            valid_images.append(img_url)
+                                        else:
+                                            valid_images.append(img_url) # Attempt load anyway
+                                    except:
+                                        valid_images.append(img_url)
+
+                                while len(valid_images) < 6:
+                                    if len(valid_images) > 0:
+                                        valid_images.append(valid_images[0])
                                     else:
-                                        img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
+                                        valid_images.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
 
                                 cols = st.columns([1, 1, 1, 1, 1, 1, 1.8, 0.7, 1.1])
                                 
                                 for i in range(6):
                                     with cols[i]:
-                                        try:
-                                            st.image(img_list[i], use_container_width=True)
-                                        except:
-                                            st.image("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300", use_container_width=True)
+                                        st.image(valid_images[i], use_container_width=True)
                                         
                                 with cols[6]:
                                     st.markdown(f"**{item_name}**")
