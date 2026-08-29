@@ -27,22 +27,23 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    /* Auto-adjusting flex row layout for mobile screens */
-    .product-row {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 8px;
-        background: #f8fafc;
-        padding: 8px;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        margin-bottom: 8px;
+    /* Force Streamlit horizontal columns to stay inline in a single row on mobile screens */
+    div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        gap: 2px !important;
+    }
+
+    div[data-testid="column"] {
+        flex: 1 1 auto !important;
+        min-width: 0px !important;
     }
 
     img {
-        width: 65px !important;
-        height: 65px !important;
+        width: 100% !important;
+        height: 55px !important;
         object-fit: contain !important;
         background-color: #ffffff;
         border-radius: 4px;
@@ -51,7 +52,7 @@ st.markdown("""
     
     h2 { margin-bottom: 0px; font-size: 1.3rem; }
     h3 { font-size: 1.1rem; }
-    .stButton button { padding: 2px 4px; font-size: 11px; font-weight: 600; min-height: 28px; width: 100%; }
+    .stButton button { padding: 2px 2px; font-size: 10px; font-weight: 600; min-height: 24px; width: 100%; }
     .element-container { margin-bottom: 0px !important; }
     hr { margin: 4px 0px !important; }
     </style>
@@ -91,7 +92,7 @@ if not st.session_state.logged_in:
         else:
             st.error("Please fill in both fields")
 
-# MAIN APP SCREEN (Auto screen-adjusting row-wise responsive layout)
+# MAIN APP SCREEN
 else:
     head_col1, head_col2, head_col3, head_col4 = st.columns([2.2, 1, 1, 1])
     with head_col1:
@@ -178,8 +179,8 @@ else:
                             prev_idx = (current_idx - 1) % len(img_list)
                             next_idx = (current_idx + 1) % len(img_list)
 
-                            # Auto-adjusting horizontal row layout for mobile screens (Prev button, 3 image previews in sequence, Next button, info, price, qty, add)
-                            cols = st.columns([0.35, 0.7, 1.0, 0.7, 0.35, 1.6, 0.6, 0.9])
+                            # Strictly forces all product elements into a single responsive horizontal row
+                            cols = st.columns([0.4, 0.7, 1.0, 0.7, 0.4, 1.4, 0.5, 0.7])
                             
                             with cols[0]:
                                 if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
@@ -203,7 +204,7 @@ else:
                             with cols[5]:
                                 st.markdown(f"**{item_name}**")
                                 if desc:
-                                    st.markdown(f"<span style='color: #666; font-size: 8px;'>{desc}</span>", unsafe_allow_html=True)
+                                    st.markdown(f"<span style='color: #666; font-size: 7px;'>{desc}</span>", unsafe_allow_html=True)
                                     
                             with cols[6]:
                                 st.markdown(f"**₹{price}**")
