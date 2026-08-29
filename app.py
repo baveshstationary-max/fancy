@@ -5,7 +5,7 @@ import urllib.parse
 
 SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAHRE5wgl1xJ7uAr9DF5OFtnpesK5UD4C3pdnClWdKxQ/exec"
 
-st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
+st.set_page_config(page_title="Bavesh Stationary", page_icon="", layout="wide")
 
 st.markdown("""
     <style>
@@ -147,7 +147,7 @@ if not st.session_state.logged_in:
 else:
     head_col1, head_col2, head_col3, head_col4 = st.columns([3, 1, 1, 1])
     with head_col1:
-        st.markdown("### 📚 BAVESH STATIONARY")
+        st.markdown("### BAVESH STATIONARY")
     with head_col2:
         if st.button("🏠 Home", use_container_width=True):
             st.session_state.page = "home"
