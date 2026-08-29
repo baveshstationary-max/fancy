@@ -6,12 +6,18 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
-# Custom CSS to handle columns cleanly and fix index errors
+# Custom CSS to completely remove image zoom icons, link hover symbols, and tighten UI padding
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
+    
+    /* Hide Streamlit image expander / fullscreen zoom icon */
+    button[title="Zoom"], [data-testid="StyledFullScreenButton"], .enlargable-img-icon {
+        display: none !important;
+    }
+    
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
     .stButton button { padding: 2px 6px; font-size: 12px; font-weight: 500; min-height: 28px; }
@@ -115,7 +121,6 @@ else:
                                 price = row.get('PRICE', '0')
                                 desc = row.get('DESCRIPTION', '')
                                 
-                                # Safely extract images regardless of column length
                                 img_list = []
                                 if 'IMAGES' in row and row['IMAGES'] and str(row['IMAGES']).strip() != "":
                                     val = str(row['IMAGES']).strip()
@@ -127,12 +132,12 @@ else:
                                 while len(img_list) < 6:
                                     img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=100")
 
-                                # Render 6 image slots + details + price + quantity + add button
+                                # Render 6 image slots + details + price + quantity + add button without zoom triggers
                                 cols = st.columns([0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 2.2, 0.8, 1.2])
                                 
                                 for i in range(6):
                                     with cols[i]:
-                                        st.image(img_list[i], width=40)
+                                        st.image(img_list[i], width=40, clamp=True)
                                         
                                 with cols[6]:
                                     st.markdown(f"**{item_name}**")
