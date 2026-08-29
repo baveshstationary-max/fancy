@@ -17,7 +17,7 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Center Main Image (Highlighted & Larger) */
+    /* 360-Degree Carousel Image Styling */
     div[data-testid="column"]:nth-of-type(2) img {
         width: 100% !important;
         height: 120px !important;
@@ -30,7 +30,6 @@ st.markdown("""
         margin: auto;
     }
     
-    /* Left and Right Adjacent Images (Smaller Preview Shape) */
     div[data-testid="column"]:nth-of-type(1) img, 
     div[data-testid="column"]:nth-of-type(3) img {
         width: 100% !important;
@@ -181,12 +180,10 @@ else:
                                 prev_idx = (current_idx - 1) % len(img_list)
                                 next_idx = (current_idx + 1) % len(img_list)
 
-                                # Layout: [Left Button] [Prev Image] [Center Image] [Next Image] [Right Button] [Name/Desc] [Price] [Qty/Add]
                                 cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
                                 
                                 with cols[0]:
                                     if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
-                                        # Fixed: Clicking left arrow should move index forward (+ 1) to match correct rotation direction
                                         st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
                                         st.rerun()
 
@@ -201,7 +198,6 @@ else:
 
                                 with cols[4]:
                                     if st.button("▶", key=f"next_{item_id}", use_container_width=True):
-                                        # Fixed: Clicking right arrow should move index backward (- 1) to match correct rotation direction
                                         st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
                                         st.rerun()
                                         
@@ -217,7 +213,6 @@ else:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
                                     if st.button("Add", key=f"add_{item_id}", use_container_width=True):
-                                    # Fixed: Pass string representation of item_id properly to cart dictionary
                                         st.session_state.cart[str(item_id)] = qty
                                         st.rerun()
                                         
@@ -229,7 +224,7 @@ else:
 
     # CART PAGE
     elif st.session_state.page == "cart":
-        st.markdown("#### 🛒 Your Shopping Cart")
+        st.markdown("#### 📌 Secure Checkout Form")
         if not st.session_state.cart:
             st.info("Your cart is empty. Go back to Home to select products.")
         else:
@@ -237,19 +232,31 @@ else:
                 st.markdown(f"- **Item ID:** {item_id} | **Quantity:** {qty}")
             
             st.markdown("---")
-            if st.button("Checkout & Submit Order to Sheet", use_container_width=True):
-                try:
-                    for item_id, qty in st.session_state.cart.items():
-                        order_data = {
-                            "mobile": st.session_state.mobile,
-                            "itemId": item_id,
-                            "itemName": f"Item {item_id}",
-                            "quantity": qty,
-                            "totalCost": qty * 500
-                        }
-                        requests.post(SCRIPT_URL, json=order_data)
-                    
-                    st.success("Order successfully submitted to Google Sheets!")
-                    st.session_state.cart = {}
-                except Exception as e:
-                    st.error(f"Error checking out: {e}")
+            
+            # Secure Checkout Form Inputs Matching Your Requirement
+            delivery_address = st.text_area("Delivery Address:", placeholder="Enter your full street address, landmark, and pin code...")
+            alt_contact = st.text_input("Alternative Contact Number:", placeholder="Enter secondary mobile number...")
+            custom_desc = st.text_area("Product Specifications / Custom Description:", placeholder="Specify any specific instructions, colors, or custom requirements...")
+            
+            if st.button("Complete Order", use_container_width=False):
+                if not delivery_address.strip():
+                    st.error("Please enter a delivery address before completing your order.")
+                else:
+                    try:
+                        for item_id, qty in st.session_state.cart.items():
+                            order_data = {
+                                "mobile": st.session_state.mobile,
+                                "altContact": alt_contact,
+                                "deliveryAddress": delivery_address,
+                                "customDescription": custom_desc,
+                                "itemId": item_id,
+                                "itemName": f"Item {item_id}",
+                                "quantity": qty,
+                                "totalCost": qty * 500
+                            }
+                            requests.post(SCRIPT_URL, json=order_data)
+                        
+                        st.success("Order successfully submitted to Google Sheets!")
+                        st.session_state.cart = {}
+                    except Exception as e:
+                        st.error(f"Error checking out: {e}")
