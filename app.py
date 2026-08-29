@@ -17,50 +17,33 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Mobile App Shell Wrapper */
     .block-container { 
-        padding-top: 0.5rem; 
-        padding-bottom: 0.5rem; 
-        max-width: 450px !important; 
+        padding-top: 0.4rem; 
+        padding-bottom: 0.4rem; 
+        max-width: 480px !important; 
         margin: auto;
         background-color: #ffffff;
         border-radius: 12px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    /* Center Main Image (Highlighted & Larger) */
-    div[data-testid="column"]:nth-of-type(2) img {
+    img {
         width: 100% !important;
-        height: 105px !important;
+        height: auto !important;
+        max-height: 90px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
-        border-radius: 6px;
-        border: 2px solid #ff4b4b;
-        box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-        display: block;
-        margin: auto;
-    }
-    
-    /* Left and Right Adjacent Images */
-    div[data-testid="column"]:nth-of-type(1) img, 
-    div[data-testid="column"]:nth-of-type(3) img {
-        width: 100% !important;
-        height: 65px !important;
-        object-fit: contain !important;
-        background-color: #f8fafc;
-        border-radius: 6px;
-        border: 1px solid #cbd5e1;
-        opacity: 0.75;
-        display: block;
-        margin: auto;
+        border-radius: 4px;
+        display: block !important;
+        visibility: visible !important;
     }
     
     h2 { margin-bottom: 0px; font-size: 1.3rem; }
     h3 { font-size: 1.1rem; }
-    .stButton button { padding: 2px 4px; font-size: 11px; font-weight: 600; min-height: 26px; width: 100%; }
-    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 3px; }
+    .stButton button { padding: 2px 2px; font-size: 11px; font-weight: 600; min-height: 26px; width: 100%; }
+    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 2px; }
     .element-container { margin-bottom: 0px !important; }
-    hr { margin: 2px 0px !important; }
+    hr { margin: 4px 0px !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -98,7 +81,7 @@ if not st.session_state.logged_in:
         else:
             st.error("Please fill in both fields")
 
-# MAIN APP SCREEN (Mobile Optimized Layout)
+# MAIN APP SCREEN (Single-Line Horizontal Row for Mobile Layout)
 else:
     head_col1, head_col2, head_col3, head_col4 = st.columns([2.2, 1, 1, 1])
     with head_col1:
@@ -133,7 +116,6 @@ else:
                 if not st.session_state.selected_category and categories:
                     st.session_state.selected_category = categories[0]
 
-                # Mobile Categories Horizontal Scroll / Selectbox filter for compact mobile view
                 st.markdown("##### 📁 Categories")
                 selected_cat = st.selectbox("Select Category", categories, index=categories.index(st.session_state.selected_category) if st.session_state.selected_category in categories else 0, label_visibility="collapsed")
                 if selected_cat != st.session_state.selected_category:
@@ -147,7 +129,7 @@ else:
                 if filtered_df.empty:
                     st.info("No products available in this category.")
                 else:
-                    with st.container(height=500):
+                    with st.container(height=520):
                         grouped_df = filtered_df.groupby('ITEM ID', sort=False)
                         
                         for item_id, group in grouped_df:
@@ -186,8 +168,8 @@ else:
                             prev_idx = (current_idx - 1) % len(img_list)
                             next_idx = (current_idx + 1) % len(img_list)
 
-                            # Compact Mobile Grid Column Structure
-                            cols = st.columns([0.35, 0.8, 1.2, 0.8, 0.35, 1.6, 0.6, 0.9])
+                            # Exact Single-Row Compact Layout matching desktop structure for mobile
+                            cols = st.columns([0.35, 0.8, 1.2, 0.8, 0.35, 1.8, 0.6, 0.9])
                             
                             with cols[0]:
                                 if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
@@ -211,7 +193,7 @@ else:
                             with cols[5]:
                                 st.markdown(f"**{item_name}**")
                                 if desc:
-                                    st.markdown(f"<span style='color: #666; font-size: 9px;'>{desc}</span>", unsafe_allow_html=True)
+                                    st.markdown(f"<span style='color: #666; font-size: 8px;'>{desc}</span>", unsafe_allow_html=True)
                                     
                             with cols[6]:
                                 st.markdown(f"**₹{price}**")
@@ -223,7 +205,7 @@ else:
                                     st.session_state.cart[str(item_id)] = qty
                                     st.rerun()
                                     
-                            st.markdown("<hr style='margin: 2px 0px;'>", unsafe_allow_html=True)
+                            st.markdown("<hr style='margin: 4px 0px;'>", unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
         except Exception as e:
