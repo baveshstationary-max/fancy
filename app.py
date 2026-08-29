@@ -6,16 +6,18 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
-# Custom CSS to hide Streamlit header toolbar (Share, Star, Fork, GitHub icons, and 3-dots menu)
+# Custom CSS to reduce height, tighten row spacing, and clean up padding
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
-    .block-container { padding-top: 1rem; padding-bottom: 1rem; max-width: 100%; }
+    .block-container { padding-top: 0.5rem; padding-bottom: 0.5rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
-    .stButton button { padding: 4px 10px; font-size: 13px; font-weight: 500; }
-    div[data-testid="stHorizontalBlock"] { align-items: center; }
+    .stButton button { padding: 2px 8px; font-size: 12px; font-weight: 500; min-height: 32px; }
+    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 5px; }
+    .element-container { margin-bottom: 0px !important; }
+    hr { margin: 4px 0px !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -71,7 +73,7 @@ else:
             st.session_state.cart = {}
             st.rerun()
             
-    st.markdown("<hr style='margin: 5px 0px 15px 0px;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin: 2px 0px 8px 0px;'>", unsafe_allow_html=True)
 
     # HOME PAGE
     if st.session_state.page == "home":
@@ -112,12 +114,12 @@ else:
                                 item_name = row.get('ITEM NAME', 'Product')
                                 price = row.get('PRICE', '0')
                                 desc = row.get('DESCRIPTION', 'No description.')
-                                img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
+                                img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=200"
                                 
-                                c_img, c_desc, c_price, c_action = st.columns([1, 2, 1.2, 1.3])
+                                c_img, c_desc, c_price, c_action = st.columns([0.8, 2.2, 1, 1.2])
                                 
                                 with c_img:
-                                    st.image(img_url, width=70)
+                                    st.image(img_url, width=55)
                                     
                                 with c_desc:
                                     st.markdown(f"**{item_name}**")
@@ -131,10 +133,9 @@ else:
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}_{index}", label_visibility="collapsed")
                                     if st.button("Add", key=f"add_{item_id}_{index}", use_container_width=True):
                                         st.session_state.cart[item_id] = qty
-                                        st.success(f"Added!")
                                         st.rerun()
                                             
-                                st.markdown("<hr style='margin: 8px 0px;'>", unsafe_allow_html=True)
+                                st.markdown("<hr style='margin: 4px 0px;'>", unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
         except Exception as e:
