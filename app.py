@@ -6,9 +6,12 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
-# Custom CSS for compact professional layout
+# Custom CSS to hide Streamlit header toolbar (Share, Star, Fork, GitHub icons, and 3-dots menu)
 st.markdown("""
     <style>
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
     .block-container { padding-top: 1rem; padding-bottom: 1rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
     .stButton button { padding: 4px 10px; font-size: 13px; font-weight: 500; }
@@ -50,7 +53,6 @@ if not st.session_state.logged_in:
 
 # MAIN APP SCREEN
 else:
-    # Compact Professional Header
     head_col1, head_col2, head_col3, head_col4 = st.columns([3, 1, 1, 1])
     with head_col1:
         st.markdown("### 📚 BAVESH STATIONARY")
@@ -71,7 +73,7 @@ else:
             
     st.markdown("<hr style='margin: 5px 0px 15px 0px;'>", unsafe_allow_html=True)
 
-    # HOME PAGE: Professional Compact Layout
+    # HOME PAGE
     if st.session_state.page == "home":
         try:
             res = requests.get(f"{SCRIPT_URL}?action=getInventory")
@@ -112,7 +114,6 @@ else:
                                 desc = row.get('DESCRIPTION', 'No description.')
                                 img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
                                 
-                                # Compact horizontal row layout matching the sleek design image
                                 c_img, c_desc, c_price, c_action = st.columns([1, 2, 1.2, 1.3])
                                 
                                 with c_img:
