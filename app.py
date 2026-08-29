@@ -17,21 +17,12 @@ st.markdown("""
         display: none !important;
     }
     
-    img {
-        width: 100% !important;
-        height: 65px !important;
-        object-fit: contain !important;
-        background-color: #f8fafc;
-        border-radius: 4px;
-        padding: 2px;
-    }
-    
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
-    .stButton button { padding: 2px 6px; font-size: 12px; font-weight: 500; min-height: 28px; }
-    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 4px; }
+    .stButton button { padding: 4px 10px; font-size: 13px; font-weight: 500; min-height: 32px; }
+    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 8px; }
     .element-container { margin-bottom: 0px !important; }
-    hr { margin: 3px 0px !important; }
+    hr { margin: 6px 0px !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -148,38 +139,35 @@ else:
                                         encoded_name = urllib.parse.quote(name)
                                         github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/fancy/main/IMAGES/{encoded_name}"
                                         img_list.append(github_raw)
-                                        
-                                placeholder_url = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
-                                
-                                final_img_list = []
-                                for i in range(6):
-                                    if i < len(img_list) and img_list[i]:
-                                        final_img_list.append(img_list[i])
-                                    else:
-                                        final_img_list.append(placeholder_url)
 
-                                cols = st.columns([1, 1, 1, 1, 1, 1, 1.8, 0.7, 1.1])
+                                # Product Card Layout with Professional Large Expander
+                                st.markdown(f"**{item_name}** &nbsp;&nbsp;|&nbsp;&nbsp; **₹{price}**")
                                 
-                                for i in range(6):
-                                    with cols[i]:
-                                        st.image(final_img_list[i], use_container_width=True)
+                                with st.expander("🖼️ View High-Resolution Images & Details", expanded=False):
+                                    if img_list:
+                                        img_cols = st.columns(min(len(img_list), 3))
+                                        for idx, img_url in enumerate(img_list):
+                                            col_idx = idx % 3
+                                            with img_cols[col_idx]:
+                                                st.image(img_url, use_container_width=True)
+                                    else:
+                                        st.info("No images uploaded for this product yet.")
                                         
-                                with cols[6]:
-                                    st.markdown(f"**{item_name}**")
                                     if desc:
-                                        st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
-                                        
-                                with cols[7]:
-                                    st.markdown(f"**₹{price}**")
-                                    
-                                with cols[8]:
+                                        st.markdown(f"**Description:** {desc}")
+
+                                # Cart selection row
+                                c1, c2 = st.columns([2, 1])
+                                with c1:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
-                                    if st.button("Add", key=f"add_{item_id}", use_container_width=True):
+                                with c2:
+                                    if st.button("Add to Cart", key=f"add_{item_id}", use_container_width=True):
                                         st.session_state.cart[str(item_id)] = qty
+                                        st.success(f"Added {item_name} to cart!")
                                         st.rerun()
                                         
-                                st.markdown("<hr style='margin: 3px 0px;'>", unsafe_allow_html=True)
+                                st.markdown("<hr>", unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
         except Exception as e:
