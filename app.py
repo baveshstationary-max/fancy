@@ -30,7 +30,7 @@ st.markdown("""
     img {
         width: 100% !important;
         height: auto !important;
-        max-height: 90px !important;
+        max-height: 85px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
         border-radius: 4px;
@@ -81,7 +81,7 @@ if not st.session_state.logged_in:
         else:
             st.error("Please fill in both fields")
 
-# MAIN APP SCREEN (Single-Line Horizontal Row for Mobile Layout)
+# MAIN APP SCREEN (Forced 3-Column horizontal alignment on mobile)
 else:
     head_col1, head_col2, head_col3, head_col4 = st.columns([2.2, 1, 1, 1])
     with head_col1:
@@ -168,8 +168,8 @@ else:
                             prev_idx = (current_idx - 1) % len(img_list)
                             next_idx = (current_idx + 1) % len(img_list)
 
-                            # Exact Single-Row Compact Layout matching desktop structure for mobile
-                            cols = st.columns([0.35, 0.8, 1.2, 0.8, 0.35, 1.8, 0.6, 0.9])
+                            # Forces 3 images side-by-side inside a single columns block to prevent vertical wrapping on mobile
+                            cols = st.columns([0.4, 1.0, 1.4, 1.0, 0.4, 1.8, 0.6, 0.9])
                             
                             with cols[0]:
                                 if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
