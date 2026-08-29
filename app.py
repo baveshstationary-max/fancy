@@ -27,7 +27,7 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    /* Force Streamlit columns to remain inline on all screens */
+    /* Force columns to inline horizontal row */
     div[data-testid="stHorizontalBlock"] {
         display: flex !important;
         flex-direction: row !important;
@@ -41,16 +41,14 @@ st.markdown("""
         min-width: 0px !important;
     }
 
-    /* Styling for the 360-degree Carousel Effect Images */
+    /* Oval Shape Styling for 360-degree View Images */
     div[data-testid="column"]:nth-of-type(2) img,
     div[data-testid="column"]:nth-of-type(4) img {
         width: 100% !important;
-        height: 110px !important;
-        object-fit: contain !important;
-        background-color: #f8fafc;
-        border-radius: 6px;
+        height: 75px !important;
+        object-fit: cover !important;
+        border-radius: 50% !important;
         border: 2px solid #ff4b4b;
-        box-shadow: 0 3px 5px rgba(0,0,0,0.1);
         display: block;
         margin: auto;
     }
@@ -58,10 +56,9 @@ st.markdown("""
     div[data-testid="column"]:nth-of-type(1) img, 
     div[data-testid="column"]:nth-of-type(5) img {
         width: 100% !important;
-        height: 70px !important;
-        object-fit: contain !important;
-        background-color: #f8fafc;
-        border-radius: 6px;
+        height: 55px !important;
+        object-fit: cover !important;
+        border-radius: 50% !important;
         border: 1px solid #cbd5e1;
         opacity: 0.75;
         display: block;
@@ -195,13 +192,12 @@ else:
 
                             current_idx = st.session_state.image_indices[idx_key]
                             
-                            # 360-degree multi-angle mapping (Left preview, Center main view 1, Right preview, Center main view 2)
                             prev_idx = (current_idx - 1) % len(img_list)
                             center_idx_1 = current_idx % len(img_list)
                             next_idx = (current_idx + 1) % len(img_list)
                             center_idx_2 = (current_idx + 2) % len(img_list)
 
-                            # Row layout containing: [Left Button] [Prev Img] [Center Img 1] [Next Img] [Center Img 2] [Right Button] [Details] [Price] [Qty] [Add]
+                            # Oval-shaped row layout columns
                             cols = st.columns([0.3, 0.6, 0.8, 0.6, 0.8, 0.3, 1.2, 0.4, 0.6])
                             
                             with cols[0]:
