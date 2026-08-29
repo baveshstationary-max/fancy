@@ -6,6 +6,16 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
+# Custom CSS for compact professional layout
+st.markdown("""
+    <style>
+    .block-container { padding-top: 1rem; padding-bottom: 1rem; max-width: 100%; }
+    h2 { margin-bottom: 0px; }
+    .stButton button { padding: 4px 10px; font-size: 13px; font-weight: 500; }
+    div[data-testid="stHorizontalBlock"] { align-items: center; }
+    </style>
+""", unsafe_allow_html=True)
+
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "username" not in st.session_state:
@@ -38,29 +48,30 @@ if not st.session_state.logged_in:
         else:
             st.error("Please fill in both fields")
 
-# MAIN APP SCREEN (Matching your exact horizontal layout: Categories on Left | Images / Description / Pricing & Add on Right)
+# MAIN APP SCREEN
 else:
-    st.markdown("<h2 style='text-align: center;'>BAVESH STATIONARY</h2>", unsafe_allow_html=True)
-    
-    nav1, nav2, nav3 = st.columns(3)
-    with nav1:
-        if st.button("HOME", use_container_width=True):
+    # Compact Professional Header
+    head_col1, head_col2, head_col3, head_col4 = st.columns([3, 1, 1, 1])
+    with head_col1:
+        st.markdown("### 📚 BAVESH STATIONARY")
+    with head_col2:
+        if st.button("🏠 Home", use_container_width=True):
             st.session_state.page = "home"
             st.rerun()
-    with nav2:
+    with head_col3:
         cart_count = sum(st.session_state.cart.values())
-        if st.button(f"CART ({cart_count})", use_container_width=True):
+        if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
             st.session_state.page = "cart"
             st.rerun()
-    with nav3:
-        if st.button("LOGOUT", use_container_width=True):
+    with head_col4:
+        if st.button("🚪 Logout", use_container_width=True):
             st.session_state.logged_in = False
             st.session_state.cart = {}
             st.rerun()
             
-    st.markdown("---")
+    st.markdown("<hr style='margin: 5px 0px 15px 0px;'>", unsafe_allow_html=True)
 
-    # HOME PAGE
+    # HOME PAGE: Professional Compact Layout
     if st.session_state.page == "home":
         try:
             res = requests.get(f"{SCRIPT_URL}?action=getInventory")
@@ -73,61 +84,56 @@ else:
                 if not st.session_state.selected_category and categories:
                     st.session_state.selected_category = categories[0]
 
-                # Two-column layout: Left = Categories, Right = Products horizontal row layout
                 col_left, col_right = st.columns([1, 4])
 
                 with col_left:
-                    st.markdown("### Category")
-                    st.markdown("---")
+                    st.markdown("##### 📁 Categories")
                     for cat in categories:
-                        if st.button(f"📁 {cat}", use_container_width=True, key=f"cat_{cat}"):
+                        is_active = (cat == st.session_state.selected_category)
+                        btn_type = "primary" if is_active else "secondary"
+                        if st.button(cat, use_container_width=True, key=f"cat_{cat}", type=btn_type):
                             st.session_state.selected_category = cat
                             st.rerun()
 
                 with col_right:
                     active_cat = st.session_state.selected_category
-                    st.markdown(f"### Category: {active_cat}")
-                    st.markdown("---")
-
+                    st.markdown(f"##### Products: {active_cat}")
+                    
                     filtered_df = df[df['CATEGORY'] == active_cat] if 'CATEGORY' in df.columns else df
 
                     if filtered_df.empty:
                         st.info("No products available in this category.")
                     else:
-                        with st.container(height=600):
+                        with st.container(height=520):
                             for index, row in filtered_df.iterrows():
                                 item_id = str(row.get('ITEM ID', index))
                                 item_name = row.get('ITEM NAME', 'Product')
                                 price = row.get('PRICE', '0')
-                                desc = row.get('DESCRIPTION', 'No description available.')
-                                img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500"
+                                desc = row.get('DESCRIPTION', 'No description.')
+                                img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
                                 
-                                # Exact horizontal breakdown matching your UI sample image
-                                img_col, desc_col, buy_col = st.columns([1.5, 2, 2])
+                                # Compact horizontal row layout matching the sleek design image
+                                c_img, c_desc, c_price, c_action = st.columns([1, 2, 1.2, 1.3])
                                 
-                                with img_col:
-                                    st.image(img_url, use_container_width=True)
+                                with c_img:
+                                    st.image(img_url, width=70)
                                     
-                                with desc_col:
-                                    st.markdown("**Description:**")
-                                    st.markdown(f"<p style='color: gray; font-size: 14px;'>{desc}</p>", unsafe_allow_html=True)
-                                    
-                                with buy_col:
+                                with c_desc:
                                     st.markdown(f"**{item_name}**")
-                                    st.markdown(f"### ₹{price}")
+                                    st.markdown(f"<span style='color: #666; font-size: 11px;'>{desc}</span>", unsafe_allow_html=True)
                                     
+                                with c_price:
+                                    st.markdown(f"**₹{price}**")
+                                    
+                                with c_action:
                                     current_qty = st.session_state.cart.get(item_id, 1)
-                                    
-                                    qty_col, add_col = st.columns([1, 1.5])
-                                    with qty_col:
-                                        qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}_{index}", label_visibility="collapsed")
-                                    with add_col:
-                                        if st.button("Add", key=f"add_{item_id}_{index}", use_container_width=True):
-                                            st.session_state.cart[item_id] = qty
-                                            st.success(f"Added {qty} item(s)")
-                                            st.rerun()
+                                    qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}_{index}", label_visibility="collapsed")
+                                    if st.button("Add", key=f"add_{item_id}_{index}", use_container_width=True):
+                                        st.session_state.cart[item_id] = qty
+                                        st.success(f"Added!")
+                                        st.rerun()
                                             
-                                st.markdown("---")
+                                st.markdown("<hr style='margin: 8px 0px;'>", unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
         except Exception as e:
@@ -137,10 +143,10 @@ else:
     elif st.session_state.page == "cart":
         st.markdown("#### 🛒 Your Shopping Cart")
         if not st.session_state.cart:
-            st.info("Your cart is empty. Go back to HOME to select products.")
+            st.info("Your cart is empty. Go back to Home to select products.")
         else:
             for item_id, qty in st.session_state.cart.items():
-                st.markdown(f"**Item ID:** {item_id} | **Quantity:** {qty}")
+                st.markdown(f"- **Item ID:** {item_id} | **Quantity:** {qty}")
             
             st.markdown("---")
             if st.button("Checkout & Submit Order to Sheet", use_container_width=True):
@@ -155,7 +161,7 @@ else:
                         }
                         requests.post(SCRIPT_URL, json=order_data)
                     
-                    st.success("Order successfully sent to Google Sheets!")
+                    st.success("Order successfully submitted to Google Sheets!")
                     st.session_state.cart = {}
                 except Exception as e:
                     st.error(f"Error checking out: {e}")
