@@ -8,9 +8,13 @@ st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="cen
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+if "username" not in st.session_state:
     st.session_state.username = ""
+if "mobile" not in st.session_state:
     st.session_state.mobile = ""
+if "page" not in st.session_state:
     st.session_state.page = "home"
+if "cart" not in st.session_state:
     st.session_state.cart = {}
 
 # LOGIN SCREEN
@@ -32,9 +36,8 @@ if not st.session_state.logged_in:
         else:
             st.error("Please fill in both fields")
 
-# MAIN APP SCREEN (Sticky Header + Scrollable Body)
+# MAIN APP SCREEN
 else:
-    # STABLE / STICKY HEADER (Stays fixed at the top)
     st.markdown("### BAVESH STATIONARY")
     
     col1, col2, col3 = st.columns(3)
@@ -66,15 +69,13 @@ else:
                 headers = rows[0] 
                 df = pd.DataFrame(rows[1:], columns=headers)
                 
-                # Scrollable container for product list
                 with st.container(height=500):
                     for index, row in df.iterrows():
-                        item_id = row.get('ITEM ID', str(index))
+                        item_id = str(row.get('ITEM ID', index))
                         item_name = row.get('ITEM NAME', 'Product')
                         price = row.get('PRICE', '0')
                         img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=500"
                         
-                        # Product Layout mimicking your sketch
                         col_info, col_img, col_action = st.columns([2, 2, 1])
                         
                         with col_info:
@@ -88,11 +89,11 @@ else:
                         with col_action:
                             current_qty = st.session_state.cart.get(item_id, 0)
                             st.markdown(f"Qty: {current_qty}")
-                            if st.button("➕ Add", key=f"add_{item_id}"):
+                            if st.button("➕ Add", key=f"add_{item_id}_{index}"):
                                 st.session_state.cart[item_id] = current_qty + 1
                                 st.rerun()
                             if current_qty > 0:
-                                if st.button("➖ Remove", key=f"sub_{item_id}"):
+                                if st.button("➖ Remove", key=f"sub_{item_id}_{index}"):
                                     st.session_state.cart[item_id] = current_qty - 1
                                     if st.session_state.cart[item_id] == 0:
                                         del st.session_state.cart[item_id]
@@ -109,7 +110,6 @@ else:
         if not st.session_state.cart:
             st.info("Your cart is empty.")
         else:
-            total_bill = 0
             for item_id, qty in st.session_state.cart.items():
                 st.markdown(f"- Item ID: {item_id} | Quantity: {qty}")
             
@@ -121,7 +121,7 @@ else:
                             "itemId": item_id,
                             "itemName": f"Item {item_id}",
                             "quantity": qty,
-                            "totalCost": qty * 500 # Adjust price calculation as needed
+                            "totalCost": qty * 500
                         }
                         requests.post(SCRIPT_URL, json=order_data)
                     
