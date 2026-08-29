@@ -123,19 +123,22 @@ else:
                         st.info("No products available in this category.")
                     else:
                         with st.container(height=520):
-                            for index, row in filtered_df.iterrows():
-                                item_id = str(row.get('ITEM ID', index))
-                                item_name = row.get('ITEM NAME', 'Product')
-                                price = row.get('PRICE', '0')
-                                desc = row.get('DESCRIPTION', '')
+                            grouped_df = filtered_df.groupby('ITEM ID', sort=False)
+                            
+                            for item_id, group in grouped_df:
+                                first_row = group.iloc[0]
+                                item_name = first_row.get('ITEM NAME', 'Product')
+                                price = first_row.get('PRICE', '0')
+                                desc = first_row.get('DESCRIPTION', '')
                                 
-                                img_raw = str(row.get('IMAGES', row.get('IMAGE', '')))
                                 raw_list = []
-                                if img_raw and img_raw.strip() != "":
-                                    for part in img_raw.replace('\\', ',').split(','):
-                                        c_name = part.strip()
-                                        if c_name:
-                                            raw_list.append(c_name)
+                                for _, r in group.iterrows():
+                                    img_raw = str(r.get('IMAGES', r.get('IMAGE', '')))
+                                    if img_raw and img_raw.strip() != "":
+                                        for part in img_raw.replace('\\', ',').split(','):
+                                            c_name = part.strip()
+                                            if c_name and not c_name.lower().endswith(('.mp4', '.mov', '.avi')):
+                                                raw_list.append(c_name)
 
                                 img_list = []
                                 for name in raw_list:
@@ -143,17 +146,11 @@ else:
                                         img_list.append(name)
                                     else:
                                         encoded_name = urllib.parse.quote(name)
-                                        github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/fancy/main/images/{encoded_name}"
+                                        github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/fancy/main/IMAGES/{encoded_name}"
                                         img_list.append(github_raw)
-                                            
+                                        
                                 placeholder_url = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
                                 
-                                # If multiple rows share the same item or if images are specified in specific rows,
-                                # check if the current row has an image specified. If not, fallback to placeholder or check previous rows.
-                                if not img_list and index > 0:
-                                    # Look upwards in filtered_df for an image if current row is blank
-                                    pass
-
                                 final_img_list = []
                                 for i in range(6):
                                     if i < len(img_list) and img_list[i]:
@@ -176,12 +173,12 @@ else:
                                     st.markdown(f"**₹{price}**")
                                     
                                 with cols[8]:
-                                    current_qty = st.session_state.cart.get(item_id, 1)
-                                    qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}_{index}", label_visibility="collapsed")
-                                    if st.button("Add", key=f"add_{item_id}_{index}", use_container_width=True):
-                                        st.session_state.cart[item_id] = qty
+                                    current_qty = st.session_state.cart.get(str(item_id), 1)
+                                    qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
+                                    if st.button("Add", key=f"add_{item_id}", use_container_width=True):
+                                        st.session_state.cart[str(item_id)] = qty
                                         st.rerun()
-                                            
+                                        
                                 st.markdown("<hr style='margin: 3px 0px;'>", unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
