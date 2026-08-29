@@ -120,23 +120,31 @@ else:
                                 price = row.get('PRICE', '0')
                                 desc = row.get('DESCRIPTION', '')
                                 
+                                # Safely clean up and split image string from Google Sheet cell
+                                img_raw = str(row.get('IMAGES', ''))
                                 img_list = []
-                                if 'IMAGES' in row and row['IMAGES'] and str(row['IMAGES']).strip() != "":
-                                    val = str(row['IMAGES']).strip()
-                                    if val.startswith("http"):
-                                        img_list.append(val)
-                                    else:
-                                        img_list.append(f"images/{val}")
+                                if img_raw and img_raw.strip() != "":
+                                    # Split by backslash or comma if multiple images are concatenated
+                                    for part in img_raw.replace('\\', ',').split(','):
+                                        clean_name = part.strip()
+                                        if clean_name:
+                                            if clean_name.startswith("http"):
+                                                img_list.append(clean_name)
+                                            else:
+                                                img_list.append(f"images/{clean_name}")
                                             
                                 while len(img_list) < 6:
                                     img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
 
-                                # Render 6 full-size images side-by-side using width=None or larger width parameter
+                                # Render 6 full-size images side-by-side
                                 cols = st.columns([1, 1, 1, 1, 1, 1, 1.8, 0.7, 1.1])
                                 
                                 for i in range(6):
                                     with cols[i]:
-                                        st.image(img_list[i], use_container_width=True)
+                                        try:
+                                            st.image(img_list[i], use_container_width=True)
+                                        except:
+                                            st.image("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300", use_container_width=True)
                                         
                                 with cols[6]:
                                     st.markdown(f"**{item_name}**")
