@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 
-SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL"
+SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAHRE5wgl1xJ7uAr9DF5OFtnpesK5UD4C3pdnClWdKxQ/exec"
 
 st.set_page_config(page_title="Fancy Earrings Store", page_icon="✨", layout="centered")
 
@@ -45,7 +45,7 @@ else:
         res = requests.get(f"{SCRIPT_URL}?action=getInventory")
         rows = res.json()
         if len(rows) > 1:
-            headers = rows[0] # ITEM ID, ITEM NAME, CATEGORY, STOCK, PRICE, DESCRIPTION, IMAGES
+            headers = rows[0] 
             df = pd.DataFrame(rows[1:], columns=headers)
             
             cols = st.columns(2)
@@ -62,7 +62,7 @@ else:
     except Exception as e:
         st.error(f"Could not load catalog: {e}")
 
-    # PLACE ORDER FORM (matches ORDERS sheet columns)
+    # PLACE ORDER FORM
     st.markdown("### 📦 Place an Order")
     with st.form("order_form"):
         item_id = st.text_input("Item ID")
