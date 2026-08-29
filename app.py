@@ -157,19 +157,20 @@ else:
                                 if not img_list:
                                     img_list = [placeholder_url]
 
-                                if item_id not in st.session_state.image_indices:
-                                    st.session_state.image_indices[item_id] = 0
+                                # Ensure unique session state key index per item_id for independent rotation
+                                idx_key = f"idx_{item_id}"
+                                if idx_key not in st.session_state.image_indices:
+                                    st.session_state.image_indices[idx_key] = 0
 
-                                current_idx = st.session_state.image_indices[item_id]
+                                current_idx = st.session_state.image_indices[idx_key]
 
                                 # Layout: [Left Arrow] [6 Image Slots] [Right Arrow] [Name/Desc] [Price] [Qty/Add]
                                 cols = st.columns([0.4, 1, 1, 1, 1, 1, 1, 0.4, 1.8, 0.7, 1.1])
                                 
                                 with cols[0]:
-                                    if len(img_list) > 1:
-                                        if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[item_id] = (st.session_state.image_indices[item_id] - 1) % len(img_list)
-                                            st.rerun()
+                                    if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
+                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
+                                        st.rerun()
 
                                 for i in range(6):
                                     with cols[1 + i]:
@@ -177,10 +178,9 @@ else:
                                         st.image(img_list[actual_idx], use_container_width=True)
 
                                 with cols[7]:
-                                    if len(img_list) > 1:
-                                        if st.button("▶", key=f"next_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[item_id] = (st.session_state.image_indices[item_id] + 1) % len(img_list)
-                                            st.rerun()
+                                    if st.button("▶", key=f"next_{item_id}", use_container_width=True):
+                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
+                                        st.rerun()
                                         
                                 with cols[8]:
                                     st.markdown(f"**{item_name}**")
