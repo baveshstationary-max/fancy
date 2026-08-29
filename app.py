@@ -120,7 +120,7 @@ else:
                                 price = row.get('PRICE', '0')
                                 desc = row.get('DESCRIPTION', '')
                                 
-                                # Read raw image string from Google Sheet and split by backslash or comma
+                                # Clean up image input strings from Google Sheet
                                 img_raw = str(row.get('IMAGES', ''))
                                 raw_list = []
                                 if img_raw and img_raw.strip() != "":
@@ -134,16 +134,11 @@ else:
                                     if name.startswith("http"):
                                         img_list.append(name)
                                     else:
-                                        # Correct path mapping for GitHub repository folder structure
-                                        local_path = os.path.join("images", name)
-                                        if os.path.exists(local_path):
-                                            img_list.append(local_path)
-                                        else:
-                                            # Fallback raw github user content URL if running on cloud
-                                            github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/baveshstationary-max/main/images/{name}"
-                                            img_list.append(github_raw)
+                                        # Map to GitHub raw URL directly so cloud deployment loads it safely
+                                        github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/baveshstationary-max/main/images/{name}"
+                                        img_list.append(github_raw)
                                             
-                                # Ensure exactly 6 images are present by repeating the available ones or using defaults
+                                # Fill up to 6 image slots
                                 while len(img_list) < 6:
                                     if len(img_list) > 0:
                                         img_list.append(img_list[0])
