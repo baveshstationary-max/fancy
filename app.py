@@ -17,24 +17,48 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Colorful Modern Background & Store Cards */
+    /* LIGHT MODE DEFAULT VARIABLES & STYLING */
+    :root {
+        --bg-color: linear-gradient(135deg, #f0f4ff 0%, #fdf2f8 100%);
+        --card-bg: #ffffff;
+        --card-border: #e2e8f0;
+        --card-shadow: 0 6px 15px rgba(99, 102, 241, 0.08);
+        --text-main: #1e1b4b;
+        --text-desc: #db2777;
+        --price-color: #4f46e5;
+        --image-bg: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
+    }
+
+    /* DARK MODE AUTOMATIC OVERRIDES */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg-color: linear-gradient(135deg, #0f172a 100%, #1e1b4b 100%);
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --card-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            --text-main: #f8fafc;
+            --text-desc: #f472b6;
+            --price-color: #818cf8;
+            --image-bg: linear-gradient(135deg, #0f172a 0%, #312e81 100%);
+        }
+    }
+
     .stApp {
-        background: linear-gradient(135deg, #f0f4ff 0%, #fdf2f8 100%);
+        background: var(--bg-color);
     }
     
     .product-card {
-        background: #ffffff;
-        border: 2px solid #e2e8f0;
+        background: var(--card-bg);
+        border: 2px solid var(--card-border);
         border-radius: 14px;
         padding: 16px 20px;
         margin-bottom: 14px;
-        box-shadow: 0 6px 15px rgba(99, 102, 241, 0.08);
+        box-shadow: var(--card-shadow);
         transition: all 0.3s ease-in-out;
     }
     
     .product-card:hover {
         border-color: #6366f1;
-        box-shadow: 0 12px 25px rgba(99, 102, 241, 0.15);
         transform: translateY(-2px);
     }
     
@@ -53,17 +77,16 @@ st.markdown("""
         gap: 8px;
     }
     
-    /* Center Main Image (Colorful Pop-out Border) */
+    /* Center Main Image */
     div[data-testid="column"]:nth-of-type(3) img {
         width: 100% !important;
         height: 110px !important;
         object-fit: contain !important;
-        background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
+        background: var(--image-bg);
         border-radius: 10px;
         border: 2px solid #ec4899 !important;
         display: block;
         margin: auto;
-        box-shadow: 0 4px 10px rgba(236, 72, 153, 0.2);
     }
     
     /* Left and Right Adjacent Images */
@@ -72,9 +95,9 @@ st.markdown("""
         width: 100% !important;
         height: 75px !important;
         object-fit: contain !important;
-        background-color: #f8fafc;
+        background-color: var(--card-bg);
         border-radius: 8px;
-        border: 1px solid #cbd5e1;
+        border: 1px solid var(--card-border);
         opacity: 0.75;
         display: block;
         margin: auto;
@@ -140,7 +163,7 @@ else:
             st.session_state.cart = {}
             st.rerun()
             
-    st.markdown("<hr style='margin: 4px 0px 10px 0px; border-color: #cbd5e1;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin: 4px 0px 10px 0px; border-color: var(--card-border);'>", unsafe_allow_html=True)
 
     # HOME PAGE
     if st.session_state.page == "home":
@@ -238,12 +261,12 @@ else:
                                         st.rerun()
                                         
                                 with cols[5]:
-                                    st.markdown(f"<div style='font-size: 15px; font-weight: 700; color: #1e1b4b;'>{item_name}</div>", unsafe_allow_html=True)
+                                    st.markdown(f"<div style='font-size: 15px; font-weight: 700; color: var(--text-main);'>{item_name}</div>", unsafe_allow_html=True)
                                     if desc:
-                                        st.markdown(f"<div style='color: #db2777; font-size: 11px; margin-top: 2px; font-weight: 500;'>{desc}</div>", unsafe_allow_html=True)
+                                        st.markdown(f"<div style='color: var(--text-desc); font-size: 11px; margin-top: 2px; font-weight: 500;'>{desc}</div>", unsafe_allow_html=True)
                                         
                                 with cols[6]:
-                                    st.markdown(f"<div style='font-size: 16px; font-weight: 800; color: #4f46e5; margin-top: 6px;'>₹{price}</div>", unsafe_allow_html=True)
+                                    st.markdown(f"<div style='font-size: 16px; font-weight: 800; color: var(--price-color); margin-top: 6px;'>₹{price}</div>", unsafe_allow_html=True)
                                     
                                 with cols[7]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
