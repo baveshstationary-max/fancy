@@ -17,10 +17,8 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Make center, left, and right preview images all equal uniform standard size */
-    div[data-testid="column"]:nth-of-type(1) img, 
-    div[data-testid="column"]:nth-of-type(2) img, 
-    div[data-testid="column"]:nth-of-type(3) img {
+    /* Make preview and main images equal standard size */
+    img {
         width: 100% !important;
         height: 110px !important;
         object-fit: contain !important;
@@ -31,14 +29,14 @@ st.markdown("""
     }
     
     /* Clear highlight border for the center active image */
-    div[data-testid="column"]:nth-of-type(2) img {
+    div[data-testid="column"]:nth-of-type(4) img {
         border: 2px solid #ff4b4b !important;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
-    /* Subtle border for side preview thumbnails */
-    div[data-testid="column"]:nth-of-type(1) img, 
-    div[data-testid="column"]:nth-of-type(3) img {
+    /* Subtle border for preview thumbnails */
+    div[data-testid="column"]:nth-of-type(2) img, 
+    div[data-testid="column"]:nth-of-type(6) img {
         border: 1px solid #cbd5e1;
         opacity: 0.75;
     }
@@ -179,34 +177,45 @@ else:
                                 prev_idx = (current_idx - 1) % len(img_list)
                                 next_idx = (current_idx + 1) % len(img_list)
 
-                                cols = st.columns([0.4, 1.0, 0.4, 1.0, 0.4, 2.5, 0.8, 1.2])
+                                # Layout: [Prev Button] [Prev Image] [Next Button] [Main Image] [Next Button] [Next Image] ...
+                                cols = st.columns([0.4, 1.0, 0.4, 1.0, 0.4, 1.0, 2.5, 0.8, 1.2])
                                 
                                 with cols[0]:
                                     if len(img_list) > 1:
                                         if st.button("◀", key=f"btn_prev_{item_id}", use_container_width=True):
                                             st.session_state.image_indices[item_id] = prev_idx
                                             st.rerun()
-                                    st.image(img_list[prev_idx], use_container_width=True)
-
+                                            
                                 with cols[1]:
-                                    st.image(img_list[current_idx], use_container_width=True)
+                                    st.image(img_list[prev_idx], use_container_width=True)
 
                                 with cols[2]:
                                     if len(img_list) > 1:
-                                        if st.button("▶", key=f"btn_next_{item_id}", use_container_width=True):
+                                        if st.button("▶", key=f"btn_next_left_{item_id}", use_container_width=True):
                                             st.session_state.image_indices[item_id] = next_idx
                                             st.rerun()
+
+                                with cols[3]:
+                                    st.image(img_list[current_idx], use_container_width=True)
+
+                                with cols[4]:
+                                    if len(img_list) > 1:
+                                        if st.button("▶", key=f"btn_next_right_{item_id}", use_container_width=True):
+                                            st.session_state.image_indices[item_id] = next_idx
+                                            st.rerun()
+
+                                with cols[5]:
                                     st.image(img_list[next_idx], use_container_width=True)
                                         
-                                with cols[5]:
+                                with cols[6]:
                                     st.markdown(f"**{item_name}**")
                                     if desc:
                                         st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
                                         
-                                with cols[6]:
+                                with cols[7]:
                                     st.markdown(f"**₹{price}**")
                                     
-                                with cols[7]:
+                                with cols[8]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
                                     if st.button("Add", key=f"add_{item_id}", use_container_width=True):
