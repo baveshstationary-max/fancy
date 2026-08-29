@@ -5,7 +5,7 @@ import urllib.parse
 
 SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAHRE5wgl1xJ7uAr9DF5OFtnpesK5UD4C3pdnClWdKxQ/exec"
 
-st.set_page_config(page_title="Bavesh Stationary", page_icon="", layout="wide")
+st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
 st.markdown("""
     <style>
@@ -17,98 +17,39 @@ st.markdown("""
         display: none !important;
     }
     
-    :root {
-        --bg-color: linear-gradient(135deg, #f0f4ff 0%, #fdf2f8 100%);
-        --card-bg: #ffffff;
-        --card-border: #e2e8f0;
-        --card-shadow: 0 6px 15px rgba(99, 102, 241, 0.08);
-        --text-main: #1e1b4b;
-        --text-desc: #db2777;
-        --price-color: #4f46e5;
-        --image-bg: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
-    }
-
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --bg-color: linear-gradient(135deg, #0f172a 100%, #1e1b4b 100%);
-            --card-bg: #1e293b;
-            --card-border: #334155;
-            --card-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-            --text-main: #f8fafc;
-            --text-desc: #f472b6;
-            --price-color: #818cf8;
-            --image-bg: linear-gradient(135deg, #0f172a 0%, #312e81 100%);
-        }
-    }
-
-    .stApp {
-        background: var(--bg-color);
+    /* Center Main Image (Highlighted & Larger) */
+    div[data-testid="column"]:nth-of-type(2) img {
+        width: 100% !important;
+        height: 120px !important;
+        object-fit: contain !important;
+        background-color: #f8fafc;
+        border-radius: 6px;
+        border: 2px solid #ff4b4b;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        display: block;
+        margin: auto;
     }
     
-    /* Responsive Product Card Layout Container */
-    .responsive-card {
-        background: var(--card-bg);
-        border: 2px solid var(--card-border);
-        border-radius: 14px;
-        padding: 16px;
-        margin-bottom: 14px;
-        box-shadow: var(--card-shadow);
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .card-images {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex: 1;
-        min-width: 280px;
-        justify-content: center;
-    }
-
-    .card-info {
-        flex: 1.5;
-        min-width: 200px;
-    }
-
-    .card-pricing {
-        flex: 0.8;
-        min-width: 100px;
-        text-align: center;
-    }
-
-    .card-action {
-        flex: 1;
-        min-width: 140px;
+    /* Left and Right Adjacent Images (Smaller Preview Shape) */
+    div[data-testid="column"]:nth-of-type(1) img, 
+    div[data-testid="column"]:nth-of-type(3) img {
+        width: 100% !important;
+        height: 75px !important;
+        object-fit: contain !important;
+        background-color: #f8fafc;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        opacity: 0.75;
+        display: block;
+        margin: auto;
     }
     
-    h3 {
-        background: linear-gradient(90deg, #4f46e5, #ec4899);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800;
-    }
-
-    /* Mobile Screen Adjustments */
-    @media (max-width: 768px) {
-        .responsive-card {
-            flex-direction: column;
-            align-items: stretch;
-            padding: 12px;
-        }
-        .card-images, .card-info, .card-pricing, .card-action {
-            width: 100%;
-        }
-        .side-img {
-            display: none !important; /* Hide preview thumbnails on small mobile screens to save space */
-        }
-    }
-    
-    .block-container { padding-top: 0.8rem; padding-bottom: 0.8rem; max-width: 100%; }
-    .stButton button { padding: 6px 10px; font-size: 13px; font-weight: 600; min-height: 36px; width: 100%; border-radius: 8px; }
+    .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
+    h2 { margin-bottom: 0px; }
+    .stButton button { padding: 2px 4px; font-size: 12px; font-weight: 600; min-height: 28px; width: 100%; }
+    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 4px; }
     .element-container { margin-bottom: 0px !important; }
+    hr { margin: 3px 0px !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -150,7 +91,7 @@ if not st.session_state.logged_in:
 else:
     head_col1, head_col2, head_col3, head_col4 = st.columns([3, 1, 1, 1])
     with head_col1:
-        st.markdown("### BAVESH STATIONARY")
+        st.markdown("### 📚 BAVESH STATIONARY")
     with head_col2:
         if st.button("🏠 Home", use_container_width=True):
             st.session_state.page = "home"
@@ -166,7 +107,7 @@ else:
             st.session_state.cart = {}
             st.rerun()
             
-    st.markdown("<hr style='margin: 4px 0px 10px 0px; border-color: var(--card-border);'>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin: 2px 0px 6px 0px;'>", unsafe_allow_html=True)
 
     # HOME PAGE
     if st.session_state.page == "home":
@@ -185,6 +126,7 @@ else:
 
                 with col_left:
                     st.markdown("##### 📁 Categories")
+                    # Independent scrollable container for categories (height set to 520px to match products view)
                     with st.container(height=520):
                         for cat in categories:
                             is_active = (cat == st.session_state.selected_category)
@@ -241,35 +183,43 @@ else:
                                 prev_idx = (current_idx - 1) % len(img_list)
                                 next_idx = (current_idx + 1) % len(img_list)
 
-                                # Render card using auto-adjusting flexible HTML wrapper columns
-                                st.markdown('<div class="responsive-card">', unsafe_allow_html=True)
-                                
-                                cols = st.columns([0.6, 1.2, 2.2, 1.0, 1.3])
+                                cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
                                 
                                 with cols[0]:
                                     if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
-                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
+                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
                                         st.rerun()
 
                                 with cols[1]:
-                                    st.image(img_list[current_idx], use_container_width=True)
+                                    st.image(img_list[prev_idx], use_container_width=True)
 
                                 with cols[2]:
-                                    st.markdown(f"<div style='font-size: 15px; font-weight: 700; color: var(--text-main);'>{item_name}</div>", unsafe_allow_html=True)
-                                    if desc:
-                                        st.markdown(f"<div style='color: var(--text-desc); font-size: 11px; margin-top: 2px; font-weight: 500;'>{desc}</div>", unsafe_allow_html=True)
-                                        
+                                    st.image(img_list[current_idx], use_container_width=True)
+
                                 with cols[3]:
-                                    st.markdown(f"<div style='font-size: 16px; font-weight: 800; color: var(--price-color); margin-top: 6px;'>₹{price}</div>", unsafe_allow_html=True)
-                                    
+                                    st.image(img_list[next_idx], use_container_width=True)
+
                                 with cols[4]:
+                                    if st.button("▶", key=f"next_{item_id}", use_container_width=True):
+                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
+                                        st.rerun()
+                                        
+                                with cols[5]:
+                                    st.markdown(f"**{item_name}**")
+                                    if desc:
+                                        st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
+                                        
+                                with cols[6]:
+                                    st.markdown(f"**₹{price}**")
+                                    
+                                with cols[7]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
-                                    if st.button("Add to Cart", key=f"add_{item_id}", use_container_width=True):
+                                    if st.button("Add", key=f"add_{item_id}", use_container_width=True):
                                         st.session_state.cart[str(item_id)] = qty
                                         st.rerun()
-                                    
-                                st.markdown('</div>', unsafe_allow_html=True)
+                                        
+                                st.markdown("<hr style='margin: 3px 0px;'>", unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
         except Exception as e:
