@@ -178,7 +178,6 @@ else:
 
                                 with cols[7]:
                                     if st.button("▶", key=f"next_{item_id}", use_container_width=True):
-                                        # Step-by-step shift: shifts the starting window index forward by 1 (1st image goes to last position sequentially)
                                         st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
                                         st.rerun()
                                         
