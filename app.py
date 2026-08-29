@@ -1,12 +1,13 @@
 import streamlit as st
 import requests
 import pandas as pd
+import os
 
 SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAHRE5wgl1xJ7uAr9DF5OFtnpesK5UD4C3pdnClWdKxQ/exec"
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
-# Custom CSS to enlarge the 6 images to full size and remove link symbols
+# Custom CSS to clean up layout and remove link symbols
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
@@ -120,18 +121,22 @@ else:
                                 price = row.get('PRICE', '0')
                                 desc = row.get('DESCRIPTION', '')
                                 
-                                # Safely clean up and split image string from Google Sheet cell
+                                # Process image names from the sheet safely, checking the 'images/' folder repository
                                 img_raw = str(row.get('IMAGES', ''))
                                 img_list = []
                                 if img_raw and img_raw.strip() != "":
-                                    # Split by backslash or comma if multiple images are concatenated
                                     for part in img_raw.replace('\\', ',').split(','):
                                         clean_name = part.strip()
                                         if clean_name:
                                             if clean_name.startswith("http"):
                                                 img_list.append(clean_name)
                                             else:
-                                                img_list.append(f"images/{clean_name}")
+                                                # Check local images folder or GitHub uploaded path
+                                                local_path = os.path.join("images", clean_name)
+                                                if os.path.exists(local_path):
+                                                    img_list.append(local_path)
+                                                else:
+                                                    img_list.append(clean_name)
                                             
                                 while len(img_list) < 6:
                                     img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
