@@ -17,29 +17,55 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Center Main Image (Highlighted & Larger) */
-    div[data-testid="column"]:nth-of-type(2) img {
+    /* 3D Product Carousel Container Perspective */
+    div[data-testid="stHorizontalBlock"] {
+        perspective: 1000px !important;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    /* Center Main Image (3D Pop-out Highlight) */
+    div[data-testid="column"]:nth-of-type(3) img {
         width: 100% !important;
         height: 120px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
         border-radius: 6px;
-        border: 2px solid #ff4b4b;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border: 2px solid #ff4b4b !important;
+        transform: translateZ(50px) scale(1.05) !important;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        box-shadow: 0 15px 25px rgba(0,0,0,0.25) !important;
         display: block;
         margin: auto;
+        z-index: 10;
     }
     
-    /* Left and Right Adjacent Images (Smaller Preview Shape) */
-    div[data-testid="column"]:nth-of-type(1) img, 
-    div[data-testid="column"]:nth-of-type(3) img {
+    /* Left Adjacent Image (3D Rotated Left) */
+    div[data-testid="column"]:nth-of-type(2) img {
         width: 100% !important;
-        height: 75px !important;
+        height: 85px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
         border-radius: 6px;
         border: 1px solid #cbd5e1;
-        opacity: 0.75;
+        transform: rotateY(25deg) translateZ(-20px) scale(0.9) !important;
+        transition: transform 0.4s ease;
+        opacity: 0.7;
+        display: block;
+        margin: auto;
+    }
+    
+    /* Right Adjacent Image (3D Rotated Right) */
+    div[data-testid="column"]:nth-of-type(4) img {
+        width: 100% !important;
+        height: 85px !important;
+        object-fit: contain !important;
+        background-color: #f8fafc;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        transform: rotateY(-25deg) translateZ(-20px) scale(0.9) !important;
+        transition: transform 0.4s ease;
+        opacity: 0.7;
         display: block;
         margin: auto;
     }
@@ -47,7 +73,6 @@ st.markdown("""
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
     .stButton button { padding: 2px 4px; font-size: 12px; font-weight: 600; min-height: 28px; width: 100%; }
-    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 4px; }
     .element-container { margin-bottom: 0px !important; }
     hr { margin: 3px 0px !important; }
     </style>
@@ -126,7 +151,6 @@ else:
 
                 with col_left:
                     st.markdown("##### 📁 Categories")
-                    # Independent scrollable container for categories (height set to 520px to match products view)
                     with st.container(height=520):
                         for cat in categories:
                             is_active = (cat == st.session_state.selected_category)
@@ -183,7 +207,7 @@ else:
                                 prev_idx = (current_idx - 1) % len(img_list)
                                 next_idx = (current_idx + 1) % len(img_list)
 
-                                cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
+                                cols = st.columns([0.4, 1.0, 1.2, 1.0, 0.4, 2.2, 0.7, 1.0])
                                 
                                 with cols[0]:
                                     if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
@@ -238,40 +262,4 @@ else:
             
             delivery_address = st.text_area("Delivery Address:", placeholder="Enter your full street address, landmark, and pin code...")
             alt_contact = st.text_input("Alternative Contact Number:", placeholder="Enter secondary mobile number...")
-            custom_desc = st.text_area("Product Specifications / Custom Description:", placeholder="Specify any specific instructions, colors, or custom requirements...")
-            
-            if st.button("Complete Order", use_container_width=False):
-                if not delivery_address.strip():
-                    st.error("Please enter a delivery address before completing your order.")
-                else:
-                    try:
-                        res = requests.get(f"{SCRIPT_URL}?action=getInventory")
-                        rows = res.json()
-                        item_prices = {}
-                        if len(rows) > 1:
-                            headers = [str(h).strip().upper() for h in rows[0]]
-                            inv_df = pd.DataFrame(rows[1:], columns=headers)
-                            if 'ITEM ID' in inv_df.columns and 'PRICE' in inv_df.columns:
-                                for _, row in inv_df.iterrows():
-                                    item_prices[str(row['ITEM ID'])] = float(row['PRICE'])
-
-                        for item_id, qty in st.session_state.cart.items():
-                            unit_price = item_prices.get(str(item_id), 0.0)
-                            total_cost = qty * unit_price
-                            
-                            order_data = {
-                                "mobile": st.session_state.mobile,
-                                "altContact": alt_contact,
-                                "deliveryAddress": delivery_address,
-                                "customDescription": custom_desc,
-                                "itemId": item_id,
-                                "itemName": f"Item {item_id}",
-                                "quantity": qty,
-                                "totalCost": total_cost
-                            }
-                            requests.post(SCRIPT_URL, json=order_data)
-                        
-                        st.success("Order successfully submitted to Google Sheets!")
-                        st.session_state.cart = {}
-                    except Exception as e:
-                        st.error(f"Error checking out: {e}")
+            custom_desc = st.text_area("Product Specifications / Custom Description:", placeholder="Specify any specific instructions
