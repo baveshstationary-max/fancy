@@ -30,18 +30,16 @@ st.markdown("""
     img {
         width: 100% !important;
         height: auto !important;
-        max-height: 85px !important;
+        max-height: 90px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
         border-radius: 4px;
         display: block !important;
-        visibility: visible !important;
     }
     
     h2 { margin-bottom: 0px; font-size: 1.3rem; }
     h3 { font-size: 1.1rem; }
-    .stButton button { padding: 2px 2px; font-size: 11px; font-weight: 600; min-height: 26px; width: 100%; }
-    div[data-testid="stHorizontalBlock"] { align-items: center; gap: 2px; }
+    .stButton button { padding: 4px 8px; font-size: 12px; font-weight: 600; min-height: 32px; width: 100%; }
     .element-container { margin-bottom: 0px !important; }
     hr { margin: 4px 0px !important; }
     </style>
@@ -81,7 +79,7 @@ if not st.session_state.logged_in:
         else:
             st.error("Please fill in both fields")
 
-# MAIN APP SCREEN (Forced 3-Column horizontal alignment on mobile)
+# MAIN APP SCREEN (Fully stacked column layout for mobile view)
 else:
     head_col1, head_col2, head_col3, head_col4 = st.columns([2.2, 1, 1, 1])
     with head_col1:
@@ -168,44 +166,33 @@ else:
                             prev_idx = (current_idx - 1) % len(img_list)
                             next_idx = (current_idx + 1) % len(img_list)
 
-                            # Forces 3 images side-by-side inside a single columns block to prevent vertical wrapping on mobile
-                            cols = st.columns([0.4, 1.0, 1.4, 1.0, 0.4, 1.8, 0.6, 0.9])
-                            
-                            with cols[0]:
-                                if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
-                                    st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
-                                    st.rerun()
+                            # Pure Vertical Stack (Column-wise layout for mobile screen width)
+                            if st.button("◀ Prev", key=f"prev_{item_id}", use_container_width=True):
+                                st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
+                                st.rerun()
 
-                            with cols[1]:
-                                st.image(img_list[prev_idx], use_container_width=True)
+                            st.image(img_list[prev_idx], use_container_width=True)
+                            st.image(img_list[current_idx], use_container_width=True)
+                            st.image(img_list[next_idx], use_container_width=True)
 
-                            with cols[2]:
-                                st.image(img_list[current_idx], use_container_width=True)
-
-                            with cols[3]:
-                                st.image(img_list[next_idx], use_container_width=True)
-
-                            with cols[4]:
-                                if st.button("▶", key=f"next_{item_id}", use_container_width=True):
-                                    st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
-                                    st.rerun()
-                                    
-                            with cols[5]:
-                                st.markdown(f"**{item_name}**")
-                                if desc:
-                                    st.markdown(f"<span style='color: #666; font-size: 8px;'>{desc}</span>", unsafe_allow_html=True)
-                                    
-                            with cols[6]:
-                                st.markdown(f"**₹{price}**")
+                            if st.button("Next ▶", key=f"next_{item_id}", use_container_width=True):
+                                st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
+                                st.rerun()
                                 
-                            with cols[7]:
-                                current_qty = st.session_state.cart.get(str(item_id), 1)
-                                qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
-                                if st.button("Add", key=f"add_{item_id}", use_container_width=True):
-                                    st.session_state.cart[str(item_id)] = qty
-                                    st.rerun()
-                                    
-                            st.markdown("<hr style='margin: 4px 0px;'>", unsafe_allow_html=True)
+                            st.markdown(f"**{item_name}**")
+                            if desc:
+                                st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
+                                
+                            st.markdown(f"**Price: ₹{price}**")
+                            
+                            current_qty = st.session_state.cart.get(str(item_id), 1)
+                            qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}")
+                            if st.button("Add to Cart", key=f"add_{item_id}", use_container_width=True):
+                                st.session_state.cart[str(item_id)] = qty
+                                st.success("Added to cart!")
+                                st.rerun()
+                                
+                            st.markdown("<hr style='margin: 8px 0px;'>", unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
         except Exception as e:
