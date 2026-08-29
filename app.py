@@ -7,7 +7,6 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
-# Custom CSS to clean up layout and remove link symbols
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
@@ -121,25 +120,35 @@ else:
                                 price = row.get('PRICE', '0')
                                 desc = row.get('DESCRIPTION', '')
                                 
-                                # Process image names from the sheet safely, checking the 'images/' folder repository
+                                # Read raw image string from Google Sheet and split by backslash or comma
                                 img_raw = str(row.get('IMAGES', ''))
-                                img_list = []
+                                raw_list = []
                                 if img_raw and img_raw.strip() != "":
                                     for part in img_raw.replace('\\', ',').split(','):
-                                        clean_name = part.strip()
-                                        if clean_name:
-                                            if clean_name.startswith("http"):
-                                                img_list.append(clean_name)
-                                            else:
-                                                # Check local images folder or GitHub uploaded path
-                                                local_path = os.path.join("images", clean_name)
-                                                if os.path.exists(local_path):
-                                                    img_list.append(local_path)
-                                                else:
-                                                    img_list.append(clean_name)
+                                        c_name = part.strip()
+                                        if c_name:
+                                            raw_list.append(c_name)
+
+                                img_list = []
+                                for name in raw_list:
+                                    if name.startswith("http"):
+                                        img_list.append(name)
+                                    else:
+                                        # Correct path mapping for GitHub repository folder structure
+                                        local_path = os.path.join("images", name)
+                                        if os.path.exists(local_path):
+                                            img_list.append(local_path)
+                                        else:
+                                            # Fallback raw github user content URL if running on cloud
+                                            github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/baveshstationary-max/main/images/{name}"
+                                            img_list.append(github_raw)
                                             
+                                # Ensure exactly 6 images are present by repeating the available ones or using defaults
                                 while len(img_list) < 6:
-                                    img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
+                                    if len(img_list) > 0:
+                                        img_list.append(img_list[0])
+                                    else:
+                                        img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
 
                                 # Render 6 full-size images side-by-side
                                 cols = st.columns([1, 1, 1, 1, 1, 1, 1.8, 0.7, 1.1])
