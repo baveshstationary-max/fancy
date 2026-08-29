@@ -6,18 +6,18 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
-# Custom CSS to force 6 images side-by-side in a single row and maximize screen space
+# Custom CSS to align items perfectly, compact row heights, and hide default chrome
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
-    .block-container { padding-top: 0.3rem; padding-bottom: 0.3rem; max-width: 100%; }
+    .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
-    .stButton button { padding: 2px 4px; font-size: 11px; font-weight: 500; min-height: 24px; }
+    .stButton button { padding: 2px 6px; font-size: 12px; font-weight: 500; min-height: 28px; }
     div[data-testid="stHorizontalBlock"] { align-items: center; gap: 4px; }
     .element-container { margin-bottom: 0px !important; }
-    hr { margin: 2px 0px !important; }
+    hr { margin: 3px 0px !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -73,7 +73,7 @@ else:
             st.session_state.cart = {}
             st.rerun()
             
-    st.markdown("<hr style='margin: 2px 0px 4px 0px;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin: 2px 0px 6px 0px;'>", unsafe_allow_html=True)
 
     # HOME PAGE
     if st.session_state.page == "home":
@@ -88,7 +88,7 @@ else:
                 if not st.session_state.selected_category and categories:
                     st.session_state.selected_category = categories[0]
 
-                col_left, col_right = st.columns([1, 5])
+                col_left, col_right = st.columns([1, 4])
 
                 with col_left:
                     st.markdown("##### 📁 Categories")
@@ -113,41 +113,45 @@ else:
                                 item_id = str(row.get('ITEM ID', index))
                                 item_name = row.get('ITEM NAME', 'Product')
                                 price = row.get('PRICE', '0')
+                                desc = row.get('DESCRIPTION', '')
                                 
-                                # Fetch up to 6 image columns or fall back to comma-separated images/defaults
+                                # Gather up to 6 images from columns G onwards or fallback images folder
                                 img_list = []
-                                for col_name in ['IMAGE1', 'IMAGE2', 'IMAGE3', 'IMAGE4', 'IMAGE5', 'IMAGE6']:
-                                    if col_name in row and row[col_name]:
-                                        img_list.append(row[col_name])
-                                
-                                if not img_list and 'IMAGES' in row and row['IMAGES']:
-                                    img_list = [img.strip() for img in str(row['IMAGES']).split(',')]
-
-                                # Ensure we have 6 image slots to display side-by-side in a single row
+                                for col_idx in range(6, len(row)):
+                                    val = row[col_idx]
+                                    if val and str(val).strip() != "":
+                                        img_name = str(val).strip()
+                                        if img_name.startswith("http"):
+                                            img_list.append(img_name)
+                                        else:
+                                            img_list.append(f"images/{img_name}")
+                                            
                                 while len(img_list) < 6:
-                                    img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=150")
+                                    img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=100")
 
-                                # Render exactly 6 images in a single row alongside product details and add button
-                                cols = st.columns([1, 1, 1, 1, 1, 1, 2, 1, 1.2])
+                                # Layout columns: 6 image columns + Description/Name column + Price column + Qty/Add column
+                                cols = st.columns([0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 2.2, 0.8, 1.2])
                                 
                                 for i in range(6):
                                     with cols[i]:
-                                        st.image(img_list[i], width=50)
+                                        st.image(img_list[i], width=40)
                                         
                                 with cols[6]:
                                     st.markdown(f"**{item_name}**")
-                                    st.markdown(f"<span style='color: #666; font-size: 10px;'>₹{price}</span>", unsafe_allow_html=True)
-                                    
+                                    if desc:
+                                        st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
+                                        
                                 with cols[7]:
-                                    current_qty = st.session_state.cart.get(item_id, 1)
-                                    qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}_{index}", label_visibility="collapsed")
+                                    st.markdown(f"**₹{price}**")
                                     
                                 with cols[8]:
+                                    current_qty = st.session_state.cart.get(item_id, 1)
+                                    qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}_{index}", label_visibility="collapsed")
                                     if st.button("Add", key=f"add_{item_id}_{index}", use_container_width=True):
                                         st.session_state.cart[item_id] = qty
                                         st.rerun()
                                             
-                                st.markdown("<hr style='margin: 2px 0px;'>", unsafe_allow_html=True)
+                                st.markdown("<hr style='margin: 3px 0px;'>", unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
         except Exception as e:
