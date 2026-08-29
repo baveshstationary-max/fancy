@@ -134,33 +134,21 @@ else:
                                         img_list.append(name)
                                     else:
                                         encoded_name = urllib.parse.quote(name)
-                                        # GitHub Raw URL mapping pointing strictly to your repository and main branch
                                         github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/fancy/main/images/{encoded_name}"
                                         img_list.append(github_raw)
                                             
-                                # If sheet has images, populate slots up to 6 without forcing fallback if valid images exist
-                                valid_images = []
-                                for img_url in img_list:
-                                    try:
-                                        test_res = requests.head(img_url, timeout=2)
-                                        if test_res.status_code == 200:
-                                            valid_images.append(img_url)
-                                        else:
-                                            valid_images.append(img_url) # Attempt load anyway
-                                    except:
-                                        valid_images.append(img_url)
-
-                                while len(valid_images) < 6:
-                                    if len(valid_images) > 0:
-                                        valid_images.append(valid_images[0])
-                                    else:
-                                        valid_images.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
+                                # Only pad remaining empty slots with the default placeholder instead of duplicating uploaded images
+                                while len(img_list) < 6:
+                                    img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
 
                                 cols = st.columns([1, 1, 1, 1, 1, 1, 1.8, 0.7, 1.1])
                                 
                                 for i in range(6):
                                     with cols[i]:
-                                        st.image(valid_images[i], use_container_width=True)
+                                        try:
+                                            st.image(img_list[i], use_container_width=True)
+                                        except:
+                                            st.image("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300", use_container_width=True)
                                         
                                 with cols[6]:
                                     st.markdown(f"**{item_name}**")
