@@ -17,6 +17,14 @@ st.markdown("""
         display: none !important;
     }
     
+    /* Force uniform auto-resizing for all product images across columns */
+    img {
+        width: 100% !important;
+        height: 60px !important;
+        object-fit: cover !important;
+        border-radius: 4px;
+    }
+    
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
     .stButton button { padding: 2px 6px; font-size: 12px; font-weight: 500; min-height: 28px; }
@@ -137,7 +145,6 @@ else:
                                         github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/fancy/main/images/{encoded_name}"
                                         img_list.append(github_raw)
                                             
-                                # Ensure exactly 6 slots are filled with placeholders if fewer images are uploaded
                                 placeholder_url = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
                                 final_img_list = []
                                 for i in range(6):
@@ -150,7 +157,10 @@ else:
                                 
                                 for i in range(6):
                                     with cols[i]:
-                                        st.image(final_img_list[i], use_container_width=True)
+                                        try:
+                                            st.image(final_img_list[i], use_container_width=True)
+                                        except:
+                                            st.image(placeholder_url, use_container_width=True)
                                         
                                 with cols[6]:
                                     st.markdown(f"**{item_name}**")
