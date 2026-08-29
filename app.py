@@ -17,21 +17,33 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Highlighted single large image view */
-    img {
+    /* Central highlighted image styling */
+    div[data-testid="column"]:nth-of-type(2) img {
         width: 100% !important;
         height: 140px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
-        border-radius: 4px;
-        padding: 2px;
+        border-radius: 8px;
         border: 2px solid #ff4b4b;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
+    /* Round shape styling for previous/next preview thumbnail buttons */
+    div[data-testid="column"]:nth-of-type(1) img, 
+    div[data-testid="column"]:nth-of-type(3) img {
+        width: 45px !important;
+        height: 45px !important;
+        object-fit: cover !important;
+        border-radius: 50% !important;
+        border: 2px solid #cbd5e1;
+        cursor: pointer;
+        display: block;
+        margin: auto;
+    }
+    
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
-    .stButton button { padding: 2px 6px; font-size: 12px; font-weight: 500; min-height: 28px; }
+    .stButton button { padding: 2px 4px; font-size: 11px; font-weight: 500; min-height: 24px; }
     div[data-testid="stHorizontalBlock"] { align-items: center; gap: 4px; }
     .element-container { margin-bottom: 0px !important; }
     hr { margin: 3px 0px !important; }
@@ -161,24 +173,32 @@ else:
                                 if item_id not in st.session_state.image_indices:
                                     st.session_state.image_indices[item_id] = 0
 
-                                # Layout with single center image slot and side navigation buttons
+                                current_idx = st.session_state.image_indices[item_id]
+                                prev_idx = (current_idx - 1) % len(img_list)
+                                next_idx = (current_idx + 1) % len(img_list)
+
+                                # Layout: [Left Round Preview] [Center Large Image] [Right Round Preview] [Details] [Price] [Qty/Add]
                                 cols = st.columns([0.6, 1.8, 0.6, 2.5, 0.8, 1.2])
                                 
+                                # Left Round Preview Thumbnail (Click to go to previous)
                                 with cols[0]:
                                     if len(img_list) > 1:
-                                        if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[item_id] = (st.session_state.image_indices[item_id] - 1) % len(img_list)
+                                        if st.button("◀", key=f"btn_prev_{item_id}", use_container_width=True):
+                                            st.session_state.image_indices[item_id] = prev_idx
                                             st.rerun()
+                                    st.image(img_list[prev_idx], use_container_width=True)
 
-                                current_idx = st.session_state.image_indices[item_id]
+                                # Center Main Highlighted Image
                                 with cols[1]:
                                     st.image(img_list[current_idx], use_container_width=True)
 
+                                # Right Round Preview Thumbnail (Click to go to next)
                                 with cols[2]:
                                     if len(img_list) > 1:
-                                        if st.button("▶", key=f"next_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[item_id] = (st.session_state.image_indices[item_id] + 1) % len(img_list)
+                                        if st.button("▶", key=f"btn_next_{item_id}", use_container_width=True):
+                                            st.session_state.image_indices[item_id] = next_idx
                                             st.rerun()
+                                    st.image(img_list[next_idx], use_container_width=True)
                                         
                                 with cols[3]:
                                     st.markdown(f"**{item_name}**")
