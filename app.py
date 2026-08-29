@@ -6,15 +6,15 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
-# Custom CSS to completely remove image zoom icons, link hover symbols, and tighten UI padding
+# Custom CSS to remove unwanted link/anchor symbols next to headings/sentences, and clean up UI
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Hide Streamlit image expander / fullscreen zoom icon */
-    button[title="Zoom"], [data-testid="StyledFullScreenButton"], .enlargable-img-icon {
+    /* Hide markdown header anchor link symbols (the link icon next to sentences/headings) */
+    .stHeadingWithAction > a, .markdown-text-container a.anchor-link, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
         display: none !important;
     }
     
@@ -132,12 +132,12 @@ else:
                                 while len(img_list) < 6:
                                     img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=100")
 
-                                # Render 6 image slots + details + price + quantity + add button without zoom triggers
+                                # Render 6 images + details + price + quantity + add button (keeping image zoom active on hover)
                                 cols = st.columns([0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 2.2, 0.8, 1.2])
                                 
                                 for i in range(6):
                                     with cols[i]:
-                                        st.image(img_list[i], width=40, clamp=True)
+                                        st.image(img_list[i], width=40)
                                         
                                 with cols[6]:
                                     st.markdown(f"**{item_name}**")
