@@ -17,7 +17,6 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Strict uniform auto-resizing and object-fit for all product images to prevent distortion or broken frames */
     img {
         width: 100% !important;
         height: 65px !important;
@@ -148,9 +147,11 @@ else:
                                         img_list.append(github_raw)
                                             
                                 placeholder_url = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
+                                
+                                # Build exact 6 slots safely
                                 final_img_list = []
                                 for i in range(6):
-                                    if i < len(img_list):
+                                    if i < len(img_list) and img_list[i]:
                                         final_img_list.append(img_list[i])
                                     else:
                                         final_img_list.append(placeholder_url)
