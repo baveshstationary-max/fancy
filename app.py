@@ -102,6 +102,21 @@ st.markdown("""
         display: block;
         margin: auto;
     }
+
+    /* Mobile Optimization Styles */
+    @media (max-width: 768px) {
+        .product-card {
+            padding: 10px;
+        }
+        div[data-testid="stHorizontalBlock"] {
+            flex-direction: column;
+            align-items: center;
+        }
+        .stButton button {
+            min-height: 40px;
+            font-size: 14px;
+        }
+    }
     
     .block-container { padding-top: 0.8rem; padding-bottom: 0.8rem; max-width: 100%; }
     .stButton button { padding: 6px 10px; font-size: 13px; font-weight: 600; min-height: 36px; width: 100%; border-radius: 8px; }
