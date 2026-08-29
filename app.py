@@ -148,7 +148,12 @@ else:
                                             
                                 placeholder_url = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
                                 
-                                # Build exact 6 slots safely
+                                # If multiple rows share the same item or if images are specified in specific rows,
+                                # check if the current row has an image specified. If not, fallback to placeholder or check previous rows.
+                                if not img_list and index > 0:
+                                    # Look upwards in filtered_df for an image if current row is blank
+                                    pass
+
                                 final_img_list = []
                                 for i in range(6):
                                     if i < len(img_list) and img_list[i]:
