@@ -17,33 +17,21 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Make preview and main images equal standard size */
+    /* Uniform standard image size for all 6 active slots */
     img {
         width: 100% !important;
-        height: 110px !important;
+        height: 100px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
-        border-radius: 6px;
+        border-radius: 4px;
+        border: 1px solid #cbd5e1;
         display: block;
         margin: auto;
     }
     
-    /* Clear highlight border for the center active image */
-    div[data-testid="column"]:nth-of-type(4) img {
-        border: 2px solid #ff4b4b !important;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    
-    /* Subtle border for preview thumbnails */
-    div[data-testid="column"]:nth-of-type(2) img, 
-    div[data-testid="column"]:nth-of-type(6) img {
-        border: 1px solid #cbd5e1;
-        opacity: 0.75;
-    }
-    
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
-    .stButton button { padding: 2px 4px; font-size: 11px; font-weight: 500; min-height: 24px; }
+    .stButton button { padding: 2px 4px; font-size: 12px; font-weight: 600; min-height: 28px; }
     div[data-testid="stHorizontalBlock"] { align-items: center; gap: 4px; }
     .element-container { margin-bottom: 0px !important; }
     hr { margin: 3px 0px !important; }
@@ -174,48 +162,37 @@ else:
                                     st.session_state.image_indices[item_id] = 0
 
                                 current_idx = st.session_state.image_indices[item_id]
-                                prev_idx = (current_idx - 1) % len(img_list)
-                                next_idx = (current_idx + 1) % len(img_list)
 
-                                # Layout: [Prev Button] [Prev Image] [Next Button] [Main Image] [Next Button] [Next Image] ...
-                                cols = st.columns([0.4, 1.0, 0.4, 1.0, 0.4, 1.0, 2.5, 0.8, 1.2])
+                                # Layout: [Left Arrow] [6 Sliding Image Slots] [Right Arrow] [Name/Desc] [Price] [Qty/Add]
+                                cols = st.columns([0.4, 1, 1, 1, 1, 1, 1, 0.4, 1.8, 0.7, 1.1])
                                 
                                 with cols[0]:
                                     if len(img_list) > 1:
-                                        if st.button("◀", key=f"btn_prev_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[item_id] = prev_idx
+                                        if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
+                                            st.session_state.image_indices[item_id] = (st.session_state.image_indices[item_id] - 1) % len(img_list)
                                             st.rerun()
-                                            
-                                with cols[1]:
-                                    st.image(img_list[prev_idx], use_container_width=True)
 
-                                with cols[2]:
+                                # Render 6 sliding slots independently for this specific product item
+                                for i in range(6):
+                                    with cols[1 + i]:
+                                        actual_idx = (current_idx + i) % len(img_list)
+                                        st.image(img_list[actual_idx], use_container_width=True)
+
+                                with cols[7]:
                                     if len(img_list) > 1:
-                                        if st.button("▶", key=f"btn_next_left_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[item_id] = next_idx
+                                        if st.button("▶", key=f"next_{item_id}", use_container_width=True):
+                                            st.session_state.image_indices[item_id] = (st.session_state.image_indices[item_id] + 1) % len(img_list)
                                             st.rerun()
-
-                                with cols[3]:
-                                    st.image(img_list[current_idx], use_container_width=True)
-
-                                with cols[4]:
-                                    if len(img_list) > 1:
-                                        if st.button("▶", key=f"btn_next_right_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[item_id] = next_idx
-                                            st.rerun()
-
-                                with cols[5]:
-                                    st.image(img_list[next_idx], use_container_width=True)
                                         
-                                with cols[6]:
+                                with cols[8]:
                                     st.markdown(f"**{item_name}**")
                                     if desc:
                                         st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
                                         
-                                with cols[7]:
+                                with cols[9]:
                                     st.markdown(f"**₹{price}**")
                                     
-                                with cols[8]:
+                                with cols[10]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
                                     if st.button("Add", key=f"add_{item_id}", use_container_width=True):
