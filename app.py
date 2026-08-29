@@ -17,13 +17,29 @@ st.markdown("""
         display: none !important;
     }
     
-    img {
+    /* Center Main Image (Highlighted & Larger) */
+    div[data-testid="column"]:nth-of-type(2) img {
         width: 100% !important;
-        height: 100px !important;
+        height: 120px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
-        border-radius: 4px;
+        border-radius: 6px;
+        border: 2px solid #ff4b4b;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        display: block;
+        margin: auto;
+    }
+    
+    /* Left and Right Adjacent Images (Smaller Preview Shape) */
+    div[data-testid="column"]:nth-of-type(1) img, 
+    div[data-testid="column"]:nth-of-type(3) img {
+        width: 100% !important;
+        height: 75px !important;
+        object-fit: contain !important;
+        background-color: #f8fafc;
+        border-radius: 6px;
         border: 1px solid #cbd5e1;
+        opacity: 0.75;
         display: block;
         margin: auto;
     }
@@ -162,34 +178,40 @@ else:
                                     st.session_state.image_indices[idx_key] = 0
 
                                 current_idx = st.session_state.image_indices[idx_key]
+                                prev_idx = (current_idx - 1) % len(img_list)
+                                next_idx = (current_idx + 1) % len(img_list)
 
-                                # Layout: [Left Arrow] [6 Image Slots] [Right Arrow] [Name/Desc] [Price] [Qty/Add]
-                                cols = st.columns([0.4, 1, 1, 1, 1, 1, 1, 0.4, 1.8, 0.7, 1.1])
+                                # Layout layout: [Left Button] [Prev Image] [Center Image] [Next Image] [Right Button] [Name/Desc] [Price] [Qty/Add]
+                                cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
                                 
                                 with cols[0]:
                                     if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
                                         st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
                                         st.rerun()
 
-                                for i in range(6):
-                                    with cols[1 + i]:
-                                        actual_idx = (current_idx + i) % len(img_list)
-                                        st.image(img_list[actual_idx], use_container_width=True)
+                                with cols[1]:
+                                    st.image(img_list[prev_idx], use_container_width=True)
 
-                                with cols[7]:
+                                with cols[2]:
+                                    st.image(img_list[current_idx], use_container_width=True)
+
+                                with cols[3]:
+                                    st.image(img_list[next_idx], use_container_width=True)
+
+                                with cols[4]:
                                     if st.button("▶", key=f"next_{item_id}", use_container_width=True):
                                         st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
                                         st.rerun()
                                         
-                                with cols[8]:
+                                with cols[5]:
                                     st.markdown(f"**{item_name}**")
                                     if desc:
                                         st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
                                         
-                                with cols[9]:
+                                with cols[6]:
                                     st.markdown(f"**₹{price}**")
                                     
-                                with cols[10]:
+                                with cols[7]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
                                     if st.button("Add", key=f"add_{item_id}", use_container_width=True):
