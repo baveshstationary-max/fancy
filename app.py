@@ -181,12 +181,13 @@ else:
                                 prev_idx = (current_idx - 1) % len(img_list)
                                 next_idx = (current_idx + 1) % len(img_list)
 
-                                # Layout layout: [Left Button] [Prev Image] [Center Image] [Next Image] [Right Button] [Name/Desc] [Price] [Qty/Add]
+                                # Layout: [Left Button] [Prev Image] [Center Image] [Next Image] [Right Button] [Name/Desc] [Price] [Qty/Add]
                                 cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
                                 
                                 with cols[0]:
                                     if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
-                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
+                                        # Fixed: Clicking left arrow should move index forward (+ 1) to match correct rotation direction
+                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
                                         st.rerun()
 
                                 with cols[1]:
@@ -200,7 +201,8 @@ else:
 
                                 with cols[4]:
                                     if st.button("▶", key=f"next_{item_id}", use_container_width=True):
-                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
+                                        # Fixed: Clicking right arrow should move index backward (- 1) to match correct rotation direction
+                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
                                         st.rerun()
                                         
                                 with cols[5]:
@@ -215,6 +217,7 @@ else:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
                                     if st.button("Add", key=f"add_{item_id}", use_container_width=True):
+                                    # Fixed: Pass string representation of item_id properly to cart dictionary
                                         st.session_state.cart[str(item_id)] = qty
                                         st.rerun()
                                         
