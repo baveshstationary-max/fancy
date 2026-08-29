@@ -123,7 +123,6 @@ else:
                                 img_raw = str(row.get('IMAGES', ''))
                                 raw_list = []
                                 if img_raw and img_raw.strip() != "":
-                                    # Clean up backslashes and commas
                                     for part in img_raw.replace('\\', ',').split(','):
                                         c_name = part.strip()
                                         if c_name:
@@ -134,9 +133,9 @@ else:
                                     if name.startswith("http"):
                                         img_list.append(name)
                                     else:
-                                        # URL encode spaces/special symbols for GitHub raw links
                                         encoded_name = urllib.parse.quote(name)
-                                        github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/baveshstationary-max/main/images/{encoded_name}"
+                                        # Corrected repository name mapping path to match "fancy/images/" folder structure from GitHub
+                                        github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/fancy/main/images/{encoded_name}"
                                         img_list.append(github_raw)
                                             
                                 while len(img_list) < 6:
