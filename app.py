@@ -17,54 +17,48 @@ st.markdown("""
         display: none !important;
     }
     
-    /* 3D Product Carousel Container Perspective */
-    div[data-testid="stHorizontalBlock"] {
-        perspective: 1000px !important;
-        align-items: center;
-        gap: 4px;
+    /* Professional Product Card Container Styling */
+    .product-card {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        transition: all 0.2s ease-in-out;
+    }
+    .product-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        border-color: #cbd5e1;
     }
     
-    /* Center Main Image (3D Pop-out Highlight) */
+    /* 3D Product Carousel Container Perspective */
+    div[data-testid="stHorizontalBlock"] {
+        align-items: center;
+        gap: 8px;
+    }
+    
+    /* Center Main Image */
     div[data-testid="column"]:nth-of-type(3) img {
         width: 100% !important;
-        height: 120px !important;
+        height: 100px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
         border-radius: 6px;
         border: 2px solid #ff4b4b !important;
-        transform: translateZ(50px) scale(1.05) !important;
-        transition: transform 0.4s ease, box-shadow 0.4s ease;
-        box-shadow: 0 15px 25px rgba(0,0,0,0.25) !important;
-        display: block;
-        margin: auto;
-        z-index: 10;
-    }
-    
-    /* Left Adjacent Image (3D Rotated Left) */
-    div[data-testid="column"]:nth-of-type(2) img {
-        width: 100% !important;
-        height: 85px !important;
-        object-fit: contain !important;
-        background-color: #f8fafc;
-        border-radius: 6px;
-        border: 1px solid #cbd5e1;
-        transform: rotateY(25deg) translateZ(-20px) scale(0.9) !important;
-        transition: transform 0.4s ease;
-        opacity: 0.7;
         display: block;
         margin: auto;
     }
     
-    /* Right Adjacent Image (3D Rotated Right) */
+    /* Left and Right Adjacent Images */
+    div[data-testid="column"]:nth-of-type(2) img,
     div[data-testid="column"]:nth-of-type(4) img {
         width: 100% !important;
-        height: 85px !important;
+        height: 70px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
         border-radius: 6px;
         border: 1px solid #cbd5e1;
-        transform: rotateY(-25deg) translateZ(-20px) scale(0.9) !important;
-        transition: transform 0.4s ease;
         opacity: 0.7;
         display: block;
         margin: auto;
@@ -72,9 +66,8 @@ st.markdown("""
     
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
-    .stButton button { padding: 2px 4px; font-size: 12px; font-weight: 600; min-height: 28px; width: 100%; }
+    .stButton button { padding: 4px 8px; font-size: 12px; font-weight: 600; min-height: 32px; width: 100%; }
     .element-container { margin-bottom: 0px !important; }
-    hr { margin: 3px 0px !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -207,7 +200,9 @@ else:
                                 prev_idx = (current_idx - 1) % len(img_list)
                                 next_idx = (current_idx + 1) % len(img_list)
 
-                                cols = st.columns([0.4, 1.0, 1.2, 1.0, 0.4, 2.2, 0.7, 1.0])
+                                # Render inside a professional card wrapper div
+                                st.markdown('<div class="product-card">', unsafe_allow_html=True)
+                                cols = st.columns([0.4, 0.9, 1.2, 0.9, 0.4, 2.2, 0.8, 1.1])
                                 
                                 with cols[0]:
                                     if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
@@ -231,19 +226,19 @@ else:
                                 with cols[5]:
                                     st.markdown(f"**{item_name}**")
                                     if desc:
-                                        st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
+                                        st.markdown(f"<span style='color: #64748b; font-size: 11px;'>{desc}</span>", unsafe_allow_html=True)
                                         
                                 with cols[6]:
-                                    st.markdown(f"**₹{price}**")
+                                    st.markdown(f"<div style='font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 4px;'>₹{price}</div>", unsafe_allow_html=True)
                                     
                                 with cols[7]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
-                                    if st.button("Add", key=f"add_{item_id}", use_container_width=True):
+                                    if st.button("Add to Cart", key=f"add_{item_id}", use_container_width=True):
                                         st.session_state.cart[str(item_id)] = qty
                                         st.rerun()
                                         
-                                st.markdown("<hr style='margin: 3px 0px;'>", unsafe_allow_html=True)
+                                st.markdown('</div>', unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
         except Exception as e:
