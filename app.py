@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
-import os
+import urllib.parse
 
 SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAHRE5wgl1xJ7uAr9DF5OFtnpesK5UD4C3pdnClWdKxQ/exec"
 
@@ -120,7 +120,7 @@ else:
                                 price = row.get('PRICE', '0')
                                 desc = row.get('DESCRIPTION', '')
                                 
-                                # Clean up image input strings from Google Sheet
+                                # Read raw image string from Google Sheet and handle spaces / special characters with URL encoding
                                 img_raw = str(row.get('IMAGES', ''))
                                 raw_list = []
                                 if img_raw and img_raw.strip() != "":
@@ -134,11 +134,12 @@ else:
                                     if name.startswith("http"):
                                         img_list.append(name)
                                     else:
-                                        # Map to GitHub raw URL directly so cloud deployment loads it safely
-                                        github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/baveshstationary-max/main/images/{name}"
+                                        # Properly encode spaces and symbols for GitHub raw URLs (e.g. ChatGPT%20Image...)
+                                        encoded_name = urllib.parse.quote(name)
+                                        github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/baveshstationary-max/main/images/{encoded_name}"
                                         img_list.append(github_raw)
                                             
-                                # Fill up to 6 image slots
+                                # Ensure exactly 6 images are available for the 6 slots
                                 while len(img_list) < 6:
                                     if len(img_list) > 0:
                                         img_list.append(img_list[0])
