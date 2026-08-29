@@ -137,18 +137,20 @@ else:
                                         github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/fancy/main/images/{encoded_name}"
                                         img_list.append(github_raw)
                                             
-                                # Only pad remaining empty slots with the default placeholder instead of duplicating uploaded images
-                                while len(img_list) < 6:
-                                    img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
+                                # Ensure exactly 6 slots are filled with placeholders if fewer images are uploaded
+                                placeholder_url = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
+                                final_img_list = []
+                                for i in range(6):
+                                    if i < len(img_list):
+                                        final_img_list.append(img_list[i])
+                                    else:
+                                        final_img_list.append(placeholder_url)
 
                                 cols = st.columns([1, 1, 1, 1, 1, 1, 1.8, 0.7, 1.1])
                                 
                                 for i in range(6):
                                     with cols[i]:
-                                        try:
-                                            st.image(img_list[i], use_container_width=True)
-                                        except:
-                                            st.image("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300", use_container_width=True)
+                                        st.image(final_img_list[i], use_container_width=True)
                                         
                                 with cols[6]:
                                     st.markdown(f"**{item_name}**")
