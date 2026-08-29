@@ -157,7 +157,6 @@ else:
                                 if not img_list:
                                     img_list = [placeholder_url]
 
-                                # Ensure unique session state key index per item_id for independent rotation
                                 idx_key = f"idx_{item_id}"
                                 if idx_key not in st.session_state.image_indices:
                                     st.session_state.image_indices[idx_key] = 0
@@ -179,6 +178,7 @@ else:
 
                                 with cols[7]:
                                     if st.button("▶", key=f"next_{item_id}", use_container_width=True):
+                                        # Step-by-step shift: shifts the starting window index forward by 1 (1st image goes to last position sequentially)
                                         st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
                                         st.rerun()
                                         
