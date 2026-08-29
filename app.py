@@ -17,7 +17,6 @@ st.markdown("""
         display: none !important;
     }
     
-    /* LIGHT MODE DEFAULT VARIABLES & STYLING */
     :root {
         --bg-color: linear-gradient(135deg, #f0f4ff 0%, #fdf2f8 100%);
         --card-bg: #ffffff;
@@ -29,7 +28,6 @@ st.markdown("""
         --image-bg: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
     }
 
-    /* DARK MODE AUTOMATIC OVERRIDES */
     @media (prefers-color-scheme: dark) {
         :root {
             --bg-color: linear-gradient(135deg, #0f172a 100%, #1e1b4b 100%);
@@ -54,12 +52,6 @@ st.markdown("""
         padding: 16px 20px;
         margin-bottom: 14px;
         box-shadow: var(--card-shadow);
-        transition: all 0.3s ease-in-out;
-    }
-    
-    .product-card:hover {
-        border-color: #6366f1;
-        transform: translateY(-2px);
     }
     
     h3 {
@@ -67,21 +59,15 @@ st.markdown("""
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-weight: 800;
-        letter-spacing: -0.5px;
     }
 
-    /* MOBILE RESPONSIVE FIXES */
     @media (max-width: 768px) {
         .product-card {
-            padding: 12px;
+            padding: 10px;
         }
-        /* Force image scaling on mobile devices */
-        img {
-            max-width: 100% !important;
-            height: auto !important;
-            max-height: 180px !important;
-            object-fit: contain !important;
-            margin: auto;
+        /* Hide multi-image carousel side previews on mobile to save space */
+        .mobile-hide-img {
+            display: none !important;
         }
     }
     
@@ -119,7 +105,7 @@ if not st.session_state.logged_in:
                 st.session_state.logged_in = True
                 st.session_state.username = username
                 st.session_state.mobile = mobile
-                st.session_state.rerun()
+                st.rerun()
             except Exception as e:
                 st.error(f"Connection error: {e}")
         else:
@@ -221,71 +207,46 @@ else:
                                 next_idx = (current_idx + 1) % len(img_list)
 
                                 st.markdown('<div class="product-card">', unsafe_allow_html=True)
+                                cols = st.columns([0.4, 0.9, 1.2, 0.9, 0.4, 2.2, 0.8, 1.1])
                                 
-                                # Use container width checking or split cleanly for mobile view support
-                                is_mobile = st.context.screen.is_mobile if hasattr(st, "context") else False
-                                
-                                if is_mobile:
-                                    # Stacked mobile layout
+                                with cols[0]:
+                                    if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
+                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
+                                        st.rerun()
+
+                                with cols[1]:
+                                    st.markdown('<div class="mobile-hide-img">', unsafe_allow_html=True)
+                                    st.image(img_list[prev_idx], use_container_width=True)
+                                    st.markdown('</div>', unsafe_allow_html=True)
+
+                                with cols[2]:
                                     st.image(img_list[current_idx], use_container_width=True)
-                                    m_col1, m_col2 = st.columns(2)
-                                    with m_col1:
-                                        if st.button("◀ Prev", key=f"m_prev_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
-                                            st.rerun()
-                                    with m_col2:
-                                        if st.button("Next ▶", key=f"m_next_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
-                                            st.rerun()
-                                            
-                                    st.markdown(f"<div style='font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 8px;'>{item_name}</div>", unsafe_allow_html=True)
+
+                                with cols[3]:
+                                    st.markdown('<div class="mobile-hide-img">', unsafe_allow_html=True)
+                                    st.image(img_list[next_idx], use_container_width=True)
+                                    st.markdown('</div>', unsafe_allow_html=True)
+
+                                with cols[4]:
+                                    if st.button("▶", key=f"next_{item_id}", use_container_width=True):
+                                        st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
+                                        st.rerun()
+                                        
+                                with cols[5]:
+                                    st.markdown(f"<div style='font-size: 15px; font-weight: 700; color: var(--text-main);'>{item_name}</div>", unsafe_allow_html=True)
                                     if desc:
-                                        st.markdown(f"<div style='color: var(--text-desc); font-size: 12px; margin-top: 2px;'>{desc}</div>", unsafe_allow_html=True)
-                                    st.markdown(f"<div style='font-size: 18px; font-weight: 800; color: var(--price-color); margin: 6px 0;'>₹{price}</div>", unsafe_allow_html=True)
+                                        st.markdown(f"<div style='color: var(--text-desc); font-size: 11px; margin-top: 2px; font-weight: 500;'>{desc}</div>", unsafe_allow_html=True)
+                                        
+                                with cols[6]:
+                                    st.markdown(f"<div style='font-size: 16px; font-weight: 800; color: var(--price-color); margin-top: 6px;'>₹{price}</div>", unsafe_allow_html=True)
                                     
+                                with cols[7]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
-                                    qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_m_{item_id}")
-                                    if st.button("Add to Cart", key=f"add_m_{item_id}", use_container_width=True):
+                                    qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
+                                    if st.button("Add to Cart", key=f"add_{item_id}", use_container_width=True):
                                         st.session_state.cart[str(item_id)] = qty
                                         st.rerun()
-                                else:
-                                    # Original multi-column desktop layout
-                                    cols = st.columns([0.4, 0.9, 1.2, 0.9, 0.4, 2.2, 0.8, 1.1])
                                     
-                                    with cols[0]:
-                                        if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] - 1) % len(img_list)
-                                            st.rerun()
-
-                                    with cols[1]:
-                                        st.image(img_list[prev_idx], use_container_width=True)
-
-                                    with cols[2]:
-                                        st.image(img_list[current_idx], use_container_width=True)
-
-                                    with cols[3]:
-                                        st.image(img_list[next_idx], use_container_width=True)
-
-                                    with cols[4]:
-                                        if st.button("▶", key=f"next_{item_id}", use_container_width=True):
-                                            st.session_state.image_indices[idx_key] = (st.session_state.image_indices[idx_key] + 1) % len(img_list)
-                                            st.rerun()
-                                            
-                                    with cols[5]:
-                                        st.markdown(f"<div style='font-size: 15px; font-weight: 700; color: var(--text-main);'>{item_name}</div>", unsafe_allow_html=True)
-                                        if desc:
-                                            st.markdown(f"<div style='color: var(--text-desc); font-size: 11px; margin-top: 2px; font-weight: 500;'>{desc}</div>", unsafe_allow_html=True)
-                                            
-                                    with cols[6]:
-                                        st.markdown(f"<div style='font-size: 16px; font-weight: 800; color: var(--price-color); margin-top: 6px;'>₹{price}</div>", unsafe_allow_html=True)
-                                        
-                                    with cols[7]:
-                                        current_qty = st.session_state.cart.get(str(item_id), 1)
-                                        qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
-                                        if st.button("Add to Cart", key=f"add_{item_id}", use_container_width=True):
-                                            st.session_state.cart[str(item_id)] = qty
-                                            st.rerun()
-                                        
                                 st.markdown('</div>', unsafe_allow_html=True)
             else:
                 st.info("No products found in inventory.")
