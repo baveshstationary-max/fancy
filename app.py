@@ -120,10 +120,10 @@ else:
                                 price = row.get('PRICE', '0')
                                 desc = row.get('DESCRIPTION', '')
                                 
-                                # Read raw image string from Google Sheet and handle spaces / special characters with URL encoding
                                 img_raw = str(row.get('IMAGES', ''))
                                 raw_list = []
                                 if img_raw and img_raw.strip() != "":
+                                    # Clean up backslashes and commas
                                     for part in img_raw.replace('\\', ',').split(','):
                                         c_name = part.strip()
                                         if c_name:
@@ -134,19 +134,17 @@ else:
                                     if name.startswith("http"):
                                         img_list.append(name)
                                     else:
-                                        # Properly encode spaces and symbols for GitHub raw URLs (e.g. ChatGPT%20Image...)
+                                        # URL encode spaces/special symbols for GitHub raw links
                                         encoded_name = urllib.parse.quote(name)
                                         github_raw = f"https://raw.githubusercontent.com/baveshstationary-max/baveshstationary-max/main/images/{encoded_name}"
                                         img_list.append(github_raw)
                                             
-                                # Ensure exactly 6 images are available for the 6 slots
                                 while len(img_list) < 6:
                                     if len(img_list) > 0:
                                         img_list.append(img_list[0])
                                     else:
                                         img_list.append("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300")
 
-                                # Render 6 full-size images side-by-side
                                 cols = st.columns([1, 1, 1, 1, 1, 1, 1.8, 0.7, 1.1])
                                 
                                 for i in range(6):
