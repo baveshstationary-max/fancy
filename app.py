@@ -17,28 +17,30 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Center highlighted image styling - balanced proportions */
-    div[data-testid="column"]:nth-of-type(2) img {
-        width: 100% !important;
-        height: 95px !important;
-        object-fit: contain !important;
-        background-color: #f8fafc;
-        border-radius: 6px;
-        border: 2px solid #ff4b4b;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    /* Round shape styling for previous/next preview thumbnails (smaller than center) */
+    /* Make center image and side preview thumbnails all equal uniform round shape */
     div[data-testid="column"]:nth-of-type(1) img, 
+    div[data-testid="column"]:nth-of-type(2) img, 
     div[data-testid="column"]:nth-of-type(3) img {
-        width: 45px !important;
-        height: 45px !important;
+        width: 70px !important;
+        height: 70px !important;
         object-fit: cover !important;
         border-radius: 50% !important;
-        border: 2px solid #cbd5e1;
-        cursor: pointer;
         display: block;
         margin: auto;
+    }
+    
+    /* Highlight the center image with a clear distinct border */
+    div[data-testid="column"]:nth-of-type(2) img {
+        border: 3px solid #ff4b4b !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    /* Subtle border for side previews */
+    div[data-testid="column"]:nth-of-type(1) img, 
+    div[data-testid="column"]:nth-of-type(3) img {
+        border: 2px solid #cbd5e1;
+        cursor: pointer;
+        opacity: 0.8;
     }
     
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
@@ -177,7 +179,7 @@ else:
                                 prev_idx = (current_idx - 1) % len(img_list)
                                 next_idx = (current_idx + 1) % len(img_list)
 
-                                cols = st.columns([0.6, 1.4, 0.6, 2.5, 0.8, 1.2])
+                                cols = st.columns([0.5, 1.0, 0.5, 2.8, 0.8, 1.2])
                                 
                                 with cols[0]:
                                     if len(img_list) > 1:
