@@ -47,6 +47,8 @@ if "selected_category" not in st.session_state:
     st.session_state.selected_category = ""
 if "cart" not in st.session_state:
     st.session_state.cart = {}
+if "image_indices" not in st.session_state:
+    st.session_state.image_indices = {}
 
 # LOGIN SCREEN
 if not st.session_state.logged_in:
@@ -151,28 +153,43 @@ else:
                                         
                                 placeholder_url = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300"
                                 
-                                final_img_list = []
-                                for i in range(6):
-                                    if i < len(img_list) and img_list[i]:
-                                        final_img_list.append(img_list[i])
-                                    else:
-                                        final_img_list.append(placeholder_url)
+                                if not img_list:
+                                    img_list = [placeholder_url]
 
-                                cols = st.columns([1, 1, 1, 1, 1, 1, 1.8, 0.7, 1.1])
+                                # Initialize carousel index for this item if not present
+                                if item_id not in st.session_state.image_indices:
+                                    st.session_state.image_indices[item_id] = 0
+
+                                cols = st.columns([0.4, 1, 1, 1, 1, 1, 1, 0.4, 1.8, 0.7, 1.1])
                                 
+                                # Left Arrow Button
+                                with cols[0]:
+                                    if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
+                                        st.session_state.image_indices[item_id] = (st.session_state.image_indices[item_id] - 1) % len(img_list)
+                                        st.rerun()
+
+                                # Display 6 slots using a sliding window rotation based on current index
+                                current_idx = st.session_state.image_indices[item_id]
                                 for i in range(6):
-                                    with cols[i]:
-                                        st.image(final_img_list[i], use_container_width=True)
+                                    with cols[1 + i]:
+                                        actual_img_index = (current_idx + i) % len(img_list)
+                                        st.image(img_list[actual_img_index], use_container_width=True)
+
+                                # Right Arrow Button
+                                with cols[7]:
+                                    if st.button("▶", key=f"next_{item_id}", use_container_width=True):
+                                        st.session_state.image_indices[item_id] = (st.session_state.image_indices[item_id] + 1) % len(img_list)
+                                        st.rerun()
                                         
-                                with cols[6]:
+                                with cols[8]:
                                     st.markdown(f"**{item_name}**")
                                     if desc:
                                         st.markdown(f"<span style='color: #666; font-size: 10px;'>{desc}</span>", unsafe_allow_html=True)
                                         
-                                with cols[7]:
+                                with cols[9]:
                                     st.markdown(f"**₹{price}**")
                                     
-                                with cols[8]:
+                                with cols[10]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
                                     qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}", label_visibility="collapsed")
                                     if st.button("Add", key=f"add_{item_id}", use_container_width=True):
