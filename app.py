@@ -6,7 +6,6 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="centered")
 
-# Initialize session state variables safely
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "username" not in st.session_state:
@@ -37,12 +36,10 @@ if not st.session_state.logged_in:
         else:
             st.error("Please fill in both fields")
 
-# MAIN APP SCREEN (Matching exact sketch design layout)
+# MAIN APP SCREEN
 else:
-    # Sticky Top Store Header
     st.markdown("<h2 style='text-align: center;'>BAVESH STATIONARY</h2>", unsafe_allow_html=True)
     
-    # Navigation Buttons (HOME | CART | LOGOUT)
     nav1, nav2, nav3 = st.columns(3)
     with nav1:
         if st.button("HOME", use_container_width=True):
@@ -61,10 +58,8 @@ else:
             
     st.markdown("---")
 
-    # HOME PAGE: Scrollable Product Cards matching sketch layout [Name/Price | Image | Qty +/- Add]
+    # HOME PAGE
     if st.session_state.page == "home":
-        st.markdown("#### Category")
-        
         try:
             res = requests.get(f"{SCRIPT_URL}?action=getInventory")
             rows = res.json()
@@ -72,15 +67,18 @@ else:
                 headers = rows[0] 
                 df = pd.DataFrame(rows[1:], columns=headers)
                 
-                # Scrollable container for products list
+                # Scrollable container showing category headings dynamically
                 with st.container(height=550):
                     for index, row in df.iterrows():
                         item_id = str(row.get('ITEM ID', index))
                         item_name = row.get('ITEM NAME', 'Product')
+                        category = row.get('CATEGORY', 'General')
                         price = row.get('PRICE', '0')
                         img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=500"
                         
-                        # Custom layout frame matching your handwritten sketch columns
+                        # Display Category Name above each product block as requested
+                        st.markdown(f"#### Category: {category}")
+                        
                         box_col1, box_col2, box_col3 = st.columns([2, 2, 1.2])
                         
                         with box_col1:
@@ -120,7 +118,6 @@ else:
         if not st.session_state.cart:
             st.info("Your cart is empty. Go back to HOME to add products.")
         else:
-            grand_total = 0
             for item_id, qty in st.session_state.cart.items():
                 st.markdown(f"**Item ID:** {item_id} | **Quantity:** {qty}")
             
