@@ -17,30 +17,33 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Professional Color Palette & Modern Card Styling */
+    /* Colorful Modern Background & Store Cards */
     .stApp {
-        background-color: #f4f6f9;
+        background: linear-gradient(135deg, #f0f4ff 0%, #fdf2f8 100%);
     }
     
     .product-card {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 14px 18px;
-        margin-bottom: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        transition: all 0.3s ease;
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 16px 20px;
+        margin-bottom: 14px;
+        box-shadow: 0 6px 15px rgba(99, 102, 241, 0.08);
+        transition: all 0.3s ease-in-out;
     }
     
     .product-card:hover {
-        border-color: #3b82f6;
-        box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1), 0 4px 6px -2px rgba(59, 130, 246, 0.05);
+        border-color: #6366f1;
+        box-shadow: 0 12px 25px rgba(99, 102, 241, 0.15);
+        transform: translateY(-2px);
     }
     
-    /* Colorful Accents for App Header */
+    /* Vibrant Headings */
     h3 {
-        color: #1e3a8a;
-        font-weight: 700;
+        background: linear-gradient(90deg, #4f46e5, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
         letter-spacing: -0.5px;
     }
     
@@ -50,17 +53,17 @@ st.markdown("""
         gap: 8px;
     }
     
-    /* Center Main Image (Colorful Highlight Border) */
+    /* Center Main Image (Colorful Pop-out Border) */
     div[data-testid="column"]:nth-of-type(3) img {
         width: 100% !important;
         height: 110px !important;
         object-fit: contain !important;
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        border-radius: 8px;
-        border: 2px solid #3b82f6 !important;
+        background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
+        border-radius: 10px;
+        border: 2px solid #ec4899 !important;
         display: block;
         margin: auto;
-        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.15);
+        box-shadow: 0 4px 10px rgba(236, 72, 153, 0.2);
     }
     
     /* Left and Right Adjacent Images */
@@ -70,15 +73,15 @@ st.markdown("""
         height: 75px !important;
         object-fit: contain !important;
         background-color: #f8fafc;
-        border-radius: 6px;
+        border-radius: 8px;
         border: 1px solid #cbd5e1;
-        opacity: 0.7;
+        opacity: 0.75;
         display: block;
         margin: auto;
     }
     
     .block-container { padding-top: 0.8rem; padding-bottom: 0.8rem; max-width: 100%; }
-    .stButton button { padding: 6px 10px; font-size: 13px; font-weight: 600; min-height: 36px; width: 100%; border-radius: 6px; }
+    .stButton button { padding: 6px 10px; font-size: 13px; font-weight: 600; min-height: 36px; width: 100%; border-radius: 8px; }
     .element-container { margin-bottom: 0px !important; }
     </style>
 """, unsafe_allow_html=True)
@@ -235,12 +238,12 @@ else:
                                         st.rerun()
                                         
                                 with cols[5]:
-                                    st.markdown(f"<div style='font-size: 15px; font-weight: 600; color: #1e293b;'>{item_name}</div>", unsafe_allow_html=True)
+                                    st.markdown(f"<div style='font-size: 15px; font-weight: 700; color: #1e1b4b;'>{item_name}</div>", unsafe_allow_html=True)
                                     if desc:
-                                        st.markdown(f"<div style='color: #64748b; font-size: 11px; margin-top: 2px;'>{desc}</div>", unsafe_allow_html=True)
+                                        st.markdown(f"<div style='color: #db2777; font-size: 11px; margin-top: 2px; font-weight: 500;'>{desc}</div>", unsafe_allow_html=True)
                                         
                                 with cols[6]:
-                                    st.markdown(f"<div style='font-size: 16px; font-weight: 700; color: #2563eb; margin-top: 6px;'>₹{price}</div>", unsafe_allow_html=True)
+                                    st.markdown(f"<div style='font-size: 16px; font-weight: 800; color: #4f46e5; margin-top: 6px;'>₹{price}</div>", unsafe_allow_html=True)
                                     
                                 with cols[7]:
                                     current_qty = st.session_state.cart.get(str(item_id), 1)
