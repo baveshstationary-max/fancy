@@ -6,6 +6,7 @@ SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAH
 
 st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="centered")
 
+# Initialize session state variables safely
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "username" not in st.session_state:
@@ -36,21 +37,23 @@ if not st.session_state.logged_in:
         else:
             st.error("Please fill in both fields")
 
-# MAIN APP SCREEN
+# MAIN APP SCREEN (Matching exact sketch design layout)
 else:
-    st.markdown("### BAVESH STATIONARY")
+    # Sticky Top Store Header
+    st.markdown("<h2 style='text-align: center;'>BAVESH STATIONARY</h2>", unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns(3)
-    with col1:
+    # Navigation Buttons (HOME | CART | LOGOUT)
+    nav1, nav2, nav3 = st.columns(3)
+    with nav1:
         if st.button("HOME", use_container_width=True):
             st.session_state.page = "home"
             st.rerun()
-    with col2:
+    with nav2:
         cart_count = sum(st.session_state.cart.values())
         if st.button(f"CART ({cart_count})", use_container_width=True):
             st.session_state.page = "cart"
             st.rerun()
-    with col3:
+    with nav3:
         if st.button("LOGOUT", use_container_width=True):
             st.session_state.logged_in = False
             st.session_state.cart = {}
@@ -58,9 +61,9 @@ else:
             
     st.markdown("---")
 
-    # SCROLLABLE CONTENT AREA
+    # HOME PAGE: Scrollable Product Cards matching sketch layout [Name/Price | Image | Qty +/- Add]
     if st.session_state.page == "home":
-        st.markdown("#### Category: Products")
+        st.markdown("#### Category")
         
         try:
             res = requests.get(f"{SCRIPT_URL}?action=getInventory")
@@ -69,31 +72,37 @@ else:
                 headers = rows[0] 
                 df = pd.DataFrame(rows[1:], columns=headers)
                 
-                with st.container(height=500):
+                # Scrollable container for products list
+                with st.container(height=550):
                     for index, row in df.iterrows():
                         item_id = str(row.get('ITEM ID', index))
                         item_name = row.get('ITEM NAME', 'Product')
                         price = row.get('PRICE', '0')
                         img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=500"
                         
-                        col_info, col_img, col_action = st.columns([2, 2, 1])
+                        # Custom layout frame matching your handwritten sketch columns
+                        box_col1, box_col2, box_col3 = st.columns([2, 2, 1.2])
                         
-                        with col_info:
-                            st.markdown(f"**{item_name}**")
+                        with box_col1:
+                            st.markdown(f"**Product NAME**")
+                            st.markdown(f"### {item_name}")
                             st.markdown(f"PRICE")
                             st.markdown(f"**Rs. {price}**")
                             
-                        with col_img:
+                        with box_col2:
+                            st.markdown("**Product Image**")
                             st.image(img_url, use_container_width=True)
                             
-                        with col_action:
+                        with box_col3:
+                            st.markdown("**Add**")
                             current_qty = st.session_state.cart.get(item_id, 0)
                             st.markdown(f"Qty: {current_qty}")
-                            if st.button("➕ Add", key=f"add_{item_id}_{index}"):
+                            
+                            if st.button("➕ Add", key=f"add_{item_id}_{index}", use_container_width=True):
                                 st.session_state.cart[item_id] = current_qty + 1
                                 st.rerun()
                             if current_qty > 0:
-                                if st.button("➖ Remove", key=f"sub_{item_id}_{index}"):
+                                if st.button("➖ Remove", key=f"sub_{item_id}_{index}", use_container_width=True):
                                     st.session_state.cart[item_id] = current_qty - 1
                                     if st.session_state.cart[item_id] == 0:
                                         del st.session_state.cart[item_id]
@@ -105,15 +114,18 @@ else:
         except Exception as e:
             st.error(f"Could not load catalog: {e}")
 
+    # CART PAGE
     elif st.session_state.page == "cart":
         st.markdown("#### 🛒 Your Shopping Cart")
         if not st.session_state.cart:
-            st.info("Your cart is empty.")
+            st.info("Your cart is empty. Go back to HOME to add products.")
         else:
+            grand_total = 0
             for item_id, qty in st.session_state.cart.items():
-                st.markdown(f"- Item ID: {item_id} | Quantity: {qty}")
+                st.markdown(f"**Item ID:** {item_id} | **Quantity:** {qty}")
             
-            if st.button("Checkout & Send Order to Sheet"):
+            st.markdown("---")
+            if st.button("Checkout & Submit Order to Sheet", use_container_width=True):
                 try:
                     for item_id, qty in st.session_state.cart.items():
                         order_data = {
@@ -125,7 +137,7 @@ else:
                         }
                         requests.post(SCRIPT_URL, json=order_data)
                     
-                    st.success("Orders successfully placed and saved to Google Sheets!")
+                    st.success("Order successfully sent to Google Sheets!")
                     st.session_state.cart = {}
                 except Exception as e:
                     st.error(f"Error checking out: {e}")
