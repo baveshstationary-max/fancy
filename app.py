@@ -17,7 +17,6 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Uniform standard image size for all 6 active slots */
     img {
         width: 100% !important;
         height: 100px !important;
@@ -31,7 +30,7 @@ st.markdown("""
     
     .block-container { padding-top: 0.4rem; padding-bottom: 0.4rem; max-width: 100%; }
     h2 { margin-bottom: 0px; }
-    .stButton button { padding: 2px 4px; font-size: 12px; font-weight: 600; min-height: 28px; }
+    .stButton button { padding: 2px 4px; font-size: 12px; font-weight: 600; min-height: 28px; width: 100%; }
     div[data-testid="stHorizontalBlock"] { align-items: center; gap: 4px; }
     .element-container { margin-bottom: 0px !important; }
     hr { margin: 3px 0px !important; }
@@ -163,7 +162,7 @@ else:
 
                                 current_idx = st.session_state.image_indices[item_id]
 
-                                # Layout: [Left Arrow] [6 Sliding Image Slots] [Right Arrow] [Name/Desc] [Price] [Qty/Add]
+                                # Layout: [Left Arrow] [6 Image Slots] [Right Arrow] [Name/Desc] [Price] [Qty/Add]
                                 cols = st.columns([0.4, 1, 1, 1, 1, 1, 1, 0.4, 1.8, 0.7, 1.1])
                                 
                                 with cols[0]:
@@ -172,7 +171,6 @@ else:
                                             st.session_state.image_indices[item_id] = (st.session_state.image_indices[item_id] - 1) % len(img_list)
                                             st.rerun()
 
-                                # Render 6 sliding slots independently for this specific product item
                                 for i in range(6):
                                     with cols[1 + i]:
                                         actual_idx = (current_idx + i) % len(img_list)
