@@ -38,9 +38,8 @@ if not st.session_state.logged_in:
         else:
             st.error("Please fill in both fields")
 
-# MAIN APP SCREEN (Two-Column Layout matching your new design)
+# MAIN APP SCREEN (Matching your exact horizontal layout: Categories on Left | Images / Description / Pricing & Add on Right)
 else:
-    # Stable Top Header
     st.markdown("<h2 style='text-align: center;'>BAVESH STATIONARY</h2>", unsafe_allow_html=True)
     
     nav1, nav2, nav3 = st.columns(3)
@@ -61,7 +60,7 @@ else:
             
     st.markdown("---")
 
-    # HOME PAGE: Split layout (Categories on Left | Products on Right)
+    # HOME PAGE
     if st.session_state.page == "home":
         try:
             res = requests.get(f"{SCRIPT_URL}?action=getInventory")
@@ -70,13 +69,12 @@ else:
                 headers = rows[0] 
                 df = pd.DataFrame(rows[1:], columns=headers)
                 
-                # Get unique categories from data
                 categories = df['CATEGORY'].dropna().unique().tolist() if 'CATEGORY' in df.columns else ["General"]
                 if not st.session_state.selected_category and categories:
                     st.session_state.selected_category = categories[0]
 
-                # TWO COLUMN MASTER-DETAIL LAYOUT (Left: Categories sidebar, Right: Product catalog)
-                col_left, col_right = st.columns([1, 3])
+                # Two-column layout: Left = Categories, Right = Products horizontal row layout
+                col_left, col_right = st.columns([1, 4])
 
                 with col_left:
                     st.markdown("### Category")
@@ -88,47 +86,45 @@ else:
 
                 with col_right:
                     active_cat = st.session_state.selected_category
-                    st.markdown(f"### Products in: {active_cat}")
+                    st.markdown(f"### Category: {active_cat}")
                     st.markdown("---")
 
-                    # Filter products by selected category
                     filtered_df = df[df['CATEGORY'] == active_cat] if 'CATEGORY' in df.columns else df
 
                     if filtered_df.empty:
                         st.info("No products available in this category.")
                     else:
-                        with st.container(height=550):
+                        with st.container(height=600):
                             for index, row in filtered_df.iterrows():
                                 item_id = str(row.get('ITEM ID', index))
                                 item_name = row.get('ITEM NAME', 'Product')
                                 price = row.get('PRICE', '0')
-                                img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=500"
+                                desc = row.get('DESCRIPTION', 'No description available.')
+                                img_url = row.get("IMAGES") if row.get("IMAGES") else "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500"
                                 
-                                p_col1, p_col2, p_col3 = st.columns([2, 2, 1.2])
+                                # Exact horizontal breakdown matching your UI sample image
+                                img_col, desc_col, buy_col = st.columns([1.5, 2, 2])
                                 
-                                with p_col1:
-                                    st.markdown(f"**Product NAME**")
-                                    st.markdown(f"### {item_name}")
-                                    st.markdown(f"PRICE")
-                                    st.markdown(f"**Rs. {price}**")
-                                    
-                                with p_col2:
-                                    st.markdown("**Product Image**")
+                                with img_col:
                                     st.image(img_url, use_container_width=True)
                                     
-                                with p_col3:
-                                    st.markdown("**Qty / Add**")
-                                    current_qty = st.session_state.cart.get(item_id, 0)
-                                    st.markdown(f"Qty: {current_qty}")
+                                with desc_col:
+                                    st.markdown("**Description:**")
+                                    st.markdown(f"<p style='color: gray; font-size: 14px;'>{desc}</p>", unsafe_allow_html=True)
                                     
-                                    if st.button("➕ Add", key=f"add_{item_id}_{index}", use_container_width=True):
-                                        st.session_state.cart[item_id] = current_qty + 1
-                                        st.rerun()
-                                    if current_qty > 0:
-                                        if st.button("➖ Remove", key=f"sub_{item_id}_{index}", use_container_width=True):
-                                            st.session_state.cart[item_id] = current_qty - 1
-                                            if st.session_state.cart[item_id] == 0:
-                                                del st.session_state.cart[item_id]
+                                with buy_col:
+                                    st.markdown(f"**{item_name}**")
+                                    st.markdown(f"### ₹{price}")
+                                    
+                                    current_qty = st.session_state.cart.get(item_id, 1)
+                                    
+                                    qty_col, add_col = st.columns([1, 1.5])
+                                    with qty_col:
+                                        qty = st.number_input("Qty", min_value=1, value=current_qty, key=f"qty_{item_id}_{index}", label_visibility="collapsed")
+                                    with add_col:
+                                        if st.button("Add", key=f"add_{item_id}_{index}", use_container_width=True):
+                                            st.session_state.cart[item_id] = qty
+                                            st.success(f"Added {qty} item(s)")
                                             st.rerun()
                                             
                                 st.markdown("---")
