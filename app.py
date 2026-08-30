@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # ============================================================
-# RESPONSIVE CSS & FORCED DESKTOP WRAPPER
+# RESPONSIVE CSS & FORCED DESKTOP VIEWPORT WRAPPER
 # ============================================================
 
 st.markdown("""
@@ -31,7 +31,7 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
     display: none !important;
 }
 
-/* Force overall page container to mimic desktop width with scrollability */
+/* Force overall page container to mimic desktop width with horizontal scrollability */
 html, body {
     width: 100% !important;
     overflow-x: auto !important;
