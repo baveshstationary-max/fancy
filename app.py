@@ -13,50 +13,18 @@ st.set_page_config(
 )
 
 # ============================================================
-# FORCE DESKTOP-STYLE VIEWPORT ON MOBILE
-# ============================================================
-# Streamlit's normal mobile viewport is responsive. This small,
-# trusted script changes the viewport to a fixed desktop canvas
-# when the page is opened on a phone.
-st.html("""
-<script>
-(function () {
-    const isMobile =
-        window.matchMedia &&
-        window.matchMedia("(max-width: 768px)").matches;
-
-    if (!isMobile) return;
-
-    let viewport = document.querySelector('meta[name="viewport"]');
-
-    if (!viewport) {
-        viewport = document.createElement("meta");
-        viewport.name = "viewport";
-        document.head.appendChild(viewport);
-    }
-
-    viewport.setAttribute(
-        "content",
-        "width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
-    );
-
-    document.documentElement.style.width = "1200px";
-    document.documentElement.style.minWidth = "1200px";
-    document.body.style.width = "1200px";
-    document.body.style.minWidth = "1200px";
-})();
-</script>
-""", unsafe_allow_javascript=True)
-
-# ============================================================
 # RESPONSIVE CSS
 # ============================================================
 
 st.markdown("""
 <style>
-#MainMenu {visibility: hidden;}
-header {visibility: hidden;}
-footer {visibility: hidden;}
+/* =========================================================
+   GLOBAL DESKTOP-STYLE CANVAS
+   ========================================================= */
+
+#MainMenu { visibility: hidden; }
+header { visibility: hidden; }
+footer { visibility: hidden; }
 
 .stHeadingWithAction > a,
 .markdown-text-container a.anchor-link,
@@ -67,8 +35,8 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 .block-container {
     padding-top: 0.45rem !important;
     padding-bottom: 0.5rem !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    padding-left: 0.8rem !important;
+    padding-right: 0.8rem !important;
     max-width: 100% !important;
 }
 
@@ -97,7 +65,7 @@ hr {
 /* Product images */
 .product-main img {
     width: 100% !important;
-    height: 115px !important;
+    height: 120px !important;
     object-fit: contain !important;
     background: #f8fafc;
     border: 2px solid #ff4b4b;
@@ -107,7 +75,7 @@ hr {
 
 .product-preview img {
     width: 100% !important;
-    height: 72px !important;
+    height: 75px !important;
     object-fit: contain !important;
     background: #f8fafc;
     border: 1px solid #cbd5e1;
@@ -143,128 +111,138 @@ hr {
     white-space: nowrap;
 }
 
-.mobile-section-title {
-    font-size: 14px;
-    font-weight: 700;
+/* =========================================================
+   PROFESSIONAL COMPACT LOGIN
+   ========================================================= */
+
+.login-shell {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.login-title {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: #111827;
+    margin: 4px 0 10px 0;
+}
+
+.login-card-host {
+    width: 460px !important;
+    max-width: 460px !important;
+    margin: 0 auto !important;
+}
+
+.login-card-host [data-testid="stVerticalBlockBorderWrapper"] {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 7px !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    padding: 16px 14px 12px 14px !important;
+}
+
+.login-card-host [data-testid="stTextInput"] label {
+    font-size: 12px !important;
+    color: #111827 !important;
+    font-weight: 500 !important;
+}
+
+.login-card-host [data-testid="stTextInput"] input {
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 6px 10px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    background: #f8fafc !important;
+    font-size: 13px !important;
+}
+
+.login-card-host [data-testid="stButton"] button {
+    height: 36px !important;
+    min-height: 36px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
 }
 
 /* =========================================================
-   MOBILE = DESKTOP CANVAS + LEFT/RIGHT SWIPE
+   MOBILE = SAME DESKTOP PAGE, HORIZONTAL SCROLL
    ========================================================= */
 
 @media screen and (max-width: 768px) {
 
-    /* Make the document itself wider than the phone screen. */
-    html {
-        min-width: 1200px !important;
-        width: 1200px !important;
-        overflow-x: auto !important;
-    }
-
+    html,
     body {
-        min-width: 1200px !important;
         width: 1200px !important;
+        min-width: 1200px !important;
         max-width: none !important;
         overflow-x: auto !important;
         overflow-y: auto !important;
-        margin: 0 !important;
     }
 
-    /* Streamlit root must also keep the desktop width. */
-    #root {
-        min-width: 1200px !important;
-        width: 1200px !important;
-        max-width: none !important;
-        overflow: visible !important;
-    }
-
-    .stApp {
-        min-width: 1200px !important;
-        width: 1200px !important;
-        max-width: none !important;
-    }
-
-    [data-testid="stAppViewContainer"] {
-        min-width: 1200px !important;
-        width: 1200px !important;
-        max-width: none !important;
-        overflow: visible !important;
-    }
-
-    [data-testid="stAppViewMain"] {
-        min-width: 1200px !important;
-        width: 1200px !important;
-        max-width: none !important;
-        overflow: visible !important;
-    }
-
+    #root,
+    .stApp,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewMain"],
+    [data-testid="stMain"],
     section.main {
-        min-width: 1200px !important;
         width: 1200px !important;
+        min-width: 1200px !important;
         max-width: none !important;
     }
 
-    .main .block-container,
-    [data-testid="stMainBlockContainer"],
-    .block-container {
+    .block-container,
+    [data-testid="stMainBlockContainer"] {
         width: 1120px !important;
         min-width: 1120px !important;
         max-width: 1120px !important;
-        margin-left: 40px !important;
-        margin-right: 40px !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        padding-top: 5px !important;
-        padding-bottom: 8px !important;
+        padding-left: 0.8rem !important;
+        padding-right: 0.8rem !important;
     }
 
-    /* Keep every Streamlit column row on one line. */
     div[data-testid="stHorizontalBlock"] {
         width: 100% !important;
         min-width: 0 !important;
         flex-wrap: nowrap !important;
-        gap: 5px !important;
     }
 
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
         min-width: 0 !important;
     }
 
-    /* Preserve computer image sizing. */
-    .product-main img {
-        height: 120px !important;
-    }
-
-    .product-preview img {
-        height: 75px !important;
+    .login-card-host {
+        width: 460px !important;
+        max-width: 460px !important;
     }
 }
 
-/* Keep the desktop canvas on very small phones too. */
 @media screen and (max-width: 480px) {
+
     html,
     body,
     #root,
     .stApp,
     [data-testid="stAppViewContainer"],
     [data-testid="stAppViewMain"],
+    [data-testid="stMain"],
     section.main {
-        min-width: 1200px !important;
         width: 1200px !important;
+        min-width: 1200px !important;
         max-width: none !important;
     }
 
-    .main .block-container,
-    [data-testid="stMainBlockContainer"],
-    .block-container {
+    .block-container,
+    [data-testid="stMainBlockContainer"] {
         width: 1120px !important;
         min-width: 1120px !important;
         max-width: 1120px !important;
-        margin-left: 40px !important;
-        margin-right: 40px !important;
     }
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -300,131 +278,21 @@ if "image_indices" not in st.session_state:
 # ============================================================
 
 if not st.session_state.logged_in:
-    st.markdown("""
-    <style>
-    /* Use the same desktop-style canvas on phones BEFORE login too. */
-    .login-page .block-container {
-        min-width: 1100px !important;
-        width: 1100px !important;
-        max-width: none !important;
-    }
 
-    .login-page [data-testid="stAppViewContainer"],
-    .login-page [data-testid="stAppViewMain"],
-    .login-page [data-testid="stMain"] {
-        min-width: 1100px !important;
-        width: 1100px !important;
-        max-width: none !important;
-    }
+    # The page itself stays desktop-width on mobile. This card is simply
+    # centered within that desktop canvas.
+    login_left, login_center, login_right = st.columns(
+        [1, 1, 1],
+        wrap=False
+    )
 
-    .login-page-title {
-        text-align: center;
-        font-size: 17px;
-        font-weight: 600;
-        color: #111827;
-        margin: 0 0 10px 0;
-    }
-
-    /* Streamlit bordered container used as the login card */
-    .login-card-host {
-        max-width: 460px !important;
-        margin: 0 auto !important;
-    }
-
-    .login-card-host [data-testid="stVerticalBlockBorderWrapper"] {
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 7px !important;
-        box-shadow: none !important;
-        background: #ffffff !important;
-        padding: 20px 14px 14px 14px !important;
-    }
-
-    .login-card-host [data-testid="stTextInput"] label {
-        font-size: 12px !important;
-        color: #111827 !important;
-        font-weight: 500 !important;
-    }
-
-    .login-card-host [data-testid="stTextInput"] input {
-        height: 36px !important;
-        min-height: 36px !important;
-        padding: 6px 10px !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 6px !important;
-        background: #f8fafc !important;
-        font-size: 13px !important;
-    }
-
-    .login-card-host [data-testid="stButton"] button {
-        height: 36px !important;
-        min-height: 36px !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 6px !important;
-        background: #ffffff !important;
-        color: #111827 !important;
-        font-size: 12px !important;
-        font-weight: 500 !important;
-        margin-top: 2px !important;
-    }
-
-    @media (max-width: 768px) {
-        .login-page {
-            min-width: 1100px !important;
-            width: 1100px !important;
-        }
-
-        .login-page .block-container {
-            min-width: 1100px !important;
-            width: 1100px !important;
-            max-width: none !important;
-            padding-left: 8px !important;
-            padding-right: 8px !important;
-        }
-
-        .login-card-host {
-            max-width: 460px !important;
-            width: 100% !important;
-            margin: 0 auto !important;
-        }
-
-        .login-card-host [data-testid="stVerticalBlockBorderWrapper"] {
-            padding: 20px 14px 14px 14px !important;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .login-page {
-            min-width: 1100px !important;
-            width: 1100px !important;
-        }
-
-        .login-card-host {
-            max-width: 460px !important;
-        }
-    }
-
-    </style>
-    """, unsafe_allow_html=True)
-
-# ============================================================
-# LOGIN
-# ============================================================
-
-if not st.session_state.logged_in:
-
-    st.markdown("<div class='login-page'>", unsafe_allow_html=True)
-
-    left, center, right = st.columns([1, 0.7, 1], wrap=False)
-
-    with center:
+    with login_center:
 
         st.markdown(
-            "<div class='login-page-title'>Customer Portal Login</div>",
+            "<div class='login-title'>Customer Portal Login</div>",
             unsafe_allow_html=True
         )
 
-        # A bordered Streamlit container gives the compact card shown
-        # in the reference image.
         st.markdown(
             "<div class='login-card-host'>",
             unsafe_allow_html=True
@@ -434,14 +302,12 @@ if not st.session_state.logged_in:
 
             username = st.text_input(
                 "Your Name:",
-                placeholder="",
                 key="login_username"
             )
 
             mobile = st.text_input(
                 "Mobile Number:",
                 type="password",
-                placeholder="",
                 key="login_mobile"
             )
 
@@ -474,8 +340,6 @@ if not st.session_state.logged_in:
                     st.error("Please fill in both fields")
 
         st.markdown("</div>", unsafe_allow_html=True)
-
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ============================================================
