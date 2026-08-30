@@ -259,6 +259,10 @@ hr {
         max-width: 100% !important;
     }
 
+    .product-mobile-scroll {
+        touch-action: pan-x pan-y !important;
+    }
+
     /* Login remains compact and centered. */
     .login-card-host {
         width: min(360px, 100%) !important;
@@ -271,118 +275,118 @@ hr {
         padding: 14px 12px 10px 12px !important;
     }
 
-    /* Category + products stack vertically. */
-    .product-card {
+    .mobile-swipe-hint {
+        display: none;
+    }
+
+    @media screen and (max-width: 768px) {
+        .mobile-swipe-hint {
+            display: block;
+            font-size: 10px;
+            color: #64748b;
+            text-align: right;
+            margin: -3px 2px 3px 0;
+        }
+    }
+
+    /* ============================================================
+       PRODUCT ROW: PHONE VIEW LIKE THE REFERENCE SCREENSHOT
+       ============================================================
+       The page stays at phone width. Each product itself keeps a
+       compact horizontal row and can be swiped left/right.
+       ============================================================ */
+
+    .product-mobile-scroll {
         width: 100% !important;
-        box-sizing: border-box !important;
-        padding: 8px !important;
-        margin: 5px 0 !important;
-        overflow: hidden !important;
-    }
-
-    /* Product image section fits the phone. */
-    .product-main img {
-        height: 165px !important;
         max-width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
     }
 
-    .product-preview img {
-        height: 68px !important;
-        max-width: 100% !important;
+    .product-mobile-scroll::-webkit-scrollbar {
+        display: none !important;
     }
 
-    .product-name {
-        font-size: 15px !important;
-        line-height: 1.25 !important;
-    }
-
-    .product-desc {
-        font-size: 11px !important;
-        line-height: 1.35 !important;
-    }
-
-    .product-price {
-        font-size: 17px !important;
-    }
-
-    /* The original 8 product columns are allowed to wrap naturally.
-       This prevents the entire page from being shrunk/zoomed out. */
-    .product-card div[data-testid="stHorizontalBlock"] {
-        flex-wrap: wrap !important;
+    /* The inner row is intentionally wider than the phone. */
+    .product-mobile-scroll [data-testid="stHorizontalBlock"] {
+        width: 860px !important;
+        min-width: 860px !important;
+        max-width: none !important;
+        flex-wrap: nowrap !important;
+        gap: 5px !important;
         align-items: center !important;
     }
 
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        box-sizing: border-box !important;
+    .product-mobile-scroll [data-testid="column"] {
+        min-width: 0 !important;
+        flex-shrink: 0 !important;
     }
 
-    /* First image/navigation group */
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
-        flex: 0 0 10% !important;
+    .product-mobile-scroll .product-main img {
+        height: 180px !important;
+        width: 100% !important;
+        object-fit: contain !important;
     }
 
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
-        flex: 0 0 20% !important;
+    .product-mobile-scroll .product-preview img {
+        height: 135px !important;
+        width: 100% !important;
+        object-fit: contain !important;
     }
 
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
-        flex: 0 0 40% !important;
+    .product-mobile-scroll .product-name {
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+        white-space: normal !important;
     }
 
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(4) {
-        flex: 0 0 20% !important;
+    .product-mobile-scroll .product-desc {
+        font-size: 11px !important;
+        line-height: 1.3 !important;
     }
 
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(5) {
-        flex: 0 0 10% !important;
+    .product-mobile-scroll .product-price {
+        font-size: 17px !important;
     }
 
-    /* Product name/info gets a full row on phones. */
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(6) {
-        flex: 0 0 60% !important;
+    .product-mobile-scroll .stButton button {
+        min-height: 42px !important;
+        font-size: 12px !important;
     }
 
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(7) {
-        flex: 0 0 40% !important;
+    .product-mobile-scroll input {
+        font-size: 16px !important;
     }
 
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(8) {
-        flex: 0 0 100% !important;
-    }
-
-    /* Keep scroll containers from forcing a desktop minimum width. */
-    [data-testid="stVerticalBlock"] {
+    /* Keep the product card compact. */
+    .product-card {
+        width: 100% !important;
         max-width: 100% !important;
-    }
-}
-
-@media screen and (max-width: 480px) {
-
-    .block-container {
-        padding-left: 5px !important;
-        padding-right: 5px !important;
+        box-sizing: border-box !important;
+        padding: 5px 0 !important;
+        margin: 4px 0 !important;
+        overflow: visible !important;
     }
 
-    .product-main img {
-        height: 150px !important;
+    /* Categories become a compact horizontal strip on phones. */
+    .category-mobile-scroll {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
     }
 
-    .product-preview img {
-        height: 62px !important;
+    .category-mobile-scroll::-webkit-scrollbar {
+        display: none !important;
     }
 
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
-        flex-basis: 18% !important;
+    .category-mobile-scroll > div {
+        min-width: max-content !important;
     }
-
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
-        flex-basis: 44% !important;
-    }
-
-    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(4) {
-        flex-basis: 18% !important;
-    }
-}
 
 /* ============================================================
    DESKTOP / MANUAL "DESKTOP SITE"
@@ -643,6 +647,11 @@ else:
                         f"##### 🛍️ Products: {active_cat}"
                     )
 
+                    st.markdown(
+                        "<div class='mobile-swipe-hint'>Swipe product rows ← →</div>",
+                        unsafe_allow_html=True
+                    )
+
                     if "CATEGORY" in df.columns:
                         filtered_df = df[
                             df["CATEGORY"] == active_cat
@@ -825,7 +834,15 @@ else:
                                 # Six columns instead of the
                                 # original eight. This gives more
                                 # usable space on smaller screens.
-                                cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
+                                st.markdown(
+                                    "<div class='product-mobile-scroll'>",
+                                    unsafe_allow_html=True
+                                )
+
+                                cols = st.columns(
+                                    [0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0],
+                                    gap="small"
+                                )
 
 
                                 # --------------------------------
@@ -899,6 +916,11 @@ else:
                                     ):
                                         st.session_state.cart[str(item_id)] = qty
                                         st.rerun()
+
+                                st.markdown(
+                                    "</div>",
+                                    unsafe_allow_html=True
+                                )
 
                                 st.markdown("<hr>", unsafe_allow_html=True)
 
