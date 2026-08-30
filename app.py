@@ -199,10 +199,19 @@ if "image_indices" not in st.session_state:
 if not st.session_state.logged_in:
     st.markdown("""
     <style>
-    /* Keep login page normal-width even when the logged-in app
-       uses a wide desktop canvas on mobile. */
+    /* Use the same desktop-style canvas on phones BEFORE login too. */
     .login-page .block-container {
-        max-width: 100% !important;
+        min-width: 1100px !important;
+        width: 1100px !important;
+        max-width: none !important;
+    }
+
+    .login-page [data-testid="stAppViewContainer"],
+    .login-page [data-testid="stAppViewMain"],
+    .login-page [data-testid="stMain"] {
+        min-width: 1100px !important;
+        width: 1100px !important;
+        max-width: none !important;
     }
 
     .login-page-title {
@@ -256,12 +265,17 @@ if not st.session_state.logged_in:
     }
 
     @media (max-width: 768px) {
+        .login-page {
+            min-width: 1100px !important;
+            width: 1100px !important;
+        }
+
         .login-page .block-container {
-            min-width: 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            padding-left: 12px !important;
-            padding-right: 12px !important;
+            min-width: 1100px !important;
+            width: 1100px !important;
+            max-width: none !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
         }
 
         .login-card-host {
@@ -276,10 +290,16 @@ if not st.session_state.logged_in:
     }
 
     @media (max-width: 480px) {
+        .login-page {
+            min-width: 1100px !important;
+            width: 1100px !important;
+        }
+
         .login-card-host {
-            max-width: 100% !important;
+            max-width: 460px !important;
         }
     }
+
     </style>
     """, unsafe_allow_html=True)
 
@@ -288,6 +308,8 @@ if not st.session_state.logged_in:
 # ============================================================
 
 if not st.session_state.logged_in:
+
+    st.markdown("<div class='login-page'>", unsafe_allow_html=True)
 
     left, center, right = st.columns([1, 0.7, 1])
 
@@ -349,6 +371,8 @@ if not st.session_state.logged_in:
                     st.error("Please fill in both fields")
 
         st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ============================================================
