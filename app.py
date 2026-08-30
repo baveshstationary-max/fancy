@@ -112,50 +112,8 @@ hr {
     font-weight: 700;
 }
 
-/* =========================================================
-   MOBILE: SAME COMPUTER LAYOUT + HORIZONTAL SCROLL
-   =========================================================
-   The desktop UI remains unchanged. On phones the entire app
-   gets a fixed desktop-style width so the user can swipe
-   left/right to see the full page.
-*/
+/* MOBILE: preserve the same desktop/computer layout */
 @media (max-width: 768px) {
-
-    html,
-    body {
-        min-width: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: auto !important;
-    }
-
-    .stApp {
-        min-width: 1100px !important;
-        width: 1100px !important;
-        max-width: none !important;
-    }
-
-    [data-testid="stAppViewContainer"] {
-        min-width: 1100px !important;
-        width: 1100px !important;
-        max-width: none !important;
-        overflow-x: visible !important;
-    }
-
-    [data-testid="stAppViewMain"] {
-        min-width: 1100px !important;
-        width: 1100px !important;
-        max-width: none !important;
-        overflow-x: visible !important;
-    }
-
-    [data-testid="stMain"] {
-        min-width: 1100px !important;
-        width: 1100px !important;
-        max-width: none !important;
-    }
-
     .block-container {
         min-width: 1100px !important;
         width: 1100px !important;
@@ -163,13 +121,11 @@ hr {
         padding-left: 8px !important;
         padding-right: 8px !important;
         padding-top: 5px !important;
-        padding-bottom: 8px !important;
     }
 
     div[data-testid="stHorizontalBlock"] {
         flex-wrap: nowrap !important;
         width: 100% !important;
-        min-width: 0 !important;
         gap: 5px !important;
     }
 
@@ -177,7 +133,6 @@ hr {
         min-width: 0 !important;
     }
 
-    /* Keep the original computer sizing */
     .product-main img {
         height: 115px !important;
     }
@@ -191,18 +146,12 @@ hr {
         font-size: 12px !important;
     }
 
-    input,
-    textarea {
+    input, textarea {
         font-size: 16px !important;
     }
 }
 
 @media (max-width: 480px) {
-
-    .stApp,
-    [data-testid="stAppViewContainer"],
-    [data-testid="stAppViewMain"],
-    [data-testid="stMain"],
     .block-container {
         min-width: 1100px !important;
         width: 1100px !important;
@@ -249,20 +198,39 @@ if "image_indices" not in st.session_state:
 
 if not st.session_state.logged_in:
 
-    st.markdown("## 🔐 Store Login")
+    st.markdown(
+        "<div class='login-wrapper'><div class='login-card'>",
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        "<div class='login-title'>🔐 Store Login</div>",
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        "<div class='login-subtitle'>Sign in to continue to Bavesh Stationary</div>",
+        unsafe_allow_html=True
+    )
 
     username = st.text_input(
         "Username",
-        placeholder="Enter username"
+        placeholder="Enter username",
+        key="login_username"
     )
 
     mobile = st.text_input(
         "Mobile Number",
         type="password",
-        placeholder="Enter mobile number"
+        placeholder="Enter mobile number",
+        key="login_mobile"
     )
 
-    if st.button("🔐 Login", use_container_width=True):
+    if st.button(
+        "🔐 Login",
+        use_container_width=True,
+        key="login_button"
+    ):
 
         if username and mobile:
 
@@ -285,6 +253,8 @@ if not st.session_state.logged_in:
 
         else:
             st.error("Please fill in both fields")
+
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
 
 # ============================================================
