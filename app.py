@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # ============================================================
-# CSS STYLING (Fixed Login Box Layout & Responsive Grid)
+# RESPONSIVE CSS
 # ============================================================
 
 st.markdown("""
@@ -56,45 +56,6 @@ div[data-testid="stHorizontalBlock"] {
 
 hr {
     margin: 4px 0 !important;
-}
-
-/* Custom Login Container Card */
-.login-outer-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 75vh;
-}
-
-.login-box {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 12px;
-    padding: 30px;
-    width: 100%;
-    max-width: 480px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-}
-
-.login-header-box {
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 15px;
-    text-align: center;
-    margin-bottom: 24px;
-    background: #f8fafc;
-}
-
-.login-title-text {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1e1b4b;
-}
-
-.login-subtitle-text {
-    font-size: 13px;
-    color: #64748b;
-    margin-top: 4px;
 }
 
 /* Product images */
@@ -146,7 +107,12 @@ hr {
     white-space: nowrap;
 }
 
-/* MOBILE: preserve the same desktop/computer layout width */
+.mobile-section-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* MOBILE: preserve the same desktop/computer layout */
 @media (max-width: 768px) {
     .block-container {
         min-width: 1100px !important;
@@ -184,6 +150,18 @@ hr {
         font-size: 16px !important;
     }
 }
+
+@media (max-width: 480px) {
+    .block-container {
+        min-width: 1100px !important;
+        width: 1100px !important;
+        max-width: none !important;
+    }
+
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+    }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -215,46 +193,162 @@ if "image_indices" not in st.session_state:
 
 
 # ============================================================
-# LOGIN SCREEN (Matching Custom Card Layout Design)
+# LOGIN PAGE CSS
+# ============================================================
+
+if not st.session_state.logged_in:
+    st.markdown("""
+    <style>
+    /* Keep login page normal-width even when the logged-in app
+       uses a wide desktop canvas on mobile. */
+    .login-page .block-container {
+        max-width: 100% !important;
+    }
+
+    .login-page-title {
+        text-align: center;
+        font-size: 17px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0 0 10px 0;
+    }
+
+    /* Streamlit bordered container used as the login card */
+    .login-card-host {
+        max-width: 460px !important;
+        margin: 0 auto !important;
+    }
+
+    .login-card-host [data-testid="stVerticalBlockBorderWrapper"] {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 7px !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        padding: 20px 14px 14px 14px !important;
+    }
+
+    .login-card-host [data-testid="stTextInput"] label {
+        font-size: 12px !important;
+        color: #111827 !important;
+        font-weight: 500 !important;
+    }
+
+    .login-card-host [data-testid="stTextInput"] input {
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 6px 10px !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        background: #f8fafc !important;
+        font-size: 13px !important;
+    }
+
+    .login-card-host [data-testid="stButton"] button {
+        height: 36px !important;
+        min-height: 36px !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        background: #ffffff !important;
+        color: #111827 !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        margin-top: 2px !important;
+    }
+
+    @media (max-width: 768px) {
+        .login-page .block-container {
+            min-width: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .login-card-host {
+            max-width: 460px !important;
+            width: 100% !important;
+            margin: 0 auto !important;
+        }
+
+        .login-card-host [data-testid="stVerticalBlockBorderWrapper"] {
+            padding: 20px 14px 14px 14px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .login-card-host {
+            max-width: 100% !important;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# ============================================================
+# LOGIN
 # ============================================================
 
 if not st.session_state.logged_in:
 
-    st.markdown("<div class='login-outer-container'><div class='login-box'>", unsafe_allow_html=True)
-    
-    st.markdown("""
-        <div class='login-header-box'>
-            <div class='login-title-text'>🔐 Store Login</div>
-            <div class='login-subtitle-text'>Sign in to continue to Bavesh Stationary</div>
-        </div>
-    """, unsafe_allow_html=True)
+    left, center, right = st.columns([1, 0.7, 1])
 
-    username = st.text_input("Username", placeholder="Enter username", key="login_username")
-    mobile = st.text_input("Mobile Number", type="password", placeholder="Enter mobile number", key="login_mobile")
+    with center:
 
-    if st.button("🔐 Login", use_container_width=True, key="login_button"):
-        if username and mobile:
-            try:
-                requests.get(
-                    f"{SCRIPT_URL}?action=login"
-                    f"&user={urllib.parse.quote(username)}"
-                    f"&pass={urllib.parse.quote(mobile)}",
-                    timeout=20
-                )
+        st.markdown(
+            "<div class='login-page-title'>Customer Portal Login</div>",
+            unsafe_allow_html=True
+        )
 
-                st.session_state.logged_in = True
-                st.session_state.username = username
-                st.session_state.mobile = mobile
+        # A bordered Streamlit container gives the compact card shown
+        # in the reference image.
+        st.markdown(
+            "<div class='login-card-host'>",
+            unsafe_allow_html=True
+        )
 
-                st.rerun()
+        with st.container(border=True):
 
-            except Exception as e:
-                st.error(f"Connection error: {e}")
+            username = st.text_input(
+                "Your Name:",
+                placeholder="",
+                key="login_username"
+            )
 
-        else:
-            st.error("Please fill in both fields")
+            mobile = st.text_input(
+                "Mobile Number:",
+                type="password",
+                placeholder="",
+                key="login_mobile"
+            )
 
-    st.markdown("</div></div>", unsafe_allow_html=True)
+            if st.button(
+                "Secure Login",
+                use_container_width=True,
+                key="login_button"
+            ):
+
+                if username and mobile:
+
+                    try:
+                        requests.get(
+                            f"{SCRIPT_URL}?action=login"
+                            f"&user={urllib.parse.quote(username)}"
+                            f"&pass={urllib.parse.quote(mobile)}",
+                            timeout=20
+                        )
+
+                        st.session_state.logged_in = True
+                        st.session_state.username = username
+                        st.session_state.mobile = mobile
+
+                        st.rerun()
+
+                    except Exception as e:
+                        st.error(f"Connection error: {e}")
+
+                else:
+                    st.error("Please fill in both fields")
+
+        st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ============================================================
@@ -262,6 +356,10 @@ if not st.session_state.logged_in:
 # ============================================================
 
 else:
+
+    # --------------------------------------------------------
+    # HEADER
+    # --------------------------------------------------------
 
     head_col1, head_col2, head_col3, head_col4 = st.columns(
         [3, 1, 1, 1],
@@ -326,6 +424,10 @@ else:
                     columns=headers
                 )
 
+                # ------------------------------------------------
+                # CATEGORIES
+                # ------------------------------------------------
+
                 if "CATEGORY" in df.columns:
                     categories = (
                         df["CATEGORY"]
@@ -345,12 +447,21 @@ else:
                     if categories:
                         st.session_state.selected_category = categories[0]
 
+
+                # ------------------------------------------------
+                # CATEGORY + PRODUCT AREA
+                # ------------------------------------------------
+
                 col_left, col_right = st.columns(
                     [1, 4],
                     gap="small"
                 )
 
+
+                # ------------------------------------------------
                 # CATEGORY PANEL
+                # ------------------------------------------------
+
                 with col_left:
 
                     st.markdown("##### 📁 Categories")
@@ -378,7 +489,11 @@ else:
                                 st.session_state.selected_category = cat
                                 st.rerun()
 
+
+                # ------------------------------------------------
                 # PRODUCTS
+                # ------------------------------------------------
+
                 with col_right:
 
                     active_cat = (
@@ -396,6 +511,7 @@ else:
                     else:
                         filtered_df = df
 
+
                     if filtered_df.empty:
 
                         st.info(
@@ -410,6 +526,11 @@ else:
                                 "ITEM ID",
                                 sort=False
                             )
+
+
+                            # ====================================
+                            # EACH PRODUCT
+                            # ====================================
 
                             for item_id, group in grouped_df:
 
@@ -429,6 +550,11 @@ else:
                                     "DESCRIPTION",
                                     ""
                                 )
+
+
+                                # --------------------------------
+                                # READ IMAGES
+                                # --------------------------------
 
                                 raw_list = []
 
@@ -471,6 +597,11 @@ else:
 
                                                 raw_list.append(c_name)
 
+
+                                # --------------------------------
+                                # BUILD IMAGE URLS
+                                # --------------------------------
+
                                 img_list = []
 
                                 for name in raw_list:
@@ -497,6 +628,11 @@ else:
                                             github_raw
                                         )
 
+
+                                # --------------------------------
+                                # FALLBACK
+                                # --------------------------------
+
                                 if not img_list:
 
                                     img_list = [
@@ -504,6 +640,11 @@ else:
                                         "photo-1505740420928-5e560c06d30e"
                                         "?q=80&w=300"
                                     ]
+
+
+                                # --------------------------------
+                                # IMAGE INDEX
+                                # --------------------------------
 
                                 idx_key = f"idx_{item_id}"
 
@@ -531,13 +672,24 @@ else:
                                     current_idx + 1
                                 ) % len(img_list)
 
+
+                                # =================================
+                                # PRODUCT CARD
+                                # =================================
+
                                 st.markdown(
                                     "<div class='product-card'>",
                                     unsafe_allow_html=True
                                 )
 
+
+                                # Six columns instead of the
+                                # original eight. This gives more
+                                # usable space on smaller screens.
                                 cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
 
+
+                                # --------------------------------
                                 # PREVIOUS
                                 with cols[0]:
                                     if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
@@ -611,7 +763,9 @@ else:
 
                                 st.markdown("<hr>", unsafe_allow_html=True)
 
+
         except Exception as e:
+
             st.error(
                 f"Could not load catalog: {e}"
             )
@@ -625,11 +779,13 @@ else:
 
         st.markdown("#### 📌 Secure Checkout Form")
 
+
         if not st.session_state.cart:
 
             st.info(
                 "Your cart is empty. Go back to Home to select products."
             )
+
 
         else:
 
@@ -642,7 +798,9 @@ else:
                     f"**Quantity:** {qty}"
                 )
 
+
             st.markdown("---")
+
 
             delivery_address = st.text_area(
                 "Delivery Address:",
@@ -653,10 +811,12 @@ else:
                 height=120
             )
 
+
             alt_contact = st.text_input(
                 "Alternative Contact Number:",
                 placeholder="Enter secondary mobile number..."
             )
+
 
             custom_desc = st.text_area(
                 "Product Specifications / Custom Description:",
@@ -666,6 +826,7 @@ else:
                 ),
                 height=120
             )
+
 
             if st.button(
                 "✅ Complete Order",
@@ -691,6 +852,7 @@ else:
 
                         item_prices = {}
 
+
                         if len(rows) > 1:
 
                             headers = [
@@ -702,6 +864,7 @@ else:
                                 rows[1:],
                                 columns=headers
                             )
+
 
                             if (
                                 "ITEM ID" in inv_df.columns
@@ -725,6 +888,11 @@ else:
                                             str(row["ITEM ID"])
                                         ] = 0.0
 
+
+                        # ----------------------------------------
+                        # SUBMIT EACH CART ITEM
+                        # ----------------------------------------
+
                         for item_id, qty in (
                             st.session_state.cart.items()
                         ):
@@ -738,6 +906,7 @@ else:
                                 qty *
                                 unit_price
                             )
+
 
                             order_data = {
                                 "mobile":
@@ -765,11 +934,13 @@ else:
                                     total_cost
                             }
 
+
                             requests.post(
                                 SCRIPT_URL,
                                 json=order_data,
                                 timeout=20
                             )
+
 
                         st.success(
                             "✅ Order successfully submitted to Google Sheets!"
@@ -778,6 +949,7 @@ else:
                         st.session_state.cart = {}
 
                         st.rerun()
+
 
                     except Exception as e:
 
