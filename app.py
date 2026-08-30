@@ -13,15 +13,14 @@ st.set_page_config(
 )
 
 # ============================================================
-# RESPONSIVE CSS
+# RESPONSIVE CSS & DESKTOP VIEWPORT FORCE FOR MOBILE
 # ============================================================
 
 st.markdown("""
+<head>
+    <meta name="viewport" content="width=1200">
+</head>
 <style>
-/* =========================================================
-   GLOBAL DESKTOP-STYLE CANVAS
-   ========================================================= */
-
 #MainMenu { visibility: hidden; }
 header { visibility: hidden; }
 footer { visibility: hidden; }
@@ -32,12 +31,22 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
     display: none !important;
 }
 
+/* Force fixed desktop width canvas across all devices including mobile */
+html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewMain"], [data-testid="stMain"], section.main {
+    width: 1200px !important;
+    min-width: 1200px !important;
+    max-width: none !important;
+}
+
 .block-container {
+    width: 1120px !important;
+    min-width: 1120px !important;
+    max-width: 1120px !important;
     padding-top: 0.45rem !important;
     padding-bottom: 0.5rem !important;
     padding-left: 0.8rem !important;
     padding-right: 0.8rem !important;
-    max-width: 100% !important;
+    margin: 0 auto !important;
 }
 
 .element-container {
@@ -47,6 +56,7 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 div[data-testid="stHorizontalBlock"] {
     align-items: center;
     gap: 5px;
+    flex-wrap: nowrap !important;
 }
 
 .stButton button {
@@ -115,12 +125,6 @@ hr {
    PROFESSIONAL COMPACT LOGIN
    ========================================================= */
 
-.login-shell {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
 .login-title {
     text-align: center;
     font-size: 17px;
@@ -169,80 +173,6 @@ hr {
     font-size: 12px !important;
     font-weight: 500 !important;
 }
-
-/* =========================================================
-   MOBILE = SAME DESKTOP PAGE, HORIZONTAL SCROLL
-   ========================================================= */
-
-@media screen and (max-width: 768px) {
-
-    html,
-    body {
-        width: 1200px !important;
-        min-width: 1200px !important;
-        max-width: none !important;
-        overflow-x: auto !important;
-        overflow-y: auto !important;
-    }
-
-    #root,
-    .stApp,
-    [data-testid="stAppViewContainer"],
-    [data-testid="stAppViewMain"],
-    [data-testid="stMain"],
-    section.main {
-        width: 1200px !important;
-        min-width: 1200px !important;
-        max-width: none !important;
-    }
-
-    .block-container,
-    [data-testid="stMainBlockContainer"] {
-        width: 1120px !important;
-        min-width: 1120px !important;
-        max-width: 1120px !important;
-        padding-left: 0.8rem !important;
-        padding-right: 0.8rem !important;
-    }
-
-    div[data-testid="stHorizontalBlock"] {
-        width: 100% !important;
-        min-width: 0 !important;
-        flex-wrap: nowrap !important;
-    }
-
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        min-width: 0 !important;
-    }
-
-    .login-card-host {
-        width: 460px !important;
-        max-width: 460px !important;
-    }
-}
-
-@media screen and (max-width: 480px) {
-
-    html,
-    body,
-    #root,
-    .stApp,
-    [data-testid="stAppViewContainer"],
-    [data-testid="stAppViewMain"],
-    [data-testid="stMain"],
-    section.main {
-        width: 1200px !important;
-        min-width: 1200px !important;
-        max-width: none !important;
-    }
-
-    .block-container,
-    [data-testid="stMainBlockContainer"] {
-        width: 1120px !important;
-        min-width: 1120px !important;
-        max-width: 1120px !important;
-    }
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -274,13 +204,11 @@ if "image_indices" not in st.session_state:
 
 
 # ============================================================
-# LOGIN PAGE CSS
+# LOGIN PAGE
 # ============================================================
 
 if not st.session_state.logged_in:
 
-    # The page itself stays desktop-width on mobile. This card is simply
-    # centered within that desktop canvas.
     login_left, login_center, login_right = st.columns(
         [1, 1, 1],
         wrap=False
@@ -348,10 +276,6 @@ if not st.session_state.logged_in:
 
 else:
 
-    # --------------------------------------------------------
-    # HEADER
-    # --------------------------------------------------------
-
     head_col1, head_col2, head_col3, head_col4 = st.columns(
         [3, 1, 1, 1],
         gap="small"
@@ -415,10 +339,6 @@ else:
                     columns=headers
                 )
 
-                # ------------------------------------------------
-                # CATEGORIES
-                # ------------------------------------------------
-
                 if "CATEGORY" in df.columns:
                     categories = (
                         df["CATEGORY"]
@@ -438,21 +358,12 @@ else:
                     if categories:
                         st.session_state.selected_category = categories[0]
 
-
-                # ------------------------------------------------
-                # CATEGORY + PRODUCT AREA
-                # ------------------------------------------------
-
                 col_left, col_right = st.columns(
                     [1, 4],
                     gap="small"
                 )
 
-
-                # ------------------------------------------------
                 # CATEGORY PANEL
-                # ------------------------------------------------
-
                 with col_left:
 
                     st.markdown("##### 📁 Categories")
@@ -480,11 +391,7 @@ else:
                                 st.session_state.selected_category = cat
                                 st.rerun()
 
-
-                # ------------------------------------------------
                 # PRODUCTS
-                # ------------------------------------------------
-
                 with col_right:
 
                     active_cat = (
@@ -502,7 +409,6 @@ else:
                     else:
                         filtered_df = df
 
-
                     if filtered_df.empty:
 
                         st.info(
@@ -517,11 +423,6 @@ else:
                                 "ITEM ID",
                                 sort=False
                             )
-
-
-                            # ====================================
-                            # EACH PRODUCT
-                            # ====================================
 
                             for item_id, group in grouped_df:
 
@@ -541,11 +442,6 @@ else:
                                     "DESCRIPTION",
                                     ""
                                 )
-
-
-                                # --------------------------------
-                                # READ IMAGES
-                                # --------------------------------
 
                                 raw_list = []
 
@@ -588,11 +484,6 @@ else:
 
                                                 raw_list.append(c_name)
 
-
-                                # --------------------------------
-                                # BUILD IMAGE URLS
-                                # --------------------------------
-
                                 img_list = []
 
                                 for name in raw_list:
@@ -619,11 +510,6 @@ else:
                                             github_raw
                                         )
 
-
-                                # --------------------------------
-                                # FALLBACK
-                                # --------------------------------
-
                                 if not img_list:
 
                                     img_list = [
@@ -631,11 +517,6 @@ else:
                                         "photo-1505740420928-5e560c06d30e"
                                         "?q=80&w=300"
                                     ]
-
-
-                                # --------------------------------
-                                # IMAGE INDEX
-                                # --------------------------------
 
                                 idx_key = f"idx_{item_id}"
 
@@ -663,24 +544,13 @@ else:
                                     current_idx + 1
                                 ) % len(img_list)
 
-
-                                # =================================
-                                # PRODUCT CARD
-                                # =================================
-
                                 st.markdown(
                                     "<div class='product-card'>",
                                     unsafe_allow_html=True
                                 )
 
-
-                                # Six columns instead of the
-                                # original eight. This gives more
-                                # usable space on smaller screens.
                                 cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0], wrap=False)
 
-
-                                # --------------------------------
                                 # PREVIOUS
                                 with cols[0]:
                                     if st.button("◀", key=f"prev_{item_id}", use_container_width=True):
@@ -754,9 +624,7 @@ else:
 
                                 st.markdown("<hr>", unsafe_allow_html=True)
 
-
         except Exception as e:
-
             st.error(
                 f"Could not load catalog: {e}"
             )
@@ -770,13 +638,11 @@ else:
 
         st.markdown("#### 📌 Secure Checkout Form")
 
-
         if not st.session_state.cart:
 
             st.info(
                 "Your cart is empty. Go back to Home to select products."
             )
-
 
         else:
 
@@ -789,9 +655,7 @@ else:
                     f"**Quantity:** {qty}"
                 )
 
-
             st.markdown("---")
-
 
             delivery_address = st.text_area(
                 "Delivery Address:",
@@ -802,12 +666,10 @@ else:
                 height=120
             )
 
-
             alt_contact = st.text_input(
                 "Alternative Contact Number:",
                 placeholder="Enter secondary mobile number..."
             )
-
 
             custom_desc = st.text_area(
                 "Product Specifications / Custom Description:",
@@ -817,7 +679,6 @@ else:
                 ),
                 height=120
             )
-
 
             if st.button(
                 "✅ Complete Order",
@@ -843,7 +704,6 @@ else:
 
                         item_prices = {}
 
-
                         if len(rows) > 1:
 
                             headers = [
@@ -855,7 +715,6 @@ else:
                                 rows[1:],
                                 columns=headers
                             )
-
 
                             if (
                                 "ITEM ID" in inv_df.columns
@@ -879,11 +738,6 @@ else:
                                             str(row["ITEM ID"])
                                         ] = 0.0
 
-
-                        # ----------------------------------------
-                        # SUBMIT EACH CART ITEM
-                        # ----------------------------------------
-
                         for item_id, qty in (
                             st.session_state.cart.items()
                         ):
@@ -897,7 +751,6 @@ else:
                                 qty *
                                 unit_price
                             )
-
 
                             order_data = {
                                 "mobile":
@@ -925,13 +778,11 @@ else:
                                     total_cost
                             }
 
-
                             requests.post(
                                 SCRIPT_URL,
                                 json=order_data,
                                 timeout=20
                             )
-
 
                         st.success(
                             "✅ Order successfully submitted to Google Sheets!"
@@ -940,7 +791,6 @@ else:
                         st.session_state.cart = {}
 
                         st.rerun()
-
 
                     except Exception as e:
 
