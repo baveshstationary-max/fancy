@@ -13,6 +13,42 @@ st.set_page_config(
 )
 
 # ============================================================
+# FORCE DESKTOP-STYLE VIEWPORT ON MOBILE
+# ============================================================
+# Streamlit's normal mobile viewport is responsive. This small,
+# trusted script changes the viewport to a fixed desktop canvas
+# when the page is opened on a phone.
+st.html("""
+<script>
+(function () {
+    const isMobile =
+        window.matchMedia &&
+        window.matchMedia("(max-width: 768px)").matches;
+
+    if (!isMobile) return;
+
+    let viewport = document.querySelector('meta[name="viewport"]');
+
+    if (!viewport) {
+        viewport = document.createElement("meta");
+        viewport.name = "viewport";
+        document.head.appendChild(viewport);
+    }
+
+    viewport.setAttribute(
+        "content",
+        "width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    );
+
+    document.documentElement.style.width = "1200px";
+    document.documentElement.style.minWidth = "1200px";
+    document.body.style.width = "1200px";
+    document.body.style.minWidth = "1200px";
+})();
+</script>
+""", unsafe_allow_javascript=True)
+
+# ============================================================
 # RESPONSIVE CSS
 # ============================================================
 
@@ -378,7 +414,7 @@ if not st.session_state.logged_in:
 
     st.markdown("<div class='login-page'>", unsafe_allow_html=True)
 
-    left, center, right = st.columns([1, 0.7, 1])
+    left, center, right = st.columns([1, 0.7, 1], wrap=False)
 
     with center:
 
@@ -777,7 +813,7 @@ else:
                                 # Six columns instead of the
                                 # original eight. This gives more
                                 # usable space on smaller screens.
-                                cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
+                                cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0], wrap=False)
 
 
                                 # --------------------------------
