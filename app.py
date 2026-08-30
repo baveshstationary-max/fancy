@@ -20,57 +20,36 @@ st.markdown("""
 <style>
 
 /* ============================================================
-   GLOBAL DESKTOP WIDTH + HORIZONTAL SCROLL
+   BASE / COMPUTER VIEW
    ============================================================ */
 
-html,
-body {
-    width: 100% !important;
-    min-width: 0 !important;
-    overflow-x: auto !important;
-    background: #f8fafc !important;
+#MainMenu { visibility: hidden; }
+header { visibility: hidden; }
+footer { visibility: hidden; }
+
+.stHeadingWithAction > a,
+.markdown-text-container a.anchor-link,
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    display: none !important;
 }
 
-/* Keep the whole Streamlit application desktop-sized */
-.stApp,
-[data-testid="stAppViewContainer"],
-[data-testid="stAppViewMain"],
-[data-testid="stMain"],
-section.main {
-    width: 1200px !important;
-    min-width: 1200px !important;
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-}
-
-/* Main content */
 .block-container {
-    width: 1120px !important;
-    min-width: 1120px !important;
-    max-width: 1120px !important;
-    padding-top: 0.45rem !important;
-    padding-bottom: 0.5rem !important;
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.45rem !important;
     padding-left: 0.8rem !important;
     padding-right: 0.8rem !important;
-    margin: 0 auto !important;
+    max-width: 100% !important;
 }
 
 .element-container {
     margin-bottom: 0 !important;
 }
 
-/* Never wrap desktop columns */
 div[data-testid="stHorizontalBlock"] {
     align-items: center;
     gap: 5px !important;
-    flex-wrap: nowrap !important;
 }
 
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-    min-width: 0 !important;
-}
-
-/* Buttons */
 .stButton button {
     min-height: 34px !important;
     padding: 3px 6px !important;
@@ -84,7 +63,10 @@ hr {
     margin: 4px 0 !important;
 }
 
-/* Product images */
+/* ============================================================
+   PRODUCT DISPLAY - COMPUTER
+   ============================================================ */
+
 .product-main img {
     width: 100% !important;
     height: 120px !important;
@@ -134,7 +116,7 @@ hr {
 }
 
 /* ============================================================
-   COMPACT PROFESSIONAL LOGIN
+   LOGIN
    ============================================================ */
 
 .login-title {
@@ -187,44 +169,127 @@ hr {
 }
 
 /* ============================================================
-   MOBILE: SAME DESKTOP VIEW + HORIZONTAL SWIPE
+   AUTOMATIC MOBILE RESPONSIVE VIEW
+   ============================================================
+   Important:
+   - We DO NOT force a desktop width.
+   - We DO NOT change the browser's Desktop Site setting.
+   - Normal mobile browsers get a mobile layout automatically.
+   - If the user manually selects Desktop Site, this breakpoint
+     normally does not apply, so the computer layout remains.
    ============================================================ */
 
 @media screen and (max-width: 768px) {
 
-    html,
-    body {
-        width: 100% !important;
-        min-width: 0 !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
+    .block-container {
+        padding-top: 0.35rem !important;
+        padding-bottom: 0.5rem !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
     }
 
-    .stApp,
-    [data-testid="stAppViewContainer"],
-    [data-testid="stAppViewMain"],
-    [data-testid="stMain"],
-    section.main {
-        width: 1200px !important;
-        min-width: 1200px !important;
-        max-width: 1200px !important;
-        margin: 0 !important;
+    h1 {
+        font-size: 22px !important;
     }
+
+    h2 {
+        font-size: 19px !important;
+    }
+
+    h3 {
+        font-size: 17px !important;
+    }
+
+    h4, h5 {
+        font-size: 15px !important;
+    }
+
+    .stButton button {
+        min-height: 38px !important;
+        font-size: 12px !important;
+    }
+
+    input,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    /* Header automatically fits small screens. */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]) {
+        gap: 4px !important;
+    }
+
+    /* Login becomes compact and centered on a normal phone. */
+    .login-card-host {
+        width: 100% !important;
+        max-width: 360px !important;
+        margin: 0 auto !important;
+    }
+
+    .login-title {
+        font-size: 17px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .login-card-host [data-testid="stVerticalBlockBorderWrapper"] {
+        padding: 14px 12px 10px 12px !important;
+    }
+
+    /* ========================================================
+       MOBILE PRODUCT CARD
+       ========================================================
+       The computer version is untouched.
+       Only a normal phone gets this stacked layout.
+       ======================================================== */
+
+    .product-card {
+        padding: 8px !important;
+        margin: 5px 0 !important;
+    }
+
+    .product-main img {
+        height: 180px !important;
+    }
+
+    .product-preview img {
+        height: 80px !important;
+    }
+
+    .product-name {
+        font-size: 15px !important;
+    }
+
+    .product-desc {
+        font-size: 11px !important;
+    }
+
+    .product-price {
+        font-size: 17px !important;
+    }
+
+    /* Prevent tiny controls on the phone. */
+    .product-card .stButton button {
+        min-height: 36px !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
 
     .block-container {
-        width: 1120px !important;
-        min-width: 1120px !important;
-        max-width: 1120px !important;
-        margin: 0 40px !important;
-    }
-
-    div[data-testid="stHorizontalBlock"] {
-        flex-wrap: nowrap !important;
+        padding-left: 5px !important;
+        padding-right: 5px !important;
     }
 
     .login-card-host {
-        width: 460px !important;
-        max-width: 460px !important;
+        max-width: 340px !important;
+    }
+
+    .product-main img {
+        height: 165px !important;
+    }
+
+    .product-preview img {
+        height: 70px !important;
     }
 }
 
@@ -662,7 +727,7 @@ else:
                                 # Six columns instead of the
                                 # original eight. This gives more
                                 # usable space on smaller screens.
-                                cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0], wrap=False)
+                                cols = st.columns([0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0])
 
 
                                 # --------------------------------
