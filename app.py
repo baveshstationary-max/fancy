@@ -13,12 +13,12 @@ st.set_page_config(
 )
 
 # ============================================================
-# RESPONSIVE CSS & DESKTOP VIEWPORT FORCE FOR MOBILE
+# RESPONSIVE CSS & FORCED DESKTOP WRAPPER
 # ============================================================
 
 st.markdown("""
 <head>
-    <meta name="viewport" content="width=1200">
+    <meta name="viewport" content="width=1200, initial-scale=1.0">
 </head>
 <style>
 #MainMenu { visibility: hidden; }
@@ -31,11 +31,19 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
     display: none !important;
 }
 
-/* Force fixed desktop width canvas across all devices including mobile */
-html, body, [data-testid="stAppViewContainer"], [data-testid="stAppViewMain"], [data-testid="stMain"], section.main {
+/* Force overall page container to mimic desktop width with scrollability */
+html, body {
+    width: 100% !important;
+    overflow-x: auto !important;
+    background: #f8fafc !important;
+}
+
+/* Global desktop-width application shell */
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stAppViewMain"], [data-testid="stMain"], section.main {
     width: 1200px !important;
     min-width: 1200px !important;
-    max-width: none !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
 }
 
 .block-container {
