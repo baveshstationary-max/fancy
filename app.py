@@ -459,41 +459,299 @@ st.markdown(
         }
     }
 
-    /* Extra-small phones */
-    @media (max-width: 380px) {
+    /* ============================================================
+       PORTRAIT PHONE
+       <= 600px wide AND taller than wide.
+
+       This is intentionally different from landscape.
+       The goal is to make a 320-430px portrait screen usable without
+       collapsing MENU above PRODUCT or creating horizontal scrolling.
+       ============================================================ */
+
+    @media (max-width: 600px) and (orientation: portrait) {
+
+        html, body,
+        [data-testid="stApp"],
+        [data-testid="stAppViewContainer"],
+        [data-testid="stMain"],
+        [data-testid="stMainBlockContainer"] {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
 
         .block-container {
-            padding-left: 2px !important;
-            padding-right: 2px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 2px 2px 6px 2px !important;
+        }
+
+        /* ---------- LOGIN ---------- */
+        .hm-login-title {
+            margin: 1px auto 5px auto !important;
+        }
+
+        .hm-login-title h1 {
+            font-size: 21px !important;
+        }
+
+        .hm-login-title p {
+            font-size: 9px !important;
+        }
+
+        div[data-testid="stForm"] {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        /* ---------- BRAND ---------- */
+        .hm-brand {
+            padding: 6px 2px !important;
+            margin-bottom: 2px !important;
         }
 
         .hm-brand-title {
-            font-size: 11px !important;
+            font-size: 12px !important;
+            line-height: 1.15 !important;
         }
 
-        .hm-nav p,
+        /* ---------- HEADER ----------
+           36% Welcome | 20% Home | 22% Cart | 22% Logout */
+        .hm-nav div[data-testid="stHorizontalBlock"] {
+            width: 100% !important;
+            gap: 1px !important;
+            flex-wrap: nowrap !important;
+        }
+
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
+            flex: 0 0 36% !important;
+            width: 36% !important;
+        }
+
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
+            flex: 0 0 20% !important;
+            width: 20% !important;
+        }
+
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
+            flex: 0 0 22% !important;
+            width: 22% !important;
+        }
+
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(4) {
+            flex: 0 0 22% !important;
+            width: 22% !important;
+        }
+
+        .hm-nav p {
+            font-size: 9px !important;
+            line-height: 1.1 !important;
+            white-space: nowrap !important;
+        }
+
         .hm-nav div.stButton > button {
+            width: 100% !important;
+            min-height: 27px !important;
+            height: 27px !important;
             font-size: 8px !important;
+            line-height: 1 !important;
+            padding: 2px 0 !important;
+        }
+
+        /* ---------- MAIN ----------
+           20% MENU | 80% PRODUCT */
+        .hm-main > div[data-testid="stHorizontalBlock"] {
+            width: 100% !important;
+            gap: 2px !important;
+            flex-wrap: nowrap !important;
         }
 
         .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child {
-            flex-basis: 24% !important;
-            width: 24% !important;
+            flex: 0 0 20% !important;
+            width: 20% !important;
         }
 
         .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child {
-            flex-basis: 76% !important;
-            width: 76% !important;
+            flex: 0 0 80% !important;
+            width: 80% !important;
+        }
+
+        .hm-main h3 {
+            font-size: 12px !important;
+            line-height: 1.1 !important;
+            margin: 1px 0 3px 0 !important;
+        }
+
+        /* Menu buttons fit the narrow left rail. */
+        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child div.stButton > button {
+            width: 100% !important;
+            min-height: 27px !important;
+            height: 27px !important;
+            font-size: 7px !important;
+            line-height: 1 !important;
+            padding: 2px 0 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        /* ---------- PRODUCT ----------
+           28% IMAGE | 45% DESCRIPTION | 27% PRICE */
+        .hm-product > div[data-testid="stHorizontalBlock"] {
+            width: 100% !important;
+            gap: 1px !important;
+            flex-wrap: nowrap !important;
+        }
+
+        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
+            flex: 0 0 28% !important;
+            width: 28% !important;
+        }
+
+        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
+            flex: 0 0 45% !important;
+            width: 45% !important;
+        }
+
+        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
+            flex: 0 0 27% !important;
+            width: 27% !important;
         }
 
         .hm-product p,
         .hm-product span,
         .hm-product label {
             font-size: 8px !important;
+            line-height: 1.15 !important;
+            overflow-wrap: anywhere !important;
+            word-break: break-word !important;
+        }
+
+        .hm-product h3 {
+            font-size: 11px !important;
+            line-height: 1.05 !important;
+            margin: 0 !important;
+        }
+
+        .hm-product h4 {
+            font-size: 9px !important;
+            line-height: 1.05 !important;
+            margin: 1px 0 !important;
+        }
+
+        .hm-product img {
+            width: 100% !important;
+            max-width: 100% !important;
+            max-height: 68px !important;
+            object-fit: contain !important;
         }
 
         .hm-product div.stButton > button {
+            width: 100% !important;
+            min-height: 25px !important;
+            height: 25px !important;
             font-size: 7px !important;
+            line-height: 1 !important;
+            padding: 2px 0 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .hm-product input {
+            width: 100% !important;
+            min-height: 25px !important;
+            height: 25px !important;
+            font-size: 8px !important;
+            padding: 1px !important;
+        }
+
+        .hm-product hr {
+            margin: 4px 0 !important;
+        }
+
+        /* ---------- CART ----------
+           Cart controls stay inside the portrait viewport. */
+        .hm-cart,
+        .hm-cart div[data-testid="stHorizontalBlock"],
+        .hm-cart div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+            min-width: 0 !important;
+            max-width: 100% !important;
+            overflow: hidden !important;
+        }
+
+        .hm-cart div[data-testid="stHorizontalBlock"] {
+            gap: 2px !important;
+            flex-wrap: nowrap !important;
+        }
+    }
+
+    /* Very narrow portrait phones: 320px-ish screens. */
+    @media (max-width: 360px) and (orientation: portrait) {
+
+        .block-container {
+            padding-left: 1px !important;
+            padding-right: 1px !important;
+        }
+
+        .hm-brand-title {
+            font-size: 11px !important;
+        }
+
+        .hm-nav p {
+            font-size: 8px !important;
+        }
+
+        .hm-nav div.stButton > button {
+            font-size: 7px !important;
+        }
+
+        /* Keep Menu usable but give Product the majority of the width. */
+        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child {
+            flex-basis: 19% !important;
+            width: 19% !important;
+        }
+
+        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child {
+            flex-basis: 81% !important;
+            width: 81% !important;
+        }
+
+        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child div.stButton > button {
+            font-size: 6px !important;
+        }
+
+        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
+            flex-basis: 27% !important;
+            width: 27% !important;
+        }
+
+        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
+            flex-basis: 46% !important;
+            width: 46% !important;
+        }
+
+        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
+            flex-basis: 27% !important;
+            width: 27% !important;
+        }
+
+        .hm-product p,
+        .hm-product span,
+        .hm-product label {
+            font-size: 7px !important;
+        }
+
+        .hm-product h3 {
+            font-size: 10px !important;
+        }
+
+        .hm-product h4 {
+            font-size: 8px !important;
+        }
+
+        .hm-product div.stButton > button {
+            font-size: 6px !important;
         }
     }
     </style>
