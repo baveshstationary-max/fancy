@@ -27,54 +27,50 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* ---------- GLOBAL ---------- */
+    /* ============================================================
+       HM MOBILES
+       One fixed responsive design for desktop + mobile.
+       The page NEVER changes MENU|PRODUCT into stacked blocks.
+       ============================================================ */
 
-    html, body {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: hidden !important;
+    * {
+        box-sizing: border-box !important;
     }
 
-    [data-testid="stAppViewContainer"],
+    html, body,
     [data-testid="stApp"],
+    [data-testid="stAppViewContainer"],
     [data-testid="stMain"],
     [data-testid="stMainBlockContainer"] {
         width: 100% !important;
         max-width: 100% !important;
         overflow-x: hidden !important;
-        box-sizing: border-box !important;
     }
 
     .block-container {
         width: 100% !important;
         max-width: 100% !important;
-        padding-top: 0.65rem !important;
-        padding-bottom: 0.5rem !important;
-        padding-left: 0.45rem !important;
-        padding-right: 0.45rem !important;
-        box-sizing: border-box !important;
+        padding: 8px 10px 12px 10px !important;
+        margin: 0 auto !important;
     }
 
-    /* Do not allow Streamlit's default column minimum width
-       to create a horizontal mobile page. */
+    /* Streamlit columns: never wrap on a phone. */
     div[data-testid="stHorizontalBlock"] {
         width: 100% !important;
         max-width: 100% !important;
         min-width: 0 !important;
         flex-wrap: nowrap !important;
-        box-sizing: border-box !important;
-        gap: 0.35rem !important;
+        align-items: flex-start !important;
+        gap: 5px !important;
     }
 
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
         min-width: 0 !important;
         max-width: 100% !important;
-        box-sizing: border-box !important;
         overflow: hidden !important;
     }
 
-    /* ---------- HIDE STREAMLIT CHROME ---------- */
-
+    /* Remove Streamlit browser chrome. */
     #MainMenu,
     header,
     footer,
@@ -83,27 +79,37 @@ st.markdown(
     div[data-testid="stDecoration"],
     div[class*="viewerBadge"] {
         display: none !important;
-        visibility: hidden !important;
     }
 
-    a.stMarkdownHeaderLink,
-    h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {
-        display: none !important;
+    /* ============================================================
+       LOGIN
+       ============================================================ */
+
+    .hm-login-title {
+        width: 100% !important;
+        text-align: center !important;
+        margin: 7px auto 10px auto !important;
     }
 
-    /* ---------- TEXT ---------- */
-
-    label,
-    .stTextInput label,
-    .stTextArea label,
-    .stSelectbox label,
-    .stNumberInput label,
-    p,
-    span {
-        font-weight: 600 !important;
+    .hm-login-title h1 {
+        margin: 0 !important;
+        font-size: 28px !important;
+        line-height: 1.15 !important;
+        font-weight: 800 !important;
     }
 
-    /* ---------- INPUTS ---------- */
+    .hm-login-title p {
+        margin: 4px 0 0 0 !important;
+        font-size: 13px !important;
+        line-height: 1.3 !important;
+    }
+
+    div[data-testid="stForm"] {
+        width: min(430px, 100%) !important;
+        max-width: 430px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
 
     input,
     textarea,
@@ -111,115 +117,160 @@ st.markdown(
         width: 100% !important;
         max-width: 100% !important;
         min-width: 0 !important;
-        box-sizing: border-box !important;
-        border-radius: 6px !important;
-        font-size: 14px !important;
     }
 
-    /* ---------- ALL BUTTONS ---------- */
-
-    div.stButton > button,
-    div[data-testid="stFormSubmitButton"] > button {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        border-radius: 6px !important;
-        font-weight: 750 !important;
-    }
-
-    /* ---------- LOGIN ---------- */
-
-    .hm-login-title {
-        width: 100% !important;
-        text-align: center !important;
-        box-sizing: border-box !important;
-        margin: 1rem auto 0.7rem auto !important;
-    }
-
-    .hm-login-title h1 {
-        margin: 0 !important;
-        font-size: 27px !important;
-        line-height: 1.15 !important;
-        font-weight: 800 !important;
-    }
-
-    .hm-login-title p {
-        margin: 4px 0 0 0 !important;
-        font-size: 12px !important;
-        line-height: 1.3 !important;
-    }
-
-    /* The form itself is centered without using Streamlit columns.
-       This is the important mobile-login fix. */
-    div[data-testid="stForm"] {
-        width: min(430px, 100%) !important;
-        max-width: 430px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        box-sizing: border-box !important;
-    }
-
-    /* ---------- AFTER-LOGIN HEADER ---------- */
+    /* ============================================================
+       BRAND
+       ============================================================ */
 
     .hm-brand {
         width: 100% !important;
+        padding: 10px 7px !important;
+        margin: 0 0 5px 0 !important;
         background: #1e293b !important;
-        border-radius: 8px !important;
-        padding: 11px 8px !important;
-        margin-bottom: 6px !important;
+        border-radius: 7px !important;
         text-align: center !important;
-        box-sizing: border-box !important;
     }
 
     .hm-brand-title {
+        margin: 0 !important;
         color: #ffffff !important;
         font-size: 20px !important;
-        font-weight: 800 !important;
         line-height: 1.2 !important;
-        margin: 0 !important;
+        font-weight: 800 !important;
         overflow-wrap: anywhere !important;
     }
 
-    .hm-nav,
-    .hm-main,
-    .hm-product {
+    /* ============================================================
+       NAVIGATION
+       Welcome | Home | Cart | Logout
+       ============================================================ */
+
+    .hm-nav {
         width: 100% !important;
         max-width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
+        overflow: hidden !important;
     }
 
-    .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"],
-    .hm-main div[data-testid="stHorizontalBlock"] > div[data-testid="column"],
-    .hm-product div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    .hm-nav div[data-testid="stHorizontalBlock"] {
+        gap: 4px !important;
+        align-items: center !important;
+    }
+
+    .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
         min-width: 0 !important;
-        max-width: 100% !important;
         overflow: hidden !important;
-        box-sizing: border-box !important;
     }
 
     .hm-nav p {
         margin: 0 !important;
-        line-height: 2.2 !important;
+        font-size: 14px !important;
+        line-height: 1.3 !important;
         overflow-wrap: anywhere !important;
     }
 
-    /* ---------- PRODUCT CONTENT ---------- */
+    .hm-nav div.stButton > button {
+        width: 100% !important;
+        min-width: 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        padding: 5px 4px !important;
+    }
+
+    /* ============================================================
+       MAIN
+       Menu | Product
+       ============================================================ */
+
+    .hm-main {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .hm-main > div[data-testid="stHorizontalBlock"] {
+        gap: 6px !important;
+    }
+
+    .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        min-width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child {
+        flex: 0 0 24% !important;
+        width: 24% !important;
+    }
+
+    .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child {
+        flex: 0 0 76% !important;
+        width: 76% !important;
+    }
+
+    .hm-main h3 {
+        margin: 2px 0 6px 0 !important;
+        font-size: 18px !important;
+    }
+
+    .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child div.stButton > button {
+        width: 100% !important;
+        min-width: 0 !important;
+        padding: 6px 4px !important;
+        font-size: 13px !important;
+        line-height: 1.15 !important;
+    }
+
+    /* ============================================================
+       PRODUCT
+       Image | Description | Price
+       ============================================================ */
+
+    .hm-product {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .hm-product > div[data-testid="stHorizontalBlock"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 5px !important;
+        align-items: flex-start !important;
+    }
+
+    .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
+        flex: 0 0 31% !important;
+        width: 31% !important;
+    }
+
+    .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
+        flex: 0 0 41% !important;
+        width: 41% !important;
+    }
+
+    .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
+        flex: 0 0 28% !important;
+        width: 28% !important;
+    }
 
     .hm-product p,
     .hm-product span,
-    .hm-product div[data-testid="stMarkdownContainer"] {
+    .hm-product label {
         max-width: 100% !important;
         overflow-wrap: anywhere !important;
         word-break: break-word !important;
-        box-sizing: border-box !important;
+        line-height: 1.3 !important;
     }
 
     .hm-product img {
+        display: block !important;
         max-width: 100% !important;
         height: auto !important;
         object-fit: contain !important;
@@ -229,19 +280,35 @@ st.markdown(
         margin: 7px 0 !important;
     }
 
-    /* ---------- PHONE ---------- */
+    .hm-product div.stButton > button,
+    .hm-product input {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* ============================================================
+       CART
+       ============================================================ */
+
+    .hm-cart {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    /* ============================================================
+       MOBILE - purpose-built spacing
+       ============================================================ */
 
     @media (max-width: 600px) {
 
         .block-container {
-            padding-left: 3px !important;
-            padding-right: 3px !important;
-            padding-top: 4px !important;
+            padding: 3px 3px 7px 3px !important;
         }
 
+        /* LOGIN */
         .hm-login-title {
-            margin-top: 5px !important;
-            margin-bottom: 6px !important;
+            margin: 2px auto 6px auto !important;
         }
 
         .hm-login-title h1 {
@@ -250,6 +317,7 @@ st.markdown(
 
         .hm-login-title p {
             font-size: 10px !important;
+            line-height: 1.2 !important;
         }
 
         div[data-testid="stForm"] {
@@ -257,60 +325,179 @@ st.markdown(
             max-width: 100% !important;
         }
 
+        /* BRAND */
         .hm-brand {
-            padding: 8px 4px !important;
+            padding: 7px 3px !important;
+            margin-bottom: 3px !important;
+            border-radius: 6px !important;
         }
 
         .hm-brand-title {
-            font-size: 14px !important;
+            font-size: 13px !important;
         }
 
+        /* NAV - carefully sized for a phone */
         .hm-nav div[data-testid="stHorizontalBlock"] {
             gap: 2px !important;
         }
 
-        .hm-nav div.stButton > button {
-            font-size: 10px !important;
-            padding: 0.25rem 1px !important;
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
+            flex: 0 0 40% !important;
+            width: 40% !important;
+        }
+
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
+            flex: 0 0 19% !important;
+            width: 19% !important;
+        }
+
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
+            flex: 0 0 21% !important;
+            width: 21% !important;
+        }
+
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(4) {
+            flex: 0 0 20% !important;
+            width: 20% !important;
         }
 
         .hm-nav p {
             font-size: 10px !important;
-            line-height: 1.4 !important;
+            line-height: 1.2 !important;
         }
 
-        .hm-main div[data-testid="stHorizontalBlock"] {
+        .hm-nav div.stButton > button {
+            min-height: 29px !important;
+            font-size: 9px !important;
+            padding: 3px 1px !important;
+        }
+
+        /* MAIN MENU | PRODUCT */
+        .hm-main > div[data-testid="stHorizontalBlock"] {
             gap: 3px !important;
         }
 
-        .hm-main div[data-testid="stVerticalBlock"] {
-            min-width: 0 !important;
+        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child {
+            flex-basis: 25% !important;
+            width: 25% !important;
         }
 
-        .hm-product div[data-testid="stHorizontalBlock"] {
+        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child {
+            flex-basis: 75% !important;
+            width: 75% !important;
+        }
+
+        .hm-main h3 {
+            font-size: 13px !important;
+            line-height: 1.15 !important;
+            margin: 1px 0 4px 0 !important;
+        }
+
+        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child div.stButton > button {
+            min-height: 28px !important;
+            font-size: 9px !important;
+            padding: 3px 1px !important;
+        }
+
+        /* PRODUCT IMAGE | DESCRIPTION | PRICE */
+        .hm-product > div[data-testid="stHorizontalBlock"] {
             gap: 2px !important;
         }
 
-        .hm-product div.stButton > button {
-            font-size: 10px !important;
-            padding: 0.22rem 1px !important;
+        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
+            flex-basis: 30% !important;
+            width: 30% !important;
+        }
+
+        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
+            flex-basis: 43% !important;
+            width: 43% !important;
+        }
+
+        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
+            flex-basis: 27% !important;
+            width: 27% !important;
         }
 
         .hm-product p,
-        .hm-product span {
-            font-size: 11px !important;
+        .hm-product span,
+        .hm-product label {
+            font-size: 9px !important;
+            line-height: 1.2 !important;
+        }
+
+        .hm-product h3 {
+            font-size: 12px !important;
+            line-height: 1.1 !important;
+            margin: 0 !important;
+        }
+
+        .hm-product h4 {
+            font-size: 10px !important;
+            line-height: 1.1 !important;
         }
 
         .hm-product img {
-            max-height: 105px !important;
+            max-height: 82px !important;
         }
 
-        .hm-product div[data-testid="stImage"] {
-            width: 100% !important;
-            max-width: 100% !important;
+        .hm-product div.stButton > button {
+            min-height: 26px !important;
+            font-size: 8px !important;
+            padding: 2px 1px !important;
+        }
+
+        .hm-product input {
+            min-height: 26px !important;
+            font-size: 9px !important;
+            padding: 2px !important;
+        }
+
+        /* CART */
+        .hm-cart div[data-testid="stHorizontalBlock"] {
+            gap: 3px !important;
+        }
+    }
+
+    /* Extra-small phones */
+    @media (max-width: 380px) {
+
+        .block-container {
+            padding-left: 2px !important;
+            padding-right: 2px !important;
+        }
+
+        .hm-brand-title {
+            font-size: 11px !important;
+        }
+
+        .hm-nav p,
+        .hm-nav div.stButton > button {
+            font-size: 8px !important;
+        }
+
+        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child {
+            flex-basis: 24% !important;
+            width: 24% !important;
+        }
+
+        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child {
+            flex-basis: 76% !important;
+            width: 76% !important;
+        }
+
+        .hm-product p,
+        .hm-product span,
+        .hm-product label {
+            font-size: 8px !important;
+        }
+
+        .hm-product div.stButton > button {
+            font-size: 7px !important;
         }
     }
     </style>
+
     """,
     unsafe_allow_html=True,
 )
