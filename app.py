@@ -20,36 +20,54 @@ st.markdown("""
 <style>
 
 /* ============================================================
-   BASE / COMPUTER VIEW
+   GLOBAL DESKTOP WIDTH + HORIZONTAL SCROLL
    ============================================================ */
 
-#MainMenu { visibility: hidden; }
-header { visibility: hidden; }
-footer { visibility: hidden; }
-
-.stHeadingWithAction > a,
-.markdown-text-container a.anchor-link,
-h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
-    display: none !important;
+html,
+body {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: auto !important;
+    background: #f8fafc !important;
 }
 
+/* Keep the whole Streamlit application desktop-sized */
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewMain"],
+[data-testid="stMain"],
+section.main {
+    margin: 0 auto !important;
+}
+
+/* Main content */
 .block-container {
-    padding-top: 0.4rem !important;
-    padding-bottom: 0.45rem !important;
+    width: 1120px !important;
+    min-width: 1120px !important;
+    max-width: 1120px !important;
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.5rem !important;
     padding-left: 0.8rem !important;
     padding-right: 0.8rem !important;
-    max-width: 100% !important;
+    margin: 0 auto !important;
 }
 
 .element-container {
     margin-bottom: 0 !important;
 }
 
+/* Never wrap desktop columns */
 div[data-testid="stHorizontalBlock"] {
     align-items: center;
     gap: 5px !important;
+    flex-wrap: nowrap !important;
 }
 
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    min-width: 0 !important;
+}
+
+/* Buttons */
 .stButton button {
     min-height: 34px !important;
     padding: 3px 6px !important;
@@ -63,10 +81,7 @@ hr {
     margin: 4px 0 !important;
 }
 
-/* ============================================================
-   PRODUCT DISPLAY - COMPUTER
-   ============================================================ */
-
+/* Product images */
 .product-main img {
     width: 100% !important;
     height: 120px !important;
@@ -116,7 +131,7 @@ hr {
 }
 
 /* ============================================================
-   LOGIN
+   COMPACT PROFESSIONAL LOGIN
    ============================================================ */
 
 .login-title {
@@ -169,23 +184,57 @@ hr {
 }
 
 /* ============================================================
-   AUTOMATIC MOBILE RESPONSIVE VIEW
-   ============================================================
-   Important:
-   - We DO NOT force a desktop width.
-   - We DO NOT change the browser's Desktop Site setting.
-   - Normal mobile browsers get a mobile layout automatically.
-   - If the user manually selects Desktop Site, this breakpoint
-     normally does not apply, so the computer layout remains.
+   AUTOMATIC RESPONSIVE MOBILE VIEW
    ============================================================ */
 
 @media screen and (max-width: 768px) {
 
+    html,
+    body {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .stApp,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewMain"],
+    [data-testid="stMain"],
+    section.main {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+
     .block-container {
-        padding-top: 0.35rem !important;
-        padding-bottom: 0.5rem !important;
-        padding-left: 8px !important;
-        padding-right: 8px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        padding: 0.4rem 7px !important;
+        margin: 0 !important;
+    }
+
+    /* Header: keep controls visible without horizontal zoom. */
+    div[data-testid="stHorizontalBlock"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        flex-wrap: wrap !important;
+        gap: 4px !important;
+    }
+
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        min-width: 0 !important;
+        flex-shrink: 1 !important;
+    }
+
+    .stButton button {
+        min-height: 38px !important;
+        font-size: 12px !important;
+        padding: 4px !important;
     }
 
     h1 {
@@ -204,72 +253,106 @@ hr {
         font-size: 15px !important;
     }
 
-    .stButton button {
-        min-height: 38px !important;
-        font-size: 12px !important;
-    }
-
     input,
     textarea {
         font-size: 16px !important;
+        max-width: 100% !important;
     }
 
-    /* Header automatically fits small screens. */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]) {
-        gap: 4px !important;
-    }
-
-    /* Login becomes compact and centered on a normal phone. */
+    /* Login remains compact and centered. */
     .login-card-host {
-        width: 100% !important;
+        width: min(360px, 100%) !important;
         max-width: 360px !important;
-        margin: 0 auto !important;
-    }
-
-    .login-title {
-        font-size: 17px !important;
-        margin-bottom: 8px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
     .login-card-host [data-testid="stVerticalBlockBorderWrapper"] {
         padding: 14px 12px 10px 12px !important;
     }
 
-    /* ========================================================
-       MOBILE PRODUCT CARD
-       ========================================================
-       The computer version is untouched.
-       Only a normal phone gets this stacked layout.
-       ======================================================== */
-
+    /* Category + products stack vertically. */
     .product-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
         padding: 8px !important;
         margin: 5px 0 !important;
+        overflow: hidden !important;
     }
 
+    /* Product image section fits the phone. */
     .product-main img {
-        height: 180px !important;
+        height: 165px !important;
+        max-width: 100% !important;
     }
 
     .product-preview img {
-        height: 80px !important;
+        height: 68px !important;
+        max-width: 100% !important;
     }
 
     .product-name {
         font-size: 15px !important;
+        line-height: 1.25 !important;
     }
 
     .product-desc {
         font-size: 11px !important;
+        line-height: 1.35 !important;
     }
 
     .product-price {
         font-size: 17px !important;
     }
 
-    /* Prevent tiny controls on the phone. */
-    .product-card .stButton button {
-        min-height: 36px !important;
+    /* The original 8 product columns are allowed to wrap naturally.
+       This prevents the entire page from being shrunk/zoomed out. */
+    .product-card div[data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap !important;
+        align-items: center !important;
+    }
+
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        box-sizing: border-box !important;
+    }
+
+    /* First image/navigation group */
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
+        flex: 0 0 10% !important;
+    }
+
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
+        flex: 0 0 20% !important;
+    }
+
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
+        flex: 0 0 40% !important;
+    }
+
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(4) {
+        flex: 0 0 20% !important;
+    }
+
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(5) {
+        flex: 0 0 10% !important;
+    }
+
+    /* Product name/info gets a full row on phones. */
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(6) {
+        flex: 0 0 60% !important;
+    }
+
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(7) {
+        flex: 0 0 40% !important;
+    }
+
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(8) {
+        flex: 0 0 100% !important;
+    }
+
+    /* Keep scroll containers from forcing a desktop minimum width. */
+    [data-testid="stVerticalBlock"] {
+        max-width: 100% !important;
     }
 }
 
@@ -280,18 +363,33 @@ hr {
         padding-right: 5px !important;
     }
 
-    .login-card-host {
-        max-width: 340px !important;
-    }
-
     .product-main img {
-        height: 165px !important;
+        height: 150px !important;
     }
 
     .product-preview img {
-        height: 70px !important;
+        height: 62px !important;
+    }
+
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
+        flex-basis: 18% !important;
+    }
+
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
+        flex-basis: 44% !important;
+    }
+
+    .product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(4) {
+        flex-basis: 18% !important;
     }
 }
+
+/* ============================================================
+   DESKTOP / MANUAL "DESKTOP SITE"
+   ============================================================
+   When the browser requests a desktop viewport, the rules above
+   do not apply, so the normal computer layout remains intact.
+   ============================================================ */
 
 </style>
 """, unsafe_allow_html=True)
