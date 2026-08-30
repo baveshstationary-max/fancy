@@ -189,6 +189,15 @@ hr {
 
 @media screen and (max-width: 768px) {
 
+    /* Keep the whole page inside the phone viewport. */
+    .authenticated-app,
+    .authenticated-app .block-container {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+
     html,
     body {
         width: 100% !important;
@@ -290,102 +299,101 @@ hr {
     }
 
     /* ============================================================
-       PRODUCT ROW: PHONE VIEW LIKE THE REFERENCE SCREENSHOT
+       TRUE AUTO-FIT MOBILE PRODUCT VIEW
        ============================================================
-       The page stays at phone width. Each product itself keeps a
-       compact horizontal row and can be swiped left/right.
-       ============================================================ */
+       Everything stays inside the phone screen.
+       No horizontal swipe.
+       No page zoom-out.
+       */
 
     .product-mobile-scroll {
         width: 100% !important;
         max-width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        scrollbar-width: none !important;
+        overflow: visible !important;
+        touch-action: auto !important;
     }
 
-    .product-mobile-scroll::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    /* The inner row is intentionally wider than the phone. */
-    .product-mobile-scroll [data-testid="stHorizontalBlock"] {
-        width: 860px !important;
-        min-width: 860px !important;
-        max-width: none !important;
-        flex-wrap: nowrap !important;
-        gap: 5px !important;
+    .product-mobile-scroll > div[data-testid="stHorizontalBlock"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        display: grid !important;
+        grid-template-columns: 10% 18% 34% 18% 10% !important;
+        gap: 2px !important;
         align-items: center !important;
     }
 
-    .product-mobile-scroll [data-testid="column"] {
+    .product-mobile-scroll > div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        width: 100% !important;
         min-width: 0 !important;
-        flex-shrink: 0 !important;
+        max-width: 100% !important;
+        flex: none !important;
+    }
+
+    /* Product info becomes a second full-width row. */
+    .product-mobile-scroll > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(6) {
+        grid-column: 1 / span 3 !important;
+        width: 100% !important;
+    }
+
+    .product-mobile-scroll > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(7) {
+        grid-column: 4 / span 2 !important;
+        width: 100% !important;
+    }
+
+    /* Quantity/Add area uses the final row. */
+    .product-mobile-scroll > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(8) {
+        grid-column: 1 / span 5 !important;
+        width: 100% !important;
     }
 
     .product-mobile-scroll .product-main img {
-        height: 180px !important;
+        height: 145px !important;
         width: 100% !important;
         object-fit: contain !important;
     }
 
     .product-mobile-scroll .product-preview img {
-        height: 135px !important;
+        height: 75px !important;
         width: 100% !important;
         object-fit: contain !important;
     }
 
     .product-mobile-scroll .product-name {
-        font-size: 16px !important;
+        font-size: 14px !important;
         line-height: 1.2 !important;
-        white-space: normal !important;
     }
 
     .product-mobile-scroll .product-desc {
-        font-size: 11px !important;
-        line-height: 1.3 !important;
+        font-size: 10px !important;
+        line-height: 1.25 !important;
     }
 
     .product-mobile-scroll .product-price {
-        font-size: 17px !important;
+        font-size: 16px !important;
+        white-space: nowrap !important;
     }
 
     .product-mobile-scroll .stButton button {
-        min-height: 42px !important;
-        font-size: 12px !important;
+        min-height: 36px !important;
+        font-size: 11px !important;
+        padding: 3px !important;
     }
 
     .product-mobile-scroll input {
         font-size: 16px !important;
+        min-width: 0 !important;
     }
 
-    /* Keep the product card compact. */
     .product-card {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
-        padding: 5px 0 !important;
-        margin: 4px 0 !important;
-        overflow: visible !important;
+        overflow: hidden !important;
     }
 
-    /* Categories become a compact horizontal strip on phones. */
-    .category-mobile-scroll {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        scrollbar-width: none !important;
-    }
-
-    .category-mobile-scroll::-webkit-scrollbar {
+    .mobile-swipe-hint {
         display: none !important;
-    }
-
-    .category-mobile-scroll > div {
-        min-width: max-content !important;
     }
 
 /* ============================================================
@@ -647,10 +655,6 @@ else:
                         f"##### 🛍️ Products: {active_cat}"
                     )
 
-                    st.markdown(
-                        "<div class='mobile-swipe-hint'>Swipe product rows ← →</div>",
-                        unsafe_allow_html=True
-                    )
 
                     if "CATEGORY" in df.columns:
                         filtered_df = df[
