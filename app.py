@@ -90,6 +90,49 @@ st.markdown("""
         }
 
         /* ============================================================
+           LOGIN SCREEN - RESPONSIVE WITHOUT COLUMNS
+           ============================================================ */
+
+        .hm-login-wrapper {
+            width: min(430px, 100%) !important;
+            max-width: 430px !important;
+            margin: 10px auto 0 auto !important;
+            box-sizing: border-box !important;
+        }
+
+        .hm-login-card {
+            width: 100% !important;
+            box-sizing: border-box !important;
+            padding: 16px 14px 3px 14px !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 10px 10px 0 0 !important;
+            text-align: center !important;
+        }
+
+        .hm-login-card h3 {
+            margin: 0 0 8px 0 !important;
+            font-size: 16px !important;
+            font-weight: 750 !important;
+        }
+
+        .hm-login-wrapper [data-testid="stForm"] {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            padding: 8px 14px 14px 14px !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-top: 0 !important;
+            border-radius: 0 0 10px 10px !important;
+        }
+
+        .hm-login-wrapper input,
+        .hm-login-wrapper button {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* ============================================================
            RESPONSIVE LAYOUT
            Same structure on desktop AND mobile:
            HEADER
@@ -197,6 +240,31 @@ st.markdown("""
         }
 
         @media (max-width: 600px) {
+            .hm-login-wrapper {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-top: 5px !important;
+            }
+
+            .hm-login-card {
+                padding: 12px 9px 2px 9px !important;
+            }
+
+            .hm-login-wrapper [data-testid="stForm"] {
+                padding: 6px 9px 10px 9px !important;
+            }
+
+            .hm-login-heading h1 {
+                font-size: 23px !important;
+                line-height: 1.15 !important;
+            }
+
+            .hm-login-heading p {
+                font-size: 11px !important;
+                line-height: 1.25 !important;
+                overflow-wrap: anywhere !important;
+            }
+
             .block-container {
                 padding-left: 3px !important;
                 padding-right: 3px !important;
@@ -261,44 +329,46 @@ def log_login_to_sheet(name, phone):
         print(f"Login sheet error: {e}")
 
 
-# 2. Centered Professional Compact Customer Login Screen (Before Login)
+# 2. Responsive Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
+        <div class='hm-login-heading' style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
             <h1 style='font-size: 26px; font-weight: 800; margin-bottom: 2px;'>HM MOBILES</h1>
             <p style='font-size: 13px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
-    
-    _, mid_col, _ = st.columns([1.5, 1, 1.5])
-    
-    with mid_col:
-        with st.container():
-            st.markdown("""
-                <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 750;'>Customer Portal Login</h3>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            with st.form("customer_direct_login_center"):
-                cust_name = st.text_input("Your Name:")
-                cust_phone = st.text_input("Mobile Number:", max_chars=10)
-                login_btn = st.form_submit_button("Secure Login", use_container_width=True)
 
-                if login_btn:
-                    if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
-                        st.session_state.logged_in_user = cust_name.strip()
-                        st.session_state.user_phone = cust_phone.strip()
-                        st.session_state.user_role = "Customer"
-                        st.session_state.selected_menu = "Headset"
-                        
-                        log_login_to_sheet(cust_name.strip(), cust_phone.strip())
+    # IMPORTANT: no st.columns() here.
+    # The previous [1.5, 1, 1.5] columns were squeezing the login form on phones.
+    st.markdown('<div class="hm-login-wrapper">', unsafe_allow_html=True)
 
-                        st.success("✅ Login Successful!")
-                        st.rerun()
-                    else:
-                        st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
-    
+    st.markdown("""
+        <div class='hm-login-card'>
+            <h3>Customer Portal Login</h3>
+        </div>
+    """, unsafe_allow_html=True)
+
+    with st.form("customer_direct_login_center"):
+        cust_name = st.text_input("Your Name:")
+        cust_phone = st.text_input("Mobile Number:", max_chars=10)
+        login_btn = st.form_submit_button("Secure Login", use_container_width=True)
+
+        if login_btn:
+            if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
+                st.session_state.logged_in_user = cust_name.strip()
+                st.session_state.user_phone = cust_phone.strip()
+                st.session_state.user_role = "Customer"
+                st.session_state.selected_menu = "Headset"
+
+                log_login_to_sheet(cust_name.strip(), cust_phone.strip())
+
+                st.success("✅ Login Successful!")
+                st.rerun()
+            else:
+                st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
     st.stop()
 
 
