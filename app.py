@@ -112,20 +112,81 @@ hr {
     font-weight: 700;
 }
 
-/* MOBILE: preserve the same desktop/computer layout */
-@media (max-width: 768px) {
-    .block-container {
-        min-width: 1100px !important;
-        width: 1100px !important;
-        max-width: none !important;
-        padding-left: 8px !important;
-        padding-right: 8px !important;
-        padding-top: 5px !important;
+/* =========================================================
+   MOBILE = DESKTOP CANVAS + LEFT/RIGHT SWIPE
+   ========================================================= */
+
+@media screen and (max-width: 768px) {
+
+    /* Make the document itself wider than the phone screen. */
+    html {
+        min-width: 1200px !important;
+        width: 1200px !important;
+        overflow-x: auto !important;
     }
 
+    body {
+        min-width: 1200px !important;
+        width: 1200px !important;
+        max-width: none !important;
+        overflow-x: auto !important;
+        overflow-y: auto !important;
+        margin: 0 !important;
+    }
+
+    /* Streamlit root must also keep the desktop width. */
+    #root {
+        min-width: 1200px !important;
+        width: 1200px !important;
+        max-width: none !important;
+        overflow: visible !important;
+    }
+
+    .stApp {
+        min-width: 1200px !important;
+        width: 1200px !important;
+        max-width: none !important;
+    }
+
+    [data-testid="stAppViewContainer"] {
+        min-width: 1200px !important;
+        width: 1200px !important;
+        max-width: none !important;
+        overflow: visible !important;
+    }
+
+    [data-testid="stAppViewMain"] {
+        min-width: 1200px !important;
+        width: 1200px !important;
+        max-width: none !important;
+        overflow: visible !important;
+    }
+
+    section.main {
+        min-width: 1200px !important;
+        width: 1200px !important;
+        max-width: none !important;
+    }
+
+    .main .block-container,
+    [data-testid="stMainBlockContainer"],
+    .block-container {
+        width: 1120px !important;
+        min-width: 1120px !important;
+        max-width: 1120px !important;
+        margin-left: 40px !important;
+        margin-right: 40px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        padding-top: 5px !important;
+        padding-bottom: 8px !important;
+    }
+
+    /* Keep every Streamlit column row on one line. */
     div[data-testid="stHorizontalBlock"] {
-        flex-wrap: nowrap !important;
         width: 100% !important;
+        min-width: 0 !important;
+        flex-wrap: nowrap !important;
         gap: 5px !important;
     }
 
@@ -133,35 +194,41 @@ hr {
         min-width: 0 !important;
     }
 
+    /* Preserve computer image sizing. */
     .product-main img {
-        height: 115px !important;
+        height: 120px !important;
     }
 
     .product-preview img {
-        height: 72px !important;
-    }
-
-    .stButton button {
-        min-height: 34px !important;
-        font-size: 12px !important;
-    }
-
-    input, textarea {
-        font-size: 16px !important;
+        height: 75px !important;
     }
 }
 
-@media (max-width: 480px) {
-    .block-container {
-        min-width: 1100px !important;
-        width: 1100px !important;
+/* Keep the desktop canvas on very small phones too. */
+@media screen and (max-width: 480px) {
+    html,
+    body,
+    #root,
+    .stApp,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewMain"],
+    section.main {
+        min-width: 1200px !important;
+        width: 1200px !important;
         max-width: none !important;
     }
 
-    div[data-testid="stHorizontalBlock"] {
-        flex-wrap: nowrap !important;
+    .main .block-container,
+    [data-testid="stMainBlockContainer"],
+    .block-container {
+        width: 1120px !important;
+        min-width: 1120px !important;
+        max-width: 1120px !important;
+        margin-left: 40px !important;
+        margin-right: 40px !important;
     }
 }
+
 </style>
 """, unsafe_allow_html=True)
 
